@@ -9,6 +9,21 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Hardhat
+cache/
+build/
+typechain/
+artifacts/
+coverage*
+docs/
+docgen
+output/
+broadcast/
+report/
+
+#dapp tools
+out/
+
 # Runtime data
 pids
 *.pid
@@ -21,6 +36,8 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 *.lcov
+lcov.info
+lcov_parsed.info
 
 # nyc test coverage
 .nyc_output
