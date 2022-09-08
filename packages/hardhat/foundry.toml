@@ -5,7 +5,9 @@ libs = ['lib']
 solc-version = "0.8.4"
 evm_version = 'london'
 gas_reports = ['*']
-remappings = ['@rari-capital/solmate/=node_modules/@rari-capital/solmate/',
+remappings = ['@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/',
+'@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/',
+'@rari-capital/solmate/=node_modules/@rari-capital/solmate/',
 'forge-std/=lib/forge-std/src/',
 'hardhat/=node_modules/hardhat/',
 'hardhat-deploy/=node_modules/hardhat-deploy/'
@@ -17,8 +19,7 @@ gas_price = 0
 
 
 [fuzz]
-# We reduce the number of fuzz runs for now.
-runs = 100
+runs = 3_000
 
 [profile.default.fmt]
 line_length=80
