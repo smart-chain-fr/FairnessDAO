@@ -21,6 +21,7 @@ contract FairnessDAOFairVestingPreviewVestingStateTest is
         fairnessDAOFairVesting.initiateVesting(initialAmountToVest);
     }
 
+    /// @dev Should not allow the user to get a preview of his claimable vested rewards if the latter is not vesting.
     function testFuzz_getClaimableFairVesting_func_withRevert_userIsNotVesting(
         address vestedAddress
     )
@@ -35,6 +36,7 @@ contract FairnessDAOFairVestingPreviewVestingStateTest is
         fairnessDAOFairVesting.getClaimableFairVesting(vestedAddress);
     }
 
+    /// @dev Should allow the user to get a preview of his claimable vested rewards.
     function testFuzz_getClaimableFairVesting_func(uint32 timeSkipping)
         public
     {

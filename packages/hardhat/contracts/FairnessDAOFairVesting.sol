@@ -62,6 +62,8 @@ contract FairnessDAOFairVesting is ERC20 {
         zInflationDelta = initZInflationDelta;
     }
 
+    /// @dev Allow the user to initiate vesting.
+    /// @param amountToVest Amount to send for vesting.
     function initiateVesting(uint256 amountToVest) external {
         if (amountToVest == 0) {
             revert FairnessDAOFairVesting__CannotSetZeroAmount();
@@ -73,6 +75,9 @@ contract FairnessDAOFairVesting is ERC20 {
         depositTokensForVesting(msg.sender, amountToVest);
     }
 
+    /// @dev Increase the vesting amount of token.
+    /// @notice It is mandatory to have initiated a vesting before calling this method.
+    /// @param amountToVest Amount to send for increasing an active vesting.
     function increaseVesting(uint256 amountToVest) external {
         if (amountToVest == 0) {
             revert FairnessDAOFairVesting__CannotSetZeroAmount();
@@ -86,6 +91,10 @@ contract FairnessDAOFairVesting is ERC20 {
         depositTokensForVesting(msg.sender, amountToVest);
     }
 
+    /// @dev Allow user to withdraw his locked vested tokens by burning his vesting tokens.
+    /// @notice The user cannot dictate the exact amount of locked vested tokens he wants to withdraw.
+    /// The withdrawal is based instead on a ratio of burned vesting tokens compared to his total balance.
+    /// @param amountToWithdraw Amount of vesting tokens to burn.
     function withdrawVesting(uint256 amountToWithdraw) external {
         if (amountToWithdraw == 0) {
             revert FairnessDAOFairVesting__CannotSetZeroAmount();
@@ -225,6 +234,8 @@ contract FairnessDAOFairVesting is ERC20 {
         IERC20(tokenAddress).safeTransferFrom(from, to, amount);
     }
 
+    /// @dev Token transfer override to make the vesting token non-transferable between users.
+    /// @param from Amount of vesting tokens to burn.
     function _beforeTokenTransfer(address from, address to, uint256 amount)
         internal
         virtual

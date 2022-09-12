@@ -26,6 +26,7 @@ contract FairnessDAOFairVestingTransferStateTest is
         fairnessDAOFairVesting.updateFairVesting(address(this));
     }
 
+    /// @dev Should not allow the user to transfer the vested token to any recipient with any amount.
     function testFuzz_transferFrom_func_withRevert_cannotTransferToRandomRecipient(
         uint16 amountToTransfer,
         address recipient
@@ -43,6 +44,7 @@ contract FairnessDAOFairVestingTransferStateTest is
         fairnessDAOFairVesting.transfer(address(2), amountToTransfer);
     }
 
+    /// @dev Should not allow the user to transfer the vested token to zero address.
     function testFuzz_transferFrom_func_withRevert_cannotTransferToZeroAddress(
         uint16 amountToTransfer
     )
