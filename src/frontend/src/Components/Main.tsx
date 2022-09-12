@@ -7,7 +7,7 @@ import ThemeMode from "../Stores/ThemeMode";
 import ComingSoon from "./Pages/ComingSoon";
 import Home from "./Pages/Home";
 import Marketplace from "./Pages/Marketplace";
-import Ressources from "./Pages/Ressources";
+import Staking from "./Pages/Staking";
 import Module from "./Materials/Module";
 import NftDetail from "./Pages/NftDetail";
 import Profile from "./Pages/Profile";
@@ -16,7 +16,7 @@ import StoreWorkflow from "Services/StoreWorkflow";
 import SalesHistory from "./Pages/SalesHistory";
 import Offers from "./Pages/Offers";
 import I18n from "./Materials/I18n";
-import Toasts from "Stores/Toasts";
+// import Toasts from "Stores/Toasts";
 
 type IProps = {};
 
@@ -54,13 +54,13 @@ export default class Main extends React.Component<IProps, IState> {
 		this.removeThemeModeOnSwitch = ThemeMode.getInstance().onSwitch(() => this.updateThemeMode());
 		this.removeVersionOnSwitch = Version.getInstance().onSwitch(() => this.updateVersion());
 
-		Toasts.getInstance().add({
-			id: Math.random(),
-			title: "Pass the KYC",
-			text: "To have access to all the functionality of the website you have to pass the KYC",
-			buttonLink: "string",
-			buttonText: "Pass KYC",
-		});
+		// Toasts.getInstance().add({
+		// 	id: Math.random(),
+		// 	title: "Pass the KYC",
+		// 	text: "To have access to all the functionality of the website you have to pass the KYC",
+		// 	buttonLink: "string",
+		// 	buttonText: "Pass KYC",
+		// });
 	}
 
 	public componentWillUnmount() {
@@ -101,11 +101,11 @@ export default class Main extends React.Component<IProps, IState> {
 				/>
 				<Route
 					element={
-						<Module from={pageConfig.Ressources}>
-							<Ressources />
+						<Module from={pageConfig.Staking}>
+							<Staking />
 						</Module>
 					}
-					path={pageConfig.Ressources.props.path}
+					path={pageConfig.Staking.props.path}
 				/>
 				<Route
 					element={

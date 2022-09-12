@@ -44,7 +44,8 @@ export default class Header extends React.Component<IProps, IState> {
 						<div className={[classes["segment"], classes["segment-left"]].join(" ")}>
 							<Module from={Module.config.Logo}>
 								<Link className={classes["logo"]} to={Module.config.Logo.props.url}>
-									<Logo />
+									{/* <Logo /> */}
+									<div className={classes["title"]}>FairnessDAO</div>
 								</Link>
 							</Module>
 						</div>
@@ -61,9 +62,9 @@ export default class Header extends React.Component<IProps, IState> {
 									<I18n map={"pages_title.".concat(pageConfig.Marketplace.props.labelKey)} />
 								</NavLink>
 							</Module>
-							<Module from={pageConfig.Ressources}>
-								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Ressources.props.path}>
-									<I18n map={"pages_title.".concat(pageConfig.Ressources.props.labelKey)} />
+							<Module from={pageConfig.Staking}>
+								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Staking.props.path}>
+									<I18n map={"pages_title.".concat(pageConfig.Staking.props.labelKey)} />
 								</NavLink>
 							</Module>
 							<ConnectWallet />
@@ -122,3 +123,4 @@ export default class Header extends React.Component<IProps, IState> {
 		return isActive ? [classes["route"], classes["active-route"]].join(" ") : classes["route"];
 	}
 }
+

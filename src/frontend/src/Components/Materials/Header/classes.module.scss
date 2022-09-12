@@ -57,6 +57,18 @@
 					width: 157.6px;
 				}
 
+				a {
+					text-decoration: none;
+				}
+				
+				.title {
+					font-weight: 700;
+					font-size: 24px;
+					line-height: 48px;
+					text-decoration: none;
+					color: #000000;
+				}
+
 				.route {
 					text-decoration: none;
 
@@ -119,3 +131,4 @@
 		}
 	}
 }
+
