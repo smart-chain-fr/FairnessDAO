@@ -122,7 +122,7 @@ const config: HardhatUserConfig = {
 //       contract_address = contract_address_long.substring(24); //Trim the first 24 characters
 //     }
 //     log("\n");
-//     log("⛏  Account Mined as " + address + " and set as mnemonic in packages/hardhat");
+//     log("⛏  Account Mined as " + address + " and set as mnemonic in src/contracts");
 //     log("📜 This will create the first contract: " + "0x" + contract_address);
 //     log("\n");
 //     fs.writeFileSync("./minedWallet.json", JSON.stringify({ mnemonic: mnemonic, privateKey: privateKey }));
