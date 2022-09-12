@@ -1,0 +1,82 @@
+{
+  "wallet": {
+    "infuraId": "1e53a3471c1d44db95ffa97cb16b3d85",
+    "network": "rinkeby",
+    "chainId": 4
+  },
+  "versions": [
+    {
+      "version": "v0",
+      "date": "2022/05/02 00:00:00",
+      "pagesComingSoon": {
+        "/page1": {
+          "enabled": true,
+          "title": "Page1",
+          "titleLocalizationKey": "page_1",
+          "text": "<p>Coming Soon</p>",
+          "textLocalizationKey": "coming_soon"
+        },
+        "/page2": {
+          "enabled": true,
+          "title": "Page2",
+          "text": "<p>Coming Soon<p/>"
+        }
+      }
+    },
+    {
+      "version": "v1",
+      "date": "2022/06/10 18:02:00",
+      "pagesComingSoon": {
+        "/page2": {
+          "enabled": true,
+          "title": "Page2",
+          "titleLocalizationKey": "page_1",          
+          "text": "<p>Coming Soon<p/>",
+          "textLocalizationKey": "coming_soon"
+        }
+      }
+    },
+    { "version": "v2", "date": "2022/06/10 18:02:00", "pagesComingSoon": {} }
+  ],
+  "contracts": {
+    "saleContractAddress": "",
+    "icoToken": {
+      "symbol": "",
+      "tokenAddress": ""
+    }
+  },
+  "tgeDate": "TBD",
+  "defaultPhase": 1,
+  "phases": [
+    {
+      "name": "Phase 1",
+      "label": "Flash Sale",
+      "index": 1,
+      "attrs": {
+        "vesting": "",
+        "typeOfFundraising": "",
+        "hardCap": ""
+      }
+    },
+    {
+      "name": "Phase 2",
+      "label": "Private Sale",
+      "index": 2,
+      "attrs": {
+        "vesting": "",
+        "typeOfFundraising": "",
+        "hardCap": ""
+      }
+    },
+    {
+      "name": "Phase 3",
+      "label": "Public Sale",
+      "index": 3,
+      "attrs": {
+        "vesting": "",
+        "typeOfFundraising": "",
+        "hardCap": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+@import "Themes/constants.scss";
+
+.root {
+	font-family: var(--font-primary);
+	font-style: normal;
+	.banner {
+		padding-bottom: 64px;
+	}
+}
+
+.page-root {
+	display: flex;
+	margin-top: 64px;
+	@media (max-width: $screen-s) {
+		flex-direction: column;
+	}
+	.collection-label {
+		font-weight: 700;
+		font-size: 23px;
+		line-height: 28px;
+		letter-spacing: -0.02em;
+		color: var(--color-neutral);
+		margin-bottom: 16px;
+		width: 100%;
+	}
+
+	.nft-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		grid-gap: 24px;
+		justify-content: center;
+
+		> * {
+			max-width: 352px;
+		}
+
+		@media (max-width: $screen-s) {
+			grid-gap: 16px;
+		}
+
+		@media (max-width: 551px) {
+			grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+			grid-gap: 8px;
+		}
+	}
+}
+

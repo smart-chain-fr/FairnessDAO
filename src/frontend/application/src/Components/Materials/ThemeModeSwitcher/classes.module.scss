@@ -1,0 +1,43 @@
+@import "Themes/constants.scss";
+
+.root {
+	cursor: pointer;
+
+	&[variant="primary"] {
+		display: flex;
+		justify-content: space-between;
+		flex: 1;
+		height: 60px;
+		align-items: center;
+		padding: 0 16px;
+		&:hover {
+			background-color: var(--color-neutral-1);
+		}
+
+		@media (max-width: $screen-m) {
+			flex: none;
+			gap: 30px;
+		}
+
+		@media (max-width: $screen-s) {
+			flex: 1;
+			gap: unset;
+		}
+
+		.first-part {
+			user-select: none;
+			display: flex;
+			gap: 8px;
+
+			font-family: var(--font-primary);
+			font-style: normal;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 20px;
+			color: var(--color-neutral-7);
+		}
+
+		.second-part {
+		}
+	}
+}

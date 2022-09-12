@@ -1,0 +1,45 @@
+version: 2.1
+jobs:
+  build-docker-image:
+    docker:
+      # replace with your preferred image
+      - image: cimg/base:stable
+    environment:
+      TAG: << pipeline.git.tag >>
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.12
+      - run: docker login rg.fr-par.scw.cloud/marketplace-front-prototype -u nologin -p $SCW_SECRET_KEY
+      - run: docker build --tag rg.fr-par.scw.cloud/marketplace-front-prototype/front:$TAG application
+  build-push-docker-image:
+    docker:
+      - image: cimg/base:stable
+    environment:
+      TAG: << pipeline.git.tag >>
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.12
+      - run: docker login rg.fr-par.scw.cloud/marketplace-front-prototype -u nologin -p $SCW_SECRET_KEY
+      - run: docker build --tag rg.fr-par.scw.cloud/marketplace-front-prototype/front:$TAG application
+      - run: docker push rg.fr-par.scw.cloud/marketplace-front-prototype/front:$TAG
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-docker-image:
+          filters:
+            tags:
+              only: /^build.*/
+            branches:
+              ignore: /.*/
+  build-and-register:
+    jobs:
+      - build-push-docker-image:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

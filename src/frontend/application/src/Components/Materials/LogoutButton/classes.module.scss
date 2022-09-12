@@ -1,0 +1,23 @@
+@import "Themes/constants.scss";
+.root {
+	cursor: pointer;
+	height: 60px;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	font-family: var(--font-primary);
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 20px;
+	color: var(--color-neutral-7);
+	padding: 0 16px;
+	user-select: none;
+	&:hover {
+		background-color: var(--color-neutral-1);
+	}
+
+	&[data-type="connect"] {
+		justify-content: center;
+	}
+}

@@ -1,0 +1,46 @@
+@import "Themes/constants.scss";
+
+.root-side-filters {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	margin-right: 32px;
+	max-width: 326px;
+	.side-filters {
+		height: 100%;
+		@media (max-width: $screen-s) {
+			display: none;
+		}
+	}
+}
+
+.content {
+	width: 100%;
+	.dropdown-filters {
+		.search-bar-responsive {
+			margin-bottom: 24px;
+		}
+
+		@media (min-width: $screen-s) {
+			display: none;
+		}
+	}
+
+	.tags {
+		display: flex;
+		gap: 16px;
+		margin-bottom: 32px;
+		align-items: center;
+		flex-wrap: wrap;
+
+		.reset-filters {
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 17px;
+			text-decoration-line: underline;
+			color: var(--color-neutral-6);
+			cursor: pointer;
+		}
+	}
+}
+

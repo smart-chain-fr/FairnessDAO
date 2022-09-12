@@ -1,0 +1,14 @@
+@import "Themes/constants.scss";
+
+.root-mobile {
+	display: none;
+	@media (max-width: $screen-m) {
+		display: block;
+	}
+}
+
+.root-desktop {
+	@media (max-width: $screen-m) {
+		display: none;
+	}
+}

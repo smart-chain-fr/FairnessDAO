@@ -1,0 +1,43 @@
+@import "Themes/constants.scss";
+
+.root {
+	border-radius: 8px;
+	display: flex;
+	div{
+		padding: 12px;
+		border-right: 1px solid var(--color-neutral-3);
+		border-top: 1px solid var(--color-neutral-3);
+		border-bottom: 1px solid var(--color-neutral-3);
+		display: flex;
+		align-items: center;
+		@media (max-width: 400px) {
+				padding: 8px;
+		}
+	}
+	div:first-child {
+		border-radius: 8px 0 0 8px;
+		border-left: 1px solid var(--color-neutral-3);
+	}
+	div:last-child {
+		border-radius: 0 8px 8px 0;
+		border-right: 1px solid var(--color-neutral-3);
+
+	}
+
+	&[data-color="light"]{
+		svg{
+			path{
+				fill: var(--color-generic-white);
+				stroke: none;
+			}
+		}
+		.inverted-icon{
+			path{
+				fill: none;
+				stroke: white;
+
+			}
+		}
+	}
+
+}

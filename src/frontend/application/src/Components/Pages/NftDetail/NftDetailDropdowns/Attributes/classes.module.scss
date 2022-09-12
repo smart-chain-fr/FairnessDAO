@@ -1,0 +1,52 @@
+@import "Themes/constants.scss";
+.root {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+	padding: 16px;
+
+	@media (max-width: $screen-s) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.attribute-block {
+		background: var(--color-neutral-1);
+		border: 1px solid var(--color-neutral-3);
+		border-radius: 8px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 16px 24px;
+
+		.attribute-title {
+			margin: 0;
+			font-family: var(--font-primary);
+			font-style: normal;
+			font-weight: 600;
+			font-size: 12px;
+			line-height: 20px;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: var(--color-primary-5);
+		}
+		.attribute-state {
+			margin: 0;
+			font-family: var(--font-primary);
+			font-style: normal;
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 24px;
+			color: var(--color-neutral-8);
+		}
+		.attribute-percentage {
+			margin: 0;
+			font-family: var(--font-primary);
+			font-style: normal;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 20px;
+			color: var(--color-neutral-6);
+			text-align: center;
+		}
+	}
+}

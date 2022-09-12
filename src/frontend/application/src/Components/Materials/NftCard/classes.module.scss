@@ -1,0 +1,70 @@
+@import "Themes/constants.scss";
+
+.root {
+	position: relative;
+	background-color: var(--color-neutral-1);
+	border-radius: 8px;
+	flex: 1;
+
+	> img {
+		width: 100%;
+		border-radius: 8px 8px 0 0;
+	}
+
+	.fav-container {
+		position: absolute;
+		right: 15px;
+		top: 15px;
+	}
+
+	.content {
+		font-family: var(--font-primary);
+		font-style: normal;
+		padding: 24px;
+		@media (max-width: 551px) {
+			padding: 16px;
+		}
+		@media (max-width: 369px) {
+			padding: 24px;
+		}
+
+		.row {
+			display: flex;
+			justify-content: space-between;
+			gap: 2px;
+		}
+
+		.first {
+			font-weight: 600;
+			font-size: 14px;
+			line-height: 20px;
+			color: var(--color-neutral-6);
+
+			@media (max-width: 551px) {
+				font-size: 12px;
+				line-height: 20px;
+			}
+			@media (max-width: 369px) {
+				font-size: 14px;
+			}
+			
+		}
+
+		.second {
+			font-weight: 700;
+			font-size: 19px;
+			line-height: 23px;
+			letter-spacing: -0.02em;
+			color: var(--color-neutral-8);
+
+			@media (max-width: 551px) {
+				font-size: 12px;
+				line-height: 20px;
+			}
+			@media (max-width: 369px) {
+				font-size: 19px;
+			}
+		}
+	}
+}
+

@@ -1,0 +1,10 @@
+@import "Themes/constants.scss";
+.profile-button {
+	cursor: pointer;
+
+	@media (max-width: $screen-m) {
+		> button {
+			margin: unset;
+		}
+	}
+}

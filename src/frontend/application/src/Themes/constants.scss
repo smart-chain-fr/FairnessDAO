@@ -1,0 +1,40 @@
+$screen-xl: 2160px;
+$screen-l: 1440px;
+$screen-m: 1023px;
+$screen-s: 767px;
+$screen-xs: 390px;
+
+$custom-easing: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+$color-neutral-1: #f9fafb;
+$color-neutral-2: #f1f5f9;
+$color-neutral-3: #e2e8f0;
+$color-neutral-4: #cbd5e1;
+$color-neutral-5: #94a3b8;
+$color-neutral-6: #64748b;
+$color-neutral-7: #475569;
+$color-neutral-8: #111827;
+
+$color-primary-1: #f5f5ff;
+$color-primary-2: #e1e1fe;
+$color-primary-3: #c3c4fe;
+$color-primary-4: #7375fd;
+$color-primary-5: #4b4efc;
+$color-primary-6: #1e22fb;
+$color-primary-7: #0408E7;
+
+$color-generic-white: #ffffff;
+
+$color-transparent-1: rgba(248, 250, 252, 0.1);
+$color-transparent-2: rgba(248, 250, 252, 0.3);
+$color-transparent-3: rgba(248, 250, 252, 0.5);
+$color-transparent-4: rgba(226, 232, 240, 0.2);
+
+$color-success-1: #10b981;
+$color-destructive-1: rgba(239, 68, 68, 1);
+
+$color-gradient-1: linear-gradient(0deg, #0f172a 0%, rgba(15, 23, 42, 0.2) 100%);
+
+$color-shadow-light: 0px 10px 15px -3px rgba(0, 0, 0, 0.05);
+$color-shadow-small: 0px 6px 12px rgba(0, 0, 0, 0.11);
+$color-shadow-medium: 0px 9px 18px rgba(0, 0, 0, 0.15);

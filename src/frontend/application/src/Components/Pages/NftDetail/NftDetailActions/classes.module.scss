@@ -1,0 +1,11 @@
+@import "Themes/constants.scss";
+
+.root {
+	display: flex;
+	gap: 16px;
+	margin-top: 24px;
+
+	@media (max-width: $screen-m) {
+		display: none;
+	}
+}

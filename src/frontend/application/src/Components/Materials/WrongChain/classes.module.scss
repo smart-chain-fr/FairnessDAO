@@ -1,0 +1,49 @@
+@import "Themes/constants.scss";
+
+.root {
+	position: absolute;
+	right: 24px;
+	top: 104px;
+
+	/* dark-text */
+
+	background: var(--color-window);
+	/* Shadow (XS) */
+
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+	border-radius: 8px;
+
+	&[data-visible="false"] {
+		display: none;
+	}
+
+	@media (max-width: $screen-m) {
+		right: 16px;
+		left: 16px;
+		top: 96px;
+	}
+}
+
+.root-container {
+	display: flex;
+	gap: 16px;
+	justify-content: center;
+	align-items: center;
+	padding: 16px 22px;
+	color: var(--color-text);
+}
+
+.wrongchain-text {
+	font-family: "Source Sans Pro";
+	font-style: normal;
+	font-weight: 400;
+
+	font-size: 16px;
+	line-height: 24px;
+	margin: 0;
+
+	@media (max-width: $screen-m) {
+		font-size: 14px;
+		line-height: 24px;
+	}
+}

@@ -1,0 +1,19 @@
+.root{
+	width: 100%;
+}
+.right-arrow {
+	path {
+		stroke: white;
+	}
+}
+svg{
+	width: 20px;
+	height: 20px;
+}
+
+.left-up-arrow {
+	path {
+		stroke: var(--color-primary-5);
+	}
+}
+

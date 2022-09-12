@@ -1,0 +1,125 @@
+{
+  "pages_title": {
+    "marketplace": "Marketplace",
+    "auction": "Enchère",
+    "resources": "Ressources",
+    "sales_history": "Sales history",
+    "nft_detail": "NFT detail",
+    "profile": "Profile",
+    "home": "Accueil",
+    "lottery": "Lotterie"
+  },
+  "general_text": {
+    "email_address": "Adresse mail",
+    "subscribe": "S'abonner",
+    "get_latest_updates": "Recevez les dernières mises à jour par mail !",
+    "wrong_blockchain": "Vous n'êtes pas connecté à la bonne blockchain. Veuillez vous connecter à la blockchain {{config_wallet_network}} pour vous connecter.",
+    "search": "Recherche",
+    "all_results": "Tous les résultats",
+    "create_collection": "Créer +",
+    "select": "Sélectionner...",
+    "max": "Max.",
+    "min": "Min.",
+    "connect_wallet": "Connecter le wallet",
+    "from_same_collection": "De la même collection",
+    "input_text_here": "Entrez le texte ici",
+    "tag": "Tag",
+    "nfts": "NFTs",
+    "from": "De",
+    "accept": "Accepter",
+    "contract_address": "Adresse de Contract",
+    "token_id": "ID de Token",
+    "token_standart": "Standard de Token",
+    "blockchain": "Blockchain",
+    "metadatas": "Métadonnées",
+    "view_metadatas": "Voir les métadonnées",
+    "apply": "Appliquer"
+  },
+  "asset_names": {
+    "ethereum": "Ethereum",
+    "polygon": "Polygon",
+    "solana": "Solana"
+  },
+  "components": {
+    "footer": {
+      "terms_of_service": "Conditions d'utilisation",
+      "privacy_policy": "Politique de confidentialité"
+    },
+    "header_menu": {
+      "profile": "Profile",
+      "my_collections": "Mes collections",
+      "favorites": "Favoris",
+      "offers": "Offres",
+      "auctions": "Enchères",
+      "sales_history": "Historique des ventes",
+      "darkmode": "Thème sombre",
+      "logout": "Déconnexion",
+      "pass_kyc": "Passer le KYC",
+      "reservations": "Reservations"
+    },
+    "attributes": {
+      "have_this_trait": "have this trait"
+    },
+    "search_bar": {
+      "collections": "Collections",
+      "profiles": "Profiles",
+      "nfts": "NFTs"
+    },
+    "filters": {
+      "status": "statut",
+      "status_title": "Statut",
+      "on_sale": "En vente",
+      "on_offer": "Offre directe",
+      "sort_by": "Trié par",
+      "recently_listed": "Récemment listés",
+      "price": "Prix",
+      "to": "à.",
+      "chains": "Blockchains",
+      "attributes": "Attributs",
+      "reset_filters": "Réinitialiser les filtres",
+      "filters": "Filtres"
+    }
+  },
+  "pages": {
+    "coming_soon_pages": {
+      "v0": {
+        "page_1": {
+          "title": "Coming soon",
+          "text": "Coming soon !"
+        },
+        "page_2": {
+          "title": "Coming soon",
+          "text": "Coming soon !"
+        }
+      },
+      "v1": {
+        "page_2": {
+          "title": "Coming soon",
+          "text": "Coming soon !"
+        }
+      }
+    },
+    "auctions": {
+      "auctions": "Enchères",
+      "participations": "Participations",
+      "auctioned": "Enchères terminées"
+    },
+    "nft_details": {
+      "sell": "Vendre",
+      "create_auction": "Créer une enchère",
+      "cancel_auction": "Annuler une enchère",
+      "cancel_listing": "Annuler listing",
+      "owned_by": "Propriété de",
+      "auction_ends": "Fin des enchères",
+      "price": "Prix",
+      "top_bid": "Meilleure offre",
+      "reserve_price": "Prix de réserve",
+      "offers": "Offres",
+      "bids": "Offres",
+      "attributes": "Attributs",
+      "details": "Détails",
+      "usd_price": "Prix en USD",
+      "expiration": "Expiration"
+    }
+  }
+}

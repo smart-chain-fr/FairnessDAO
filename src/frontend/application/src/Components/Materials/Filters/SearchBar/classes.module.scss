@@ -1,0 +1,71 @@
+@import "Themes/constants.scss";
+
+.root {
+	height: 40px;
+	position: relative;
+	border: 1px solid rgba(0, 0, 0, 0);
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	transition: all 500ms $custom-easing;
+	padding: 0;
+	gap: 0;
+	flex: 1;
+	.glass-container {
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.input-container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		width: 0;
+		transition: width 500ms $custom-easing, border 500ms $custom-easing;
+		.input-searchbar {
+			border: none;
+			height: 100%;
+			width: 100%;
+			background: var(--color-generic-white);
+
+			border-radius: 4px;
+
+			&:focus-visible {
+				outline: none;
+			}
+
+			&::placeholder {
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 400;
+				font-size: 14px;
+				line-height: 20px;
+				color: var(--color-neutral-5);
+			}
+		}
+
+		.cross {
+			cursor: pointer;
+			display: none;
+		}
+	}
+
+	.glass-image {
+		cursor: pointer;
+		width: 20px;
+		height: 20px;
+	}
+
+	border: 1px solid #cbd5e1;
+	gap: 16px;
+	padding: 0 16px;
+	.input-container {
+		width: 100%;
+		.cross {
+			display: block;
+		}
+	}
+}
+

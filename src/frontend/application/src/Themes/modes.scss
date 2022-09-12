@@ -1,0 +1,71 @@
+@import "Themes/constants.scss";
+
+[theme-mode] {
+	--color-neutral-1: #{$color-neutral-1};
+	--color-neutral-2: #{$color-neutral-2};
+	--color-neutral-3: #{$color-neutral-3};
+	--color-neutral-4: #{$color-neutral-4};
+	--color-neutral-5: #{$color-neutral-5};
+	--color-neutral-6: #{$color-neutral-6};
+	--color-neutral-7: #{$color-neutral-7};
+	--color-neutral-8: #{$color-neutral-8};
+
+	--color-primary-1: #{$color-primary-1};
+	--color-primary-2: #{$color-primary-2};
+	--color-primary-3: #{$color-primary-3};
+	--color-primary-4: #{$color-primary-4};
+	--color-primary-5: #{$color-primary-5};
+	--color-primary-6: #{$color-primary-6};
+	--color-primary-7: #{$color-primary-7};
+
+	--color-transparent-1: #{$color-transparent-1};
+	--color-transparent-2: #{$color-transparent-2};
+	--color-transparent-3: #{$color-transparent-3};
+	--color-transparent-4: #{$color-transparent-4};
+
+	--color-destructive-1: #{$color-destructive-1};
+	--color-success-1: #{$color-success-1};
+
+	--color-gradient-1: #{$color-gradient-1};
+
+	--color-shadow-light: #{$color-shadow-light};
+	--color-shadow-small: #{$color-shadow-small};
+	--color-shadow-medium: #{$color-shadow-medium};
+
+	--color-generic-white: #{$color-generic-white};
+}
+
+[theme-mode="dark"] {
+	--color-neutral-1: #{$color-neutral-1};
+	--color-neutral-2: #{$color-neutral-2};
+	--color-neutral-3: #{$color-neutral-3};
+	--color-neutral-4: #{$color-neutral-4};
+	--color-neutral-5: #{$color-neutral-5};
+	--color-neutral-6: #{$color-neutral-6};
+	--color-neutral-7: #{$color-neutral-7};
+	--color-neutral-8: #{$color-neutral-8};
+
+	--color-primary-1: #{$color-primary-1};
+	--color-primary-2: #{$color-primary-2};
+	--color-primary-3: #{$color-primary-3};
+	--color-primary-4: #{$color-primary-4};
+	--color-primary-5: #{$color-primary-5};
+	--color-primary-6: #{$color-primary-6};
+	--color-primary-7: #{$color-primary-7};
+
+	--color-transparent-1: #{$color-transparent-1};
+	--color-transparent-2: #{$color-transparent-2};
+	--color-transparent-3: #{$color-transparent-3};
+	--color-transparent-4: #{$color-transparent-4};
+
+	--color-destructive-1: #{$color-destructive-1};
+	--color-success-1: #{$color-success-1};
+
+	--color-gradient-1: #{$color-gradient-1};
+
+	--color-shadow-light: #{$color-shadow-light};
+	--color-shadow-small: #{$color-shadow-small};
+	--color-shadow-medium: #{$color-shadow-medium};
+
+	--color-generic-white: #{$color-generic-white};
+}

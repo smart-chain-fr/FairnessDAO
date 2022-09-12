@@ -1,0 +1,186 @@
+{
+  "app": "Marketplace",
+  "theme": {
+    "colors": {
+      "primary": "string",
+      "secondary": "string"
+    }
+  },
+  "modules": {
+    "Logo": {
+      "enabled": true,
+      "props": {
+        "url": "string"
+      }
+    },
+    "Kyc": {
+      "enabled": true,
+      "props": {
+        "url": "string"
+      }
+    },
+    "pages": {
+      "Home": {
+        "enabled": true,
+        "props": {
+          "path": "/",
+          "labelKey": "home"
+        }
+      },
+      "Marketplace": {
+        "enabled": true,
+        "props": {
+          "path": "/marketplace",
+          "labelKey": "marketplace"
+        }
+      },
+      "Ressources": {
+        "enabled": true,
+        "props": {
+          "path": "/ressources",
+          "labelKey": "resources"
+        }
+      },
+      "NftDetail": {
+        "enabled": true,
+        "props": {
+          "path": "/nft-details",
+          "labelKey": "Nft-details"
+        }
+      },
+      "Auctions": {
+        "enabled": true,
+        "props": {
+          "path": "/auctions",
+          "labelKey": "auctions"
+        }
+      },
+      "SalesHistory": {
+        "enabled": true,
+        "props": {
+          "path": "/saleshistory",
+          "label": "SalesHistory"
+        }
+      },
+      "Offers": {
+        "enabled": true,
+        "props": {
+          "path": "/offers",
+          "label": "Offers"
+        }
+      },
+      "Profile": {
+        "enabled": true,
+        "props": {
+          "path": "/profile",
+          "labelKey": "profile",
+          "BannerImage": {
+            "enabled": true
+          },
+          "Role": {
+            "enabled": true
+          },
+          "Picture": {
+            "enabled": true
+          },
+          "Certified": {
+            "enabled": true
+          },
+          "Name": {
+            "enabled": true
+          },
+          "Address": {
+            "enabled": true
+          },
+          "SocialNetworks": {
+            "enabled": true,
+            "props": {
+             "facebook": { "enabled": true, "name": "Facebook", "path": "https://www.facebook.com" },
+             "twitter": { "enabled": true, "name": "Twitter", "path": "https://www.twitter.com" },
+             "instagram": { "enabled": true, "name": "instagram", "path": "https://www.instagram.com" },
+             "linkedin": { "enabled": true, "name": "linkedin", "path": "https://www.linkedin.com" },
+             "discord":{ "enabled": true, "name": "discord", "path": "https://www.linkedin.com" },
+             "telegram":{ "enabled": true, "name": "telegram", "path": "https://www.linkedin.com" },
+             "medium":{ "enabled": true, "name": "medium", "path": "https://www.linkedin.com" },
+             "mail":{ "enabled": true, "name": "mail", "path": "https://www.linkedin.com" },
+             "website": { "enabled": true, "name": "website", "path": "https://www.linkedin.com" }
+            } 
+          },
+          "Filters": {
+            "enabled": true,
+            "props": {
+              "Status": {
+                "enabled": true
+              },
+              "SortBy": {
+                "enabled": true
+              },
+              "Price": {
+                "enabled": true
+              },
+              "Chains": {
+                "enabled": true
+              },
+              "Attributes": {
+                "enabled": true
+              }
+            }
+          }
+        }
+      },
+      "Reservations": {
+        "enabled": true
+      }
+    },
+    "Header": {
+      "enabled": true
+    },
+    "Footer": {
+      "enabled": true,
+      "props": {
+        "Logo": {
+          "enabled": true
+        },
+        "Links": {
+          "enabled": true,
+          "props": {
+            "content": [
+              { "path": "/", "labelKey": "home" },
+              { "path": "/marketplace", "labelKey": "marketplace" },
+              { "path": "/ressources", "labelKey": "resources" },
+              { "path": "/profile", "labelKey": "profile" }
+            ]
+          }
+        },
+        "Newsletter": {
+          "enabled": true
+        },
+        "SocialNetworks": {
+          "enabled": true,
+          "props": {
+            "content": [
+              { "name": "facebook", "path": "https://www.facebook.com" },
+              { "name": "twitter", "path": "https://www.twitter.com" },
+              { "name": "instagram", "path": "https://www.instagram.com" },
+              { "name": "linkedin", "path": "https://www.linkedin.com" },
+              { "name": "discord", "path": "https://www.linkedin.com" },
+              { "name": "telegram", "path": "https://www.linkedin.com" },
+              { "name": "medium", "path": "https://www.linkedin.com" },
+              { "name": "mail", "path": "https://www.linkedin.com" },
+              { "name": "website", "path": "https://www.linkedin.com" }
+            ]
+          }
+        },
+        "Policy": {
+          "enabled": true,
+          "props": {
+            "content": [
+              { "href": "", "labelKey": "terms_of_service" },
+              { "href": "", "labelKey": "privacy_policy" }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

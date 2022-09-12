@@ -1,0 +1,26 @@
+.root {
+	background: var(--color-neutral-3);
+	width: 36px;
+	height: 20px;
+	border-radius: 12px;
+	transition: all 250ms ease-in-out;
+	display: flex;
+	align-items: center;
+	
+	.point {
+		margin: 0 3px;
+		width: 16px;
+		height: 16px;
+		border-radius: 30px;
+		background: white;
+		transition: all 200ms ease-in-out;
+	}
+
+	&[active="dark"] {
+		background: var(--color-success-1);
+
+		.point {
+			transform: translateX(14px);
+		}
+	}
+}

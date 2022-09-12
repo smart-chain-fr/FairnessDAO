@@ -1,0 +1,13 @@
+.root {
+	position: fixed;
+	right: 16px;
+	z-index: 3;
+	top: 100px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
+	@media (max-width: 444px) {
+		right: 8px;
+	}
+}

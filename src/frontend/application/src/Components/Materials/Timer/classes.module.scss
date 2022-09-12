@@ -1,0 +1,72 @@
+@import "Themes/constants.scss";
+
+.root {
+	background: var(--color-neutral-1);
+	border: 1px solid var(--color-neutral-2);
+	border-radius: 8px;
+	padding: 18px;
+	width: fit-content;
+
+	@media (max-width: $screen-xs) {
+		padding: 10px;
+	}
+	.first-line {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		.label {
+			margin: 0;
+			font-family: var(--font-primary);
+			font-style: normal;
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 24px;
+			color: var(--color-neutral-6);
+		}
+	}
+
+	.clock-container {
+		display: flex;
+		margin-top: 16px;
+		justify-content: center;
+		gap: 8px;
+		.clock-element {
+			display: flex;
+			flex-direction: column;
+			padding: 0 16px;
+			justify-content: center;
+			align-items: center;
+
+			@media (max-width: $screen-xs) {
+				padding: 0 8px;
+			}
+
+			.clock-element-number {
+				margin: 0;
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 600;
+				font-size: 33px;
+				line-height: 40px;
+				text-align: center;
+				letter-spacing: -0.02em;
+				color: var(--color-neutral-8);
+
+				@media (max-width: $screen-xs) {
+					font-size: 25px;
+					line-height: 35px;
+				}
+			}
+			.clock-element-label {
+				margin: 0;
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 400;
+				font-size: 12px;
+				line-height: 20px;
+				text-align: center;
+				color: var(--color-neutral-6);
+			}
+		}
+	}
+}

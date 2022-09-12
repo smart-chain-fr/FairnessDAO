@@ -1,0 +1,100 @@
+@import "Themes/constants.scss";
+
+.page-title {
+	font-weight: 700;
+	font-size: 36px;
+	line-height: 44px;
+	letter-spacing: -0.02em;
+}
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 32px;
+}
+
+.navigation-filters {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+	margin-bottom: 32px;
+	.filters {
+		.sort-by {
+			min-width: 250px;
+			flex: 0.3;
+		}
+	}
+}
+
+.mobile-sales-view {
+	display: none;
+}
+.userName {
+	color: var(--color-primary-5);
+}
+.nftName {
+	font-style: normal;
+	font-weight: 600;
+	color: var(--color-neutral-8);
+}
+.desktop-sales-view {
+	.button-container {
+		width: 65%;
+		font-size: 16px;
+		line-height: 24px;
+	}
+}
+
+.card-container {
+	.user {
+		color: var(--color-primary-5);
+	}
+	.name {
+		font-style: normal;
+		font-weight: 600;
+		color: var(--color-neutral-8);
+	}
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	width: 100%;
+	gap: 24px;
+}
+@media (max-width: $screen-l) {
+	.desktop-sales-view {
+		display: none;
+	}
+	.mobile-sales-view {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.filters {
+		margin-top: 22px;
+		display: grid;
+		width: 100%;
+		gap: 16px;
+	}
+}
+@media (min-width: ($screen-l+1px)) {
+	.sort-by {
+		display: none;
+	}
+	.filters {
+		width: 30%;
+	}
+}
+
+@media (max-width: 702px) {
+	.export-desktop {
+		display: none;
+	}
+}
+@media (min-width: 702px) {
+	.export-responsiv {
+		display: none;
+	}
+}
+

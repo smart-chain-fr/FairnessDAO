@@ -1,0 +1,18 @@
+.fav-container {
+	cursor: pointer;
+	user-select: none;
+
+	.fav-checkbox:checked + * {
+		> path {
+			fill: var(--color-destructive-1);
+			stroke: var(--color-destructive-1);
+		}
+		color: var(--color-destructive-1);
+	}
+	
+	.fav-checkbox {
+		position: absolute;
+		opacity: 0;
+		width: 0;
+	}
+}

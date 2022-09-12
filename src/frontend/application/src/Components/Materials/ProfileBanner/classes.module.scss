@@ -1,0 +1,89 @@
+@import "Themes/constants.scss";
+
+.root {
+	font-family: var(--font-primary);
+	font-style: normal;
+	.banner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.banner-image {
+			position: relative;
+			> img {
+				width: 100%;
+				border-radius: 16px;
+				max-height: 336px;
+				min-height: 142px;
+				object-fit: cover;
+				object-position: center;
+				@media (max-width: $screen-s) {
+					border-radius: 8px;
+				}
+			}
+			.social-medias-desktop {
+				position: absolute;
+				top: 16px;
+				right: 16px;
+				background-color: var(--color-transparent-1);
+			}
+		}
+
+		.profile-cadre {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			width: 136px;
+			height: 136px;
+			border-radius: 100%;
+			border: 8px solid var(--color-generic-white);
+			overflow: hidden;
+			margin-top: -68px;
+
+			&[data-banner-image-enabled="false"] {
+				margin-top: 0;
+			}
+		}
+		.role-cadre {
+			background-color: var(--color-neutral-5);
+			color: var(--color-generic-white);
+			font-weight: 500;
+			font-size: 16px;
+			line-height: 24px;
+			padding: 4px 24px;
+			border-radius: 5px;
+			margin: 12px 0 24px 0;
+		}
+
+		.name {
+			font-weight: 700;
+			font-size: 36px;
+			line-height: 44px;
+			letter-spacing: -0.02em;
+			color: var(--color-neutral-8);
+			margin-top: 8px;
+			.certified-icon {
+				margin-left: 11px;
+			}
+		}
+
+		.address {
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 20px;
+			color: var(--color-neutral-6);
+			margin-top: 4px;
+		}
+		@media (min-width: $screen-s) {
+			.social-medias-responsiv {
+				display: none;
+			}
+		}
+		@media (max-width: $screen-s) {
+			.social-medias-desktop {
+				display: none;
+			}
+		}
+	}
+}
+

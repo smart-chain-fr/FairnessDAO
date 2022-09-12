@@ -1,0 +1,8 @@
+@import "Themes/constants.scss";
+.root {
+    margin-top: 64px;
+
+    @media screen and (max-width: $screen-m){
+        margin-top: 32px;
+    }
+}

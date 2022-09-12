@@ -1,0 +1,83 @@
+@import "Themes/constants.scss";
+.header{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 32px;
+
+	.page-title {
+		font-weight: 700;
+		font-size: 36px;
+		line-height: 44px;
+		letter-spacing: -0.02em;
+	}
+}
+
+.filters{
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 40px;
+	.sort-by {
+		min-width: 250px;
+		flex: 0.3;
+	}
+	.search-bar{
+		width: 30%;
+	}
+}
+
+.mobile-sales-view {
+	display: none;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	width: 100%;
+	gap: 24px;
+}
+@media (max-width: $screen-l) {
+	.desktop-sales-view {
+		display: none;
+	}
+	.mobile-sales-view {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		.card-label{
+			font-weight: 600;
+			color: var(--color-neutral-8);
+		}
+	}
+	.filters {
+		flex-wrap: wrap;
+		gap: 16px;
+		.sort-by{
+			min-width: 100%;
+		}
+		.search-bar{
+			min-width: 100%;
+		}
+		
+	}
+}
+@media (min-width: ($screen-l+1px)) {
+	.sort-by {
+		display: none;
+	}
+	
+}
+
+@media (max-width: 702px) {
+	.export-desktop{
+		display: none;
+	}
+	
+}
+@media (min-width: 702px) {
+
+	.export-responsiv{
+		display: none;
+	}
+}
+.export-image{
+	width: 16px;
+	height: 16px;
+}
+

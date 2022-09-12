@@ -1,0 +1,36 @@
+@import "Themes/constants.scss";
+.root {
+	.title {
+		margin: 0;
+		font-family: var(--font-primary);
+		font-style: normal;
+		font-weight: 700;
+		font-size: 33px;
+		line-height: 40px;
+		letter-spacing: -0.02em;
+		color: var(--color-neutral-8);
+	}
+
+	.cards-container {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 24px;
+		gap: 24px;
+
+		@media (max-width: $screen-m) {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@media (max-width: 520px) {
+			display: grid;
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.view-more-container {
+		margin-top: 24px;
+		display: flex;
+		justify-content: center;
+	}
+}

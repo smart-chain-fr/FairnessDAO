@@ -1,0 +1,125 @@
+{
+  "pages_title": {
+    "marketplace": "Marketplace",
+    "auction": "Auction",
+    "resources": "Resources",
+    "sales_history": "Sales history",
+    "nft_detail": "NFT detail",
+    "profile": "Profile",
+    "home": "Home",
+    "lottery": "Lottery"
+  },
+  "general_text": {
+    "email_address": "Email address",
+    "subscribe": "Subscribe",
+    "get_latest_updates": "Get the latest updates in your inbox!",
+    "wrong_blockchain": "You are not connected to the right blockchain. Please connect to the {{config_wallet_network}} blockchain to get connected.",
+    "search": "Search",
+    "all_results": "All results",
+    "create_collection": "Create +",
+    "select": "Select...",
+    "max": "Max.",
+    "min": "Min.",
+    "connect_wallet": "Connect wallet",
+    "from_same_collection": "From the same collection",
+    "input_text_here": "Input text here",
+    "tag": "Tag",
+    "nfts": "NFTs",
+    "from": "From",
+    "accept": "Accept",
+    "contract_address": "Contract Address",
+    "token_id": "Token ID",
+    "token_standart": "Token Standart",
+    "blockchain": "Blockchain",
+    "metadatas": "Metadatas",
+    "view_metadatas": "View metadatas",
+    "apply": "Apply"
+  },
+  "asset_names": {
+    "ethereum": "Ethereum",
+    "polygon": "Polygon",
+    "solana": "Solana"
+  },
+  "components": {
+    "header_menu": {
+      "profile": "Profile",
+      "my_collections": "My collections",
+      "favorites": "Favorites",
+      "offers": "Offers",
+      "auctions": "Auctions",
+      "sales_history": "Sales history",
+      "darkmode": "Darkmode",
+      "logout": "Log out",
+      "pass_kyc": "Pass KYC",
+      "reservations": "Reservations"
+    },
+    "footer": {
+      "terms_of_service": "Terms of Service",
+      "privacy_policy": "Privacy Policy"
+    },
+    "search_bar": {
+      "collections": "Collections",
+      "nfts": "NFTs",
+      "profiles": "Profiles"
+    },
+    "attributes": {
+      "have_this_trait": "have this trait"
+    },
+    "filters": {
+      "status": "status",
+      "status_title": "Status",
+      "on_sale": "On sale",
+      "on_offer": "On offer",
+      "sort_by": "Sort by",
+      "recently_listed": "Recently listed",
+      "price": "Price",
+      "to": "to.",
+      "chains": "Chains",
+      "attributes": "Attributes",
+      "reset_filters": "Reset filters",
+      "filters": "Filters"
+    }
+  },
+  "pages": {
+    "coming_soon_pages": {
+      "v0": {
+        "page_1": {
+          "title": "Coming soon",
+          "text": "Coming soon!"
+        },
+        "page_2": {
+          "title": "Coming soon",
+          "text": "Coming soon!"
+        }
+      },
+      "v1": {
+        "page_2": {
+          "title": "Coming soon",
+          "text": "Coming soon!"
+        }
+      }
+    },
+    "auctions": {
+      "auctions": "Auctions",
+      "participations": "Participations",
+      "auctioned": "Auctionned"
+    },
+    "nft_details": {
+      "sell": "Sell",
+      "create_auction": "Create an auction",
+      "cancel_auction": "Cancel an auction",
+      "cancel_listing": "cancel listing",
+      "owned_by": "Owned by",
+      "auction_ends": "Auctions ends",
+      "price": "Price",
+      "top_bid": "Top bid",
+      "reserve_price": "Reserve price",
+      "offers": "Offers",
+      "bids": "Bids",
+      "attributes": "Attributes",
+      "details": "Details",
+      "usd_price": "USD Price",
+      "expiration": "Expiration"
+    }
+  }
+}

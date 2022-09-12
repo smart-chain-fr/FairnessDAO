@@ -1,0 +1,21 @@
+@import "Themes/constants.scss";
+.root {
+	color: var(--color-neutral-8);
+	.array-labels {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+		border-bottom: 1px solid #cbd5e1;
+		padding: 0 0 16px 0;
+		align-items: center;
+		-webkit-user-select: none; /* Chrome all / Safari all */
+		-moz-user-select: none; /* Firefox all */
+		-ms-user-select: none; /* IE 10+ */
+		user-select: none;
+	}
+	.filterable-title {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+}
+

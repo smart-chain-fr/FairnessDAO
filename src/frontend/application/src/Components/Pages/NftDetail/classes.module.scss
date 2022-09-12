@@ -1,0 +1,158 @@
+@import "Themes/constants.scss";
+.root {
+	.nft-container {
+		display: flex;
+		gap: 24px;
+
+		@media (max-width: $screen-m) {
+			flex-direction: column;
+		}
+
+		.img-container {
+			position: relative;
+			@media (max-width: $screen-m) {
+				margin: 0 90px;
+			}
+
+			@media (max-width: $screen-s) {
+				margin: 0 16px;
+			}
+
+			.nft-img {
+				width: 20vw;
+				border-radius: 16px;
+
+				@media (max-width: $screen-m) {
+					width: 100%;
+				}
+			}
+
+			.favorite-logo {
+				position: absolute;
+				top: 16px;
+				right: 16px;
+				cursor: pointer;
+
+				&:hover {
+					> path {
+						stroke: var(--color-destructive-1);
+					}
+				}
+
+				&[data-favorite="true"] {
+					> path {
+						stroke: var(--color-destructive-1);
+						fill: var(--color-destructive-1);
+					}
+				}
+			}
+		}
+
+		.details-container {
+			padding: 16px;
+			position: relative;
+
+			@media (max-width: $screen-s) {
+				padding: 0;
+			}
+			.collection-name {
+				margin: 0;
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 600;
+				font-size: 16px;
+				line-height: 24px;
+				color: var(--color-neutral-6);
+			}
+
+			.nft-name {
+				margin: 0;
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 700;
+				font-size: 36px;
+				line-height: 44px;
+				letter-spacing: -0.02em;
+				color: var(--color-neutral-8);
+			}
+
+			.nft-owner {
+				margin: 0;
+				margin-top: 8px;
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 600;
+				font-size: 16px;
+				line-height: 24px;
+				color: var(--color-neutral-6);
+				.owner-colored {
+					color: var(--color-primary-5);
+				}
+			}
+
+			.nft-description {
+				margin: 0;
+				margin-top: 24px;
+				font-family: var(--font-primary);
+				font-style: normal;
+				font-weight: 400;
+				font-size: 16px;
+				line-height: 24px;
+				color: var(--color-neutral-7);
+			}
+
+			.timer-container {
+				margin-top: 24px;
+			}
+
+			.actions-container {
+				display: flex;
+				position: absolute;
+				top: 16px;
+				right: 16px;
+				border: 1px solid var(--color-neutral-3);
+				border-radius: 8px;
+
+				@media (max-width: $screen-m) {
+					top: 0;
+					right: 0;
+				}
+
+				.actions-separator {
+					background: var(--color-neutral-3);
+					width: 1px;
+				}
+
+				.actions-button-left {
+					padding: 14px 12px 14px 14px;
+					cursor: pointer;
+					transition: all 200ms $custom-easing;
+					border-radius: 8px 0 0 8px;
+
+					&:hover {
+						background: var(--color-neutral-1);
+					}
+				}
+
+				.actions-button-right {
+					padding: 14px 14px 14px 12px;
+					cursor: pointer;
+					transition: all 200ms $custom-easing;
+					border-radius: 0 8px 8px 0;
+
+					&:hover {
+						background: var(--color-neutral-1);
+					}
+				}
+			}
+		}
+	}
+
+	.same-collection-container {
+		margin-top: 48px;
+
+		@media (max-width: $screen-m) {
+			margin-top: 64px;
+		}
+	}
+}

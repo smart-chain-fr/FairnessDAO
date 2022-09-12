@@ -1,0 +1,121 @@
+@import "Themes/constants.scss";
+
+.root {
+	height: 80px;
+	position: sticky;
+	top: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 16px;
+	background-color: var(--color-generic-white);
+	backdrop-filter: blur(15px);
+	z-index: 4;
+
+	box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.11);
+
+	@media (max-width: $screen-m) {
+		transition: transform 500ms ease-out;
+		&[data-open="1"] {
+			transform: translateY(0);
+		}
+
+		&[data-top-menu="true"] {
+			box-shadow: none;
+			transition: box-shadow 500ms $custom-easing;
+		}
+	}
+
+	.content-desktop {
+		position: relative;
+		flex-grow: 1;
+		max-width: var(--content-max-width);
+		display: flex;
+		height: 48px;
+
+		@media (max-width: $screen-m) {
+			display: none;
+		}
+
+		.segments {
+			flex: 1;
+			display: flex;
+			padding: 0 70px;
+			flex-direction: row;
+			gap: 120px;
+
+			@media (max-width: $screen-l) {
+				gap: 32px;
+			}
+
+			.segment {
+				display: flex;
+				justify-content: space-between;
+				gap: 32px;
+
+				.logo img {
+					width: 157.6px;
+				}
+
+				.route {
+					text-decoration: none;
+
+					font-family: var(--font-primary);
+					font-style: normal;
+					font-weight: 600;
+					font-size: 14px;
+					line-height: 20px;
+					color: var(--color-text);
+
+					white-space: nowrap;
+					margin-top: auto;
+					margin-bottom: auto;
+				}
+
+				.active-route {
+					color: var(--color-primary);
+				}
+			}
+
+			.segment-right {
+				flex-grow: 1;
+				justify-content: right;
+				align-items: center;
+
+				div[data-show-results="true"] ~ a {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.content-mobile {
+		display: none;
+		position: relative;
+		justify-content: space-between;
+		align-items: center;
+		flex: 1;
+		padding: 0 20px;
+		@media (max-width: $screen-m) {
+			display: flex;
+		}
+
+		.content-mobile-right {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 26px;
+			flex: 1;
+		}
+	}
+}
+
+[top-menu-status="closed"] {
+	@media (max-width: $screen-m) {
+		.root {
+			&[data-open="-1"] {
+				transform: translateY(-100px);
+			}
+		}
+	}
+}

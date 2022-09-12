@@ -1,0 +1,27 @@
+@import "Themes/constants.scss";
+
+.root{
+	width: 100%;
+	
+}
+svg{
+	width: 20px;
+	height: 20px;
+}
+.cross{
+	path {
+		stroke: var(--color-primary-5);
+	}
+}
+.right-arrow {
+	path {
+		stroke: white;
+	}
+}
+
+.left-up-arrow {
+	path {
+		stroke: var(--color-primary-5);
+	}
+}
+

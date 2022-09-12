@@ -1,0 +1,9 @@
+node_modules
+.vscode
+build
+Dockerfile
+.env.example
+README.md
+.gitignore
+LICENCE
+charts

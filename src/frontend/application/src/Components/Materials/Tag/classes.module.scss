@@ -1,0 +1,46 @@
+.root {
+	box-sizing: border-box;
+	height: fit-content;
+
+	font-family: var(--front-primary);
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 20px;
+	color: var(--color-neutral-8);
+	white-space: nowrap;
+
+	user-select: none;
+	cursor: pointer;
+
+	&[variant="closeable_tag"] {
+		border: 1px solid var(--color-neutral-2);
+		background: var(--color-neutral-2);
+		border-radius: 4px;
+		padding: 4px 12px;
+		height: 32px;
+		&:active {
+			background: var(--color-neutral-3);
+		}
+	}
+
+	&[variant="status"] {
+		background: var(--color-neutral-1);
+		border: 1px solid var(--color-neutral-3);
+		border-radius: 4px;
+		padding: 12px 18px;
+		height: 44px;
+		&:active {
+			background: var(--color-neutral-3);
+			border: 0.5px solid var(--color-neutral-3);
+			border-radius: 4px;
+		}
+	}
+}
+
+.tag-cross {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+

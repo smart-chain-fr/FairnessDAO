@@ -1,0 +1,15 @@
+.root {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	&[data-state="descending"] {
+		svg {
+			transform: rotate(180deg);
+		}
+	}
+	&[data-state="none"] {
+		svg {
+			opacity: 0;
+		}
+	}
+}
