@@ -19,7 +19,6 @@ contract FairnessDAOFairVestingTransferStateTest is
         mockERC20.faucet(initialAmountToVest);
         mockERC20.approve(address(fairnessDAOFairVesting), initialAmountToVest);
         fairnessDAOFairVesting.initiateVesting(initialAmountToVest);
-        fairnessDAOFairVesting.addressToVestingInfo(address(this));
 
         /// @dev Skipping one block is more than enough to get a first stack of tokens.
         skip(1);
@@ -27,15 +26,31 @@ contract FairnessDAOFairVestingTransferStateTest is
         fairnessDAOFairVesting.updateFairVesting(address(this));
     }
 
-    function testFuzz_transferFrom_func_withRevert_cannotTransferToRandomRecipient(uint16 amountToTransfer, address recipient)
+    function testFuzz_transferFrom_func_withRevert_cannotTransferToRandomRecipient(
+        uint16 amountToTransfer,
+        address recipient
+    )
         public
     {
         vm.assume(amountToTransfer != 0);
         vm.assume(recipient != address(0));
 
-        vm.expectRevert(FairnessDAOFairVesting.FairnessDAOFairVesting__VestingTokenIsNonTransferable.selector);
-        fairnessDAOFairVesting.transfer(
-             address(2), amountToTransfer
+        vm.expectRevert(
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__VestingTokenIsNonTransferable
+                .selector
         );
+        fairnessDAOFairVesting.transfer(address(2), amountToTransfer);
+    }
+
+    function testFuzz_transferFrom_func_withRevert_cannotTransferToZeroAddress(
+        uint16 amountToTransfer
+    )
+        public
+    {
+        vm.assume(amountToTransfer != 0);
+
+        vm.expectRevert(bytes("ERC20: transfer to the zero address"));
+        fairnessDAOFairVesting.transfer(address(0), amountToTransfer);
     }
 }
