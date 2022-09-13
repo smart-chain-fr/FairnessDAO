@@ -2,10 +2,12 @@
 
 pragma solidity 0.8.4;
 
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from
     "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {FixedPointMathLib} from
+    "@rari-capital/solmate/utils/FixedPointMathLib.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title FairnessDAOFairVesting
@@ -18,6 +20,7 @@ import {SafeERC20} from
 /// @dev TODO: Add snapshot mechanism.
 contract FairnessDAOFairVesting is ERC20 {
     using SafeERC20 for IERC20;
+    using FixedPointMathLib for uint256;
 
     /// @dev Error when zero amount of token is given.
     error FairnessDAOFairVesting__CannotSetZeroAmount();
@@ -210,8 +213,12 @@ contract FairnessDAOFairVesting is ERC20 {
         ///      With debt: The amount claimed by the user.
         uint256 yTime = block.timestamp - userVestingTarget.startTimestamp;
 
-        amountToMint = userVestingTarget.amountVested * yTime * zInflationDelta
-            - userVestingTarget.debt;
+        /// @dev Used before. (works well enough for no decimal computation)
+        // amountToMint = userVestingTarget.amountVested * yTime * zInflationDelta
+        //     - userVestingTarget.debt;
+        amountToMint = (userVestingTarget.amountVested * yTime).mulWadDown(
+            zInflationDelta
+        ) - userVestingTarget.debt;
     }
 
     function burn(uint256 amount) public virtual {
