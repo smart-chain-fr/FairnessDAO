@@ -119,11 +119,11 @@ contract FairnessDAOFairVestingVestingStateTest is
 
         FairnessDAOFairVesting fairnessDAOFairVestingPoC =
         new FairnessDAOFairVesting(
-            tokenName,
-            tokenSymbol,
-            address(mockERC20),
-            zInflationDeltaPoC
-        );
+                tokenName,
+                tokenSymbol,
+                address(mockERC20),
+                zInflationDeltaPoC
+            );
 
         uint256 initialAmountToVest = 1 ether;
 
