@@ -11,7 +11,13 @@ abstract contract InitFairnessDAOFairVestingWithERC20 is Test, InitMockERC20 {
 
     string public tokenName = "tokenName";
     string public tokenSymbol = "tokenSymbol";
-    uint256 public zInflationDelta = 1;
+    /// @notice zInflationDeltaBp:
+    /// 100% = 1000
+    /// 10%  = 100
+    /// 1%   = 10
+    /// 0.1% = 1
+    uint256 public zInflationDeltaBp = 1000; // 100%
+    uint256 public zInflationDelta = (1e18 * zInflationDeltaBp) / 1000;
 
     function setUp() public virtual {
         setUpERC20();
