@@ -12,13 +12,13 @@ export default class Footer extends React.Component {
 	public render(): JSX.Element | null {
 		return (
 			<footer className={classes["root"]}>
-				<div className={classes["content"]}>
+				{/* <div className={classes["content"]}>
 					<div className={classes["left"]}>
 						{this.logoModule()}
 						{this.navModule()}
 					</div>
 					<div className={classes["right"]}>{this.newsLetterModule()}</div>
-				</div>
+				</div> */}
 				<div className={classes["down-part"]}>
 					<Module from={Module.config.Footer.props.SocialNetworks}>
 						<div className={classes["social-medias"]}>
