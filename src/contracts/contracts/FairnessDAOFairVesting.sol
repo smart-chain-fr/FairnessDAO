@@ -52,6 +52,7 @@ contract FairnessDAOFairVesting is ERC20 {
     mapping(address => Vesting) public addressToVestingInfo;
     address public fairTokenTarget;
     uint256 public zInflationDelta;
+    uint256 public totalOwners;
 
     constructor(
         string memory tokenName,
@@ -76,6 +77,10 @@ contract FairnessDAOFairVesting is ERC20 {
         }
 
         depositTokensForVesting(msg.sender, amountToVest);
+        unchecked {
+            /// @dev There is around 1.386 billion km³ of water volume on earth.
+            ++totalOwners;
+        }
     }
 
     /// @dev Increase the vesting amount of token.
@@ -120,6 +125,10 @@ contract FairnessDAOFairVesting is ERC20 {
             unvestedAmountToTransfer = userVestingInfo.amountVested;
             // delete userVestingInfo;
             delete addressToVestingInfo[msg.sender];
+            unchecked {
+                /// @dev Safu since a hodler has to be registered in the `totalOwners` variable in the first place before being able to reach this statement.
+                ++totalOwners;
+            }
         }
         /// @dev We return to the caller a share of his initial vesting.
         else {
@@ -163,27 +172,8 @@ contract FairnessDAOFairVesting is ERC20 {
         );
     }
 
-    function depositTokensForVesting(
-        address depositTarget,
-        uint256 amountToVest
-    )
-        internal
-    {
-        Vesting storage userVestingTarget = addressToVestingInfo[depositTarget];
-        transferERC20(
-            fairTokenTarget, depositTarget, address(this), amountToVest
-        );
-        unchecked {
-            /// @dev amountVested added cannot be greater than the total supply of the targeted collection, should be safu.
-            userVestingTarget.amountVested += amountToVest;
-
-            /// @dev If this is the first vesting deposit, we initialize the base start timestamp.
-            if (userVestingTarget.startTimestamp == 0) {
-                userVestingTarget.startTimestamp = block.timestamp;
-            }
-        }
-    }
-
+    /// @dev Allow anyone to update and distribute the vesting rewards of a specific active vester.
+    /// @param vestedAddress Address of the target vester to update.
     function updateFairVesting(address vestedAddress) public {
         uint256 amountToMint = getClaimableFairVesting(vestedAddress);
 
@@ -196,6 +186,16 @@ contract FairnessDAOFairVesting is ERC20 {
         }
     }
 
+    /// @dev Allow anyone to burn vesting tokens.
+    /// @param amount Amount of vesting tokens to burn.
+    /// @notice If a user burns all of its token by mistake, he won't be able to redeem his vested assets.
+    /// He will need to claim vesting tokens first before calling the withdrawal method.
+    function burn(uint256 amount) public virtual {
+        _burn(_msgSender(), amount);
+    }
+
+    /// @dev Allow anyone to get the amount of vesting rewards for a specific active vester.
+    /// @param vestedAddress Address of the target vester to preview.
     function getClaimableFairVesting(address vestedAddress)
         public
         view
@@ -221,8 +221,28 @@ contract FairnessDAOFairVesting is ERC20 {
         ) - userVestingTarget.debt;
     }
 
-    function burn(uint256 amount) public virtual {
-        _burn(_msgSender(), amount);
+    /// @dev Internal method to lock tokens for vesting and start earning vesting tokens.
+    /// @param depositTarget Address of the target vester to update.
+    /// @param amountToVest Amount of tokens to lock for vesting.
+    function depositTokensForVesting(
+        address depositTarget,
+        uint256 amountToVest
+    )
+        internal
+    {
+        Vesting storage userVestingTarget = addressToVestingInfo[depositTarget];
+        transferERC20(
+            fairTokenTarget, depositTarget, address(this), amountToVest
+        );
+        unchecked {
+            /// @dev amountVested added cannot be greater than the total supply of the targeted collection, should be safu.
+            userVestingTarget.amountVested += amountToVest;
+
+            /// @dev If this is the first vesting deposit, we initialize the base start timestamp.
+            if (userVestingTarget.startTimestamp == 0) {
+                userVestingTarget.startTimestamp = block.timestamp;
+            }
+        }
     }
 
     /// @dev Transfer ERC-20 tokens from two accounts in a safely manner.
@@ -242,7 +262,9 @@ contract FairnessDAOFairVesting is ERC20 {
     }
 
     /// @dev Token transfer override to make the vesting token non-transferable between users.
-    /// @param from Amount of vesting tokens to burn.
+    /// @param from Address of the sender.
+    /// @param to Address of the recipient.
+    /// @param amount Amount of vesting tokens to transfer.
     function _beforeTokenTransfer(address from, address to, uint256 amount)
         internal
         virtual
