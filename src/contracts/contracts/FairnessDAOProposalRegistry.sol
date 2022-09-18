@@ -312,9 +312,6 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
             minUniqueVoterAmountFromShare = vestingTotalOwners.mulWadDown(
                 minimumVoterShareRequiredForHardProposal
             );
-            // minUniqueVoterAmountFromShare = computeBp(
-            //     vestingTotalOwners, minimumVoterShareRequiredForHardProposal
-            // );
         } else {
             /// @notice If not HP level, it is SP level by default.
             minSupplyAmountFromShare = vestingTotalSupply.mulWadDown(
@@ -323,9 +320,6 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
             minUniqueVoterAmountFromShare = vestingTotalOwners.mulWadDown(
                 minimumVoterShareRequiredForSoftProposal
             );
-            // minUniqueVoterAmountFromShare = computeBp(
-            //     vestingTotalOwners, minimumVoterShareRequiredForSoftProposal
-            // );
         }
 
         Voting storage proposalVoting = proposalIdToVotingStatus[proposalId];
@@ -455,14 +449,6 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         return IFairnessDAOFairVesting(fairnessDAOFairVesting).totalSupply()
             .mulWadDown(minimumSupplyShareRequiredForSubmittingProposals);
     }
-
-    // function computeBp(uint256 value, uint256 bpFee)
-    //     internal
-    //     pure
-    //     returns (uint256)
-    // {
-    //     return bpFee != 0 ? (value * bpFee) / 10_000 : 0;
-    // }
 
     /// @dev Increment value through unchecked arithmetic for saving gas
     /// @param i - value to increment
