@@ -2,9 +2,41 @@ import Button from "Components/Elements/Button";
 import I18n from "Components/Materials/I18n";
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
+import { ethers } from "ethers";
+import { useState } from "react";
+import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
 
-export default class Staking extends BasePage {
+type IProps = {};
+
+type IState = {
+	stakeAmount: string;
+};
+
+export default class Staking extends BasePage<IProps, IState> {
+	public constructor(props: IProps) {
+		super(props);
+		this.state = {
+			stakeAmount: "",
+		};
+	}
+
+	public componentDidMount() {}
+
+	private stake = async () => {
+		const provider = Wallet.getInstance().walletData?.provider;
+		console.log(provider);
+
+		if (provider) {
+			const signer = provider.getSigner();
+			// const contract = new ethers.Contract("0x...", abi, provider);
+			// const contractWithSigner = contract.connect(signer);
+			// const tx = await contractWithSigner.stake(this.state.stakeAmount);
+			// const receipt = await tx.wait();
+			// console.log(receipt);
+		}
+	};
+
 	public render(): JSX.Element {
 		return (
 			<I18n
@@ -26,8 +58,12 @@ export default class Staking extends BasePage {
 											<input
 												type="text"
 												className={classes["staking-input-input"]}
-												// value={this.state.stringSearch}
-												// onChange={this.handleSearch}
+												value={this.state.stakeAmount}
+												onChange={(e) => {
+													this.setState({
+														stakeAmount: e.target.value,
+													});
+												}}
 												placeholder="Amount"
 											/>
 											<Button>Stake</Button>

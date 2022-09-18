@@ -68,7 +68,8 @@
     }
 
 	.staking-amount {
-		margin: 24px 0;
+        margin: 24px auto;
+        width: 180px;
 		display: grid;
 		grid-template-columns: 20px auto;
 		gap: 10px;
