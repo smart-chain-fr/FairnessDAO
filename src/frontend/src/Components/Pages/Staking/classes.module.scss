@@ -69,10 +69,14 @@
 
 	.staking-amount {
         margin: 24px auto;
-        width: 180px;
+        width: 250px;
 		display: grid;
 		grid-template-columns: 20px auto;
 		gap: 10px;
+	}
+
+	.staking-balance {
+		margin: 24px auto;
 	}
 
 	.amount-value {

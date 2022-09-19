@@ -3,16 +3,20 @@ import I18n from "Components/Materials/I18n";
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
 import { ethers } from "ethers";
-import { useState } from "react";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
-import TokenContractAbi from "../../../Assets/abi/TokenContract.json"
-import DaoContractAbi from "../../../Assets/abi/DaoContract.json"
+import MockERC20Abi from "../../../Assets/abi/MockERC20.json";
+import FairnessDAOFairVestingAbi from "../../../Assets/abi/FairnessDAOFairVesting.json";
+import EthBigNumber from "Services/Wallet/EthBigNumber";
+import Config from "Configs/Config";
 
 type IProps = {};
 
 type IState = {
 	stakeAmount: string;
+	fdaoBalance: number;
+	stakedFdaoBalance: number;
+	claimableVeFdaoBalance: number;
 };
 
 export default class Staking extends BasePage<IProps, IState> {
@@ -20,29 +24,101 @@ export default class Staking extends BasePage<IProps, IState> {
 		super(props);
 		this.state = {
 			stakeAmount: "",
+			fdaoBalance: 0,
+			stakedFdaoBalance: 0,
+			claimableVeFdaoBalance: 0,
 		};
 	}
 
-	public componentDidMount() {}
+	public componentDidMount() {
+		this.getBalances();
+	}
 
-	private stake = async () => {
+	private stake = async (amountToStake: string) => {
 		const provider = Wallet.getInstance().walletData?.provider;
-		console.log(provider);
-
 		if (provider) {
 			const signer = provider.getSigner();
+			const mockERC20Contract = new ethers.Contract(Config.getInstance().get().contracts.MockERC20ContractAddress, MockERC20Abi.abi, provider);
+			const mockERC20ContractWithSigner = mockERC20Contract.connect(signer);
+			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
+			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
 
-			const tokenContract = new ethers.Contract("0xb082f8547F959417b0c75Da4a8E1F291F0495b54", TokenContractAbi.abi, provider);
-			const tokenContractWithSigner = tokenContract.connect(signer);
+			const approveTx = await mockERC20ContractWithSigner["approve"](Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, ethers.utils.parseEther(amountToStake));
+			const approveTxReceipt = await approveTx.wait();
+			console.log(approveTxReceipt);
 
-			const daoContract = new ethers.Contract("0x9FB6d267a169B51faE65c6C482B06C278EC9d83C", DaoContractAbi.abi, provider);
-			const daoContractWithSigner = daoContract.connect(signer);
+			let functionToCall = "initiateVesting"
+			try {
+				await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress).amountVested;
+				functionToCall = "increaseVesting"
+			} catch (e: any) {
+				console.log("User not staking");
+			}
 
-			// const tx = await tokenContractWithSigner.stake(this.state.stakeAmount);
-			// const receipt = await tx.wait();
-			// console.log(receipt);
+			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner[functionToCall](ethers.utils.parseEther(amountToStake));
+			const increaseVestingReceipt = await increaseVestingTx.wait();
+			console.log(increaseVestingReceipt);
 		}
 	};
+
+	private unstake = async () => {
+		const provider = Wallet.getInstance().walletData?.provider;
+		if (provider) {
+			const signer = provider.getSigner();
+			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
+			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
+			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner["withdrawVesting"](this.state.stakeAmount);
+			const increaseVestingReceipt = await increaseVestingTx.wait();
+			console.log(increaseVestingReceipt);
+		}
+	};
+
+	private claim = async () => {
+		const provider = Wallet.getInstance().walletData?.provider;
+		if (provider) {
+			const signer = provider.getSigner();
+			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
+			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
+			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner["updateFairVesting"](ethers.utils.parseEther(Wallet.getInstance().walletData?.userAddress!));
+			const increaseVestingReceipt = await increaseVestingTx.wait();
+			console.log(increaseVestingReceipt);
+		}
+	};
+
+	private async getBalances() {
+		const provider = Wallet.getInstance().walletData?.provider;
+		if (provider) {
+			const signer = provider.getSigner();
+			const mockERC20Contract = new ethers.Contract(Config.getInstance().get().contracts.MockERC20ContractAddress, MockERC20Abi.abi, provider);
+			const mockERC20ContractWithSigner = mockERC20Contract.connect(signer);
+			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
+			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
+
+			const fdaoBalanceBn = await mockERC20ContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress);
+			const fdaoBalance = new EthBigNumber(fdaoBalanceBn).removeDecimals().toNumber();
+			console.log("fdaoBalance", fdaoBalance);
+
+			const stakedFdaoBalanceBn = (await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress)).amountVested;
+			const stakedFdaoBalance = new EthBigNumber(stakedFdaoBalanceBn).removeDecimals().toNumber();
+			console.log("stakedFdaoBalance", stakedFdaoBalance);
+
+			let claimableVeFdaoBalance = 0;
+			try {
+				const claimableVeFdaoBalanceBn = await fairnessDAOFairVestingContractWithSigner["getClaimableFairVesting"](Wallet.getInstance().walletData?.userAddress);
+				claimableVeFdaoBalance = new EthBigNumber(claimableVeFdaoBalanceBn).removeDecimals().toNumber();
+				console.log("claimableVeFdaoBalance", claimableVeFdaoBalance);
+			} catch (e: any) {
+				console.log("User not staking");
+			}
+
+			this.setState({
+				...this.state,
+				fdaoBalance,
+				stakedFdaoBalance,
+				claimableVeFdaoBalance,
+			});
+		}
+	}
 
 	public render(): JSX.Element {
 		return (
@@ -57,7 +133,7 @@ export default class Staking extends BasePage<IProps, IState> {
 								<div className={classes["subcard"]}>
 									<div className={[classes["staking-amount"], classes["left"]].join(" ")}>
 										<img alt="logo" src="/logo.svg" />
-										<div className={classes["amount-value"]}>237,80 FDAO</div>
+										<div className={classes["amount-value"]}>{this.state.fdaoBalance} FDAO Available</div>
 									</div>
 									<div className={classes["staking-input-input-container"]}>
 										<div className={classes["staking-input-input-title"]}>Amount to stake</div>
@@ -73,7 +149,7 @@ export default class Staking extends BasePage<IProps, IState> {
 												}}
 												placeholder="Amount"
 											/>
-											<Button>Stake</Button>
+											<Button onClick={() => this.stake(this.state.stakeAmount)}>Stake</Button>
 										</div>
 									</div>
 								</div>
@@ -81,17 +157,15 @@ export default class Staking extends BasePage<IProps, IState> {
 								<div className={classes["subgrid"]}>
 									<div className={[classes["subcard"], classes["subcenter"]].join(" ")}>
 										<h2>Staked FDAO</h2>
-										<div className={classes["staking-amount"]}>
-											<img alt="logo" src="/logo.svg" />
-											<div className={classes["amount-value"]}>237,80 FDAO</div>
+										<div className={classes["staking-balance"]}>
+											<div className={classes["amount-value"]}>{this.state.stakedFdaoBalance} FDAO</div>
 										</div>
 										<Button variant="ghost">Unstake</Button>
 									</div>
 									<div className={[classes["subcard"], classes["subcenter"]].join(" ")}>
 										<h2>Claimable VeFDAO</h2>
-										<div className={classes["staking-amount"]}>
-											<img alt="logo" src="/logo.svg" />
-											<div className={classes["amount-value"]}>237,80 VeFDAO</div>
+										<div className={classes["staking-balance"]}>
+											<div className={classes["amount-value"]}>{this.state.claimableVeFdaoBalance} VeFDAO</div>
 										</div>
 										<Button>Redeem</Button>
 									</div>

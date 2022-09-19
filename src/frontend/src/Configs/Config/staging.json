@@ -35,7 +35,9 @@
     { "version": "v2", "date": "2022/06/10 18:02:00", "pagesComingSoon": {} }
   ],
   "contracts": {
-    "saleContractAddress": "",
+    "FairnessDAOFairVestingContractAddress": "",
+    "FairnessDAOProposalRegistryContractAddress": "",
+    "MockERC20ContractAddress": "",
     "icoToken": {
       "symbol": "",
       "tokenAddress": ""

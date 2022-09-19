@@ -6,7 +6,8 @@ import { ethers } from "ethers";
 import { useState } from "react";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
-import TokenContractAbi from "../../../Assets/abi/TokenContract.json";
+import MockERC20Abi from "../../../Assets/abi/MockERC20.json";
+import Config from "Configs/Config";
 
 type IProps = {};
 
@@ -28,10 +29,10 @@ export default class Dao extends BasePage<IProps, IState> {
 		if (provider) {
 			const signer = provider.getSigner();
 
-			const tokenContract = new ethers.Contract("0xb082f8547F959417b0c75Da4a8E1F291F0495b54", TokenContractAbi.abi, provider);
-			const tokenContractWithSigner = tokenContract.connect(signer);
+			const mockERC20Contract = new ethers.Contract(Config.getInstance().get().contracts.MockERC20ContractAddress, MockERC20Abi.abi, provider);
+			const mockERC20ContractWithSigner = mockERC20Contract.connect(signer);
 
-			// const tx = await tokenContractWithSigner.stake(this.state.stakeAmount);
+			// const tx = await mockERC20ContractWithSigner.stake(this.state.stakeAmount);
 			// const receipt = await tx.wait();
 			// console.log(receipt);
 		}

@@ -5,7 +5,7 @@ import SaleContract from "Services/Contracts/Classes/SaleContract";
 import Services from "Services/Contracts/Services";
 import EthBigNumber from "Services/Wallet/EthBigNumber";
 import Wallet, { IWallet } from "Stores/Wallet";
-import SaleContractAbi from "../Assets/abi/SaleContract.json";
+import SaleContractAbi from "../Assets/abi/MockERC20.json";
 import EventService from "Services/EventEmitter";
 import Config from "Configs/Config";
 
@@ -57,7 +57,7 @@ export default class Contract {
 	}
 
 	private async setContractData(walletData: IWallet) {
-		const saleContractAddress = Config.getInstance().get().contracts.saleContractAddress;
+		const saleContractAddress = Config.getInstance().get().contracts.MockERC20ContractAddress;
 		const abi = SaleContractAbi.abi;
 		const provider =
 			walletData.provider ??

@@ -1,7 +1,7 @@
 
 import Config from "Configs/Config";
 import EthBigNumber from "Services/Wallet/EthBigNumber";
-import SaleContractAbi from "../../Assets/abi/SaleContract.json";
+import SaleContractAbi from "../../Assets/abi/MockERC20.json";
 import Phase from "./Classes/Phase";
 import SaleContract from "./Classes/SaleContract";
 
