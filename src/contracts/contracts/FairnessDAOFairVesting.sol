@@ -290,7 +290,12 @@ contract FairnessDAOFairVesting is ERC20 {
         override (ERC20)
     {
         super._beforeTokenTransfer(from, to, amount);
-        if (from == address(0) || from == address(this) || to == address(0)) {
+        /// @TODO TEST THIS!!!!
+        ///  `to == address(whitelistedProposalRegistry)`
+        if (
+            from == address(0) || from == address(this) || to == address(0)
+                || to == address(whitelistedProposalRegistry)
+        ) {
             return;
         } else {
             revert FairnessDAOFairVesting__VestingTokenIsNonTransferable();

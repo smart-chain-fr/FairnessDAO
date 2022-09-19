@@ -19,12 +19,9 @@ contract DeployFairnessDAOFairVesting is Test {
     address public initFairTokenTarget =
         address(0xb082f8547F959417b0c75Da4a8E1F291F0495b54);
     /// @notice zInflationDeltaBp:
-    /// 100% = 1000
-    /// 10%  = 100
-    /// 1%   = 10
-    /// 0.1% = 1
-    uint256 public zInflationDeltaBp = 1000; // 100%
-    uint256 public initZInflationDelta = (1e18 * zInflationDeltaBp) / 1000;
+    uint256 zInflationDeltaBpPoC = 32; // 0.0000032%
+    /// @dev (1e+18* 3,154e+7* (1e+18 * 32/1_000_000_000))/1e+18 = 1e+18
+    uint256 initZInflationDelta = (1e18 * zInflationDeltaBpPoC) / 1_000_000_000;
 
     function run() public {
         vm.startBroadcast();

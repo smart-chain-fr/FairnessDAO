@@ -31,13 +31,15 @@ abstract contract InitFairnessDAOProposalRegistry is
     function setUp() public virtual override {
         super.setUp();
 
-        fairnessDAOProposalRegistry =
-        new FairnessDAOProposalRegistry(address(fairnessDAOFairVesting),initMinimumSupplyShareRequiredForSubmittingProposals,
+        fairnessDAOProposalRegistry = new FairnessDAOProposalRegistry(
+            address(fairnessDAOFairVesting),
+            initMinimumSupplyShareRequiredForSubmittingProposals,
             initialVoteTimeLengthSoftProposal,
             initialVoteTimeLengthHardProposal,
             initialMinimumTotalSupplyShareRequiredForSoftProposal,
             initialMinimumTotalSupplyShareRequiredForHardProposal,
             initialMinimumVoterShareRequiredForSoftProposal,
-            initialMinimumVoterShareRequiredForHardProposal,initalBoostedRewardBonusValue);
+            initialMinimumVoterShareRequiredForHardProposal,
+            initalBoostedRewardBonusValue);
     }
 }

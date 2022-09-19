@@ -20,6 +20,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     /// @dev Error when the user is submitting a proposal with a strating time lower than current time.
     error FairnessDAOProposalRegistry__CannotSetStartTimeBelowCurrentTime();
 
+    /// @dev Error when not emough vesting tokens have been minted yet on the FairVesting contract.
+    error FairnessDAOProposalRegistry__NotEnoughVestingTokensCirculating();
+
     /// @dev Error when the proposal submitter does not have enough vesting tokens to initate vote.
     error FairnessDAOProposalRegistry__CallerDoesNotHaveEnoughVestingTokens();
 
@@ -83,8 +86,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     struct Proposal {
         address proposerAddress;
         uint256 startTime;
-        uint256 endTime;
         /// @dev Can be removed eventually since the endTime can be computed.
+        uint256 endTime;
+        /// @dev Can be changed to a different uint size to improve contract storage size.
         uint256 proposalTotalDepth;
         string proposalURI;
         VotingStatus votingStatus;
@@ -116,13 +120,13 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
 
     address public fairnessDAOFairVesting;
 
-    mapping(uint256 => Proposal) proposalIdToProposalDetails;
-    mapping(uint256 => Voting) proposalIdToVotingStatus;
-    mapping(uint256 => mapping(address => Vote))
+    mapping(uint256 => Proposal) public proposalIdToProposalDetails;
+    mapping(uint256 => Voting) public proposalIdToVotingStatus;
+    mapping(uint256 => mapping(address => Vote)) public
         proposalIdToVoterAddressToUserVote;
     /// @notice The contract won't store pending rewards to claim for the voter.
     /// The latter has to manually claim them, one by one, with the help of an indexer to get the proposal Ids he is eligible for.
-    mapping(uint256 => mapping(address => bool))
+    mapping(uint256 => mapping(address => bool)) public
         proposalIdToVoterAddressToHasClaimedStatus;
 
     constructor(
@@ -166,6 +170,12 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
 
         uint256 amountRequiredForSubmittingProposals =
             _amountRequiredForSubmittingProposals();
+        /// @dev If there is not enough vesting token minted yet, we block the submission process.
+        if (amountRequiredForSubmittingProposals == 0) {
+            revert
+                FairnessDAOProposalRegistry__NotEnoughVestingTokensCirculating();
+        }
+
         /// @dev We verify if the user holds the proper amount of vesting tokens to submit a vote.
         if (
             IFairnessDAOFairVesting(fairnessDAOFairVesting).balanceOf(msg.sender)
@@ -186,9 +196,13 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
 
         /// @dev We burn the user vesting tokens before proceding to the proposal storage.
+        IFairnessDAOFairVesting(fairnessDAOFairVesting).transferFrom(
+            msg.sender, address(this), amountRequiredForSubmittingProposals
+        );
         IFairnessDAOFairVesting(fairnessDAOFairVesting).burn(
             amountRequiredForSubmittingProposals
         );
+
         unchecked {
             /// @dev Should be safu, we cannot burn more than the total supply of the token.
             totalAmountOfVestingTokensBurned +=
@@ -196,6 +210,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
 
         /// @dev We add the proposal Id to the active queue.
+        /// @TODO This array serves no purpose right now.
         proposalQueue.push(proposalCount);
 
         unchecked {

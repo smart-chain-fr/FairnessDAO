@@ -19,4 +19,17 @@ contract MockERC20 is ERC20 {
     function faucet(uint256 amount_) public {
         _mint(msg.sender, amount_);
     }
+
+    function totalSupply() public view override returns (uint256) {
+        return super.totalSupply();
+    }
+
+    function balanceOf(address account)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        return super.balanceOf(account);
+    }
 }
