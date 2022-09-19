@@ -30,6 +30,9 @@ abstract contract FairnessDAOPolicyController {
     /// ex: 200/1000 = 20% = ((1e18 * 200) / 1000);
     uint256 public minimumVoterShareRequiredForSoftProposal;
     uint256 public minimumVoterShareRequiredForHardProposal;
+    /// @dev Bonus value for reward for the caller if his passed proposal met quorum.
+    /// ex: 1000/1000 = 100% = ((1e18 * 1000) / 1000);
+    uint256 public boostedRewardBonusValue;
 
     constructor(
         uint256 initMinimumSupplyShareRequiredForSubmittingProposals,
@@ -38,7 +41,8 @@ abstract contract FairnessDAOPolicyController {
         uint256 initialMinimumTotalSupplyShareRequiredForSoftProposal,
         uint256 initialMinimumTotalSupplyShareRequiredForHardProposal,
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
-        uint256 initialMinimumVoterShareRequiredForHardProposal
+        uint256 initialMinimumVoterShareRequiredForHardProposal,
+        uint256 initalBoostedRewardBonusValue
     ) {
         minimumSupplyShareRequiredForSubmittingProposals =
             initMinimumSupplyShareRequiredForSubmittingProposals;
@@ -52,5 +56,6 @@ abstract contract FairnessDAOPolicyController {
             initialMinimumVoterShareRequiredForSoftProposal;
         minimumVoterShareRequiredForHardProposal =
             initialMinimumVoterShareRequiredForHardProposal;
+        boostedRewardBonusValue = initalBoostedRewardBonusValue;
     }
 }

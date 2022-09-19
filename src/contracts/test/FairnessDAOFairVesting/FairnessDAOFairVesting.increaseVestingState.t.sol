@@ -79,11 +79,15 @@ contract FairnessDAOFairVestingIncreaseVestingStateTest is
         mockERC20.approve(address(fairnessDAOFairVesting), amountToVest);
         fairnessDAOFairVesting.increaseVesting(amountToVest);
 
-        (uint256 amountVested, uint256 startTimestamp, uint256 debt) =
-            fairnessDAOFairVesting.addressToVestingInfo(address(this));
+        (
+            uint256 amountVested,
+            uint256 startTimestamp,
+            uint256 lastClaimedTimestamp
+        ) = fairnessDAOFairVesting.addressToVestingInfo(address(this));
         assertEq(amountVested, amountToVest + initialAmountToVest);
+        /// @dev Both stay the same since we did not skip time between blocks.
         assertEq(startTimestamp, block.timestamp);
-        assertEq(debt, 0);
+        assertEq(lastClaimedTimestamp, block.timestamp);
     }
 
     /// @dev Should allow the caller to initiate vesting with fixed amount.
@@ -93,10 +97,14 @@ contract FairnessDAOFairVestingIncreaseVestingStateTest is
         mockERC20.approve(address(fairnessDAOFairVesting), amountToVest);
         fairnessDAOFairVesting.increaseVesting(amountToVest);
 
-        (uint256 amountVested, uint256 startTimestamp, uint256 debt) =
-            fairnessDAOFairVesting.addressToVestingInfo(address(this));
+        (
+            uint256 amountVested,
+            uint256 startTimestamp,
+            uint256 lastClaimedTimestamp
+        ) = fairnessDAOFairVesting.addressToVestingInfo(address(this));
         assertEq(amountVested, amountToVest + initialAmountToVest);
+        /// @dev Both stay the same since we did not skip time between blocks.
         assertEq(startTimestamp, block.timestamp);
-        assertEq(debt, 0);
+        assertEq(lastClaimedTimestamp, block.timestamp);
     }
 }

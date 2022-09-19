@@ -26,6 +26,7 @@ abstract contract InitFairnessDAOProposalRegistry is
         ((1e18 * 100) / 1000);
     uint256 public initialMinimumVoterShareRequiredForHardProposal =
         ((1e18 * 200) / 1000);
+    uint256 public initalBoostedRewardBonusValue = ((1e18 * 1000) / 1000);
 
     function setUp() public virtual override {
         super.setUp();
@@ -37,6 +38,6 @@ abstract contract InitFairnessDAOProposalRegistry is
             initialMinimumTotalSupplyShareRequiredForSoftProposal,
             initialMinimumTotalSupplyShareRequiredForHardProposal,
             initialMinimumVoterShareRequiredForSoftProposal,
-            initialMinimumVoterShareRequiredForHardProposal);
+            initialMinimumVoterShareRequiredForHardProposal,initalBoostedRewardBonusValue);
     }
 }

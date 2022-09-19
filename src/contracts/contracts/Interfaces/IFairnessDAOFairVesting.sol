@@ -11,7 +11,11 @@ interface IFairnessDAOFairVesting {
     function addressToVestingInfo(address)
         external
         view
-        returns (uint256 amountVested, uint256 startTimestamp, uint256 debt);
+        returns (
+            uint256 amountVested,
+            uint256 startTimestamp,
+            uint256 lastClaimedTimestamp
+        );
     function allowance(address owner, address spender)
         external
         view
@@ -33,6 +37,8 @@ interface IFairnessDAOFairVesting {
         returns (bool);
     function increaseVesting(uint256 amountToVest) external;
     function initiateVesting(uint256 amountToVest) external;
+    function mintRewards(address recipientAddress, uint256 amountToMint)
+        external;
     function name() external view returns (string memory);
     function symbol() external view returns (string memory);
     function totalOwners() external view returns (uint256);
@@ -42,6 +48,11 @@ interface IFairnessDAOFairVesting {
         external
         returns (bool);
     function updateFairVesting(address vestedAddress) external;
+    function whitelistProposalRegistryAddress(
+        address setWhitelistedProposalRegistry
+    )
+        external;
+    function whitelistedProposalRegistry() external view returns (address);
     function withdrawVesting(uint256 amountToWithdraw) external;
     function zInflationDelta() external view returns (uint256);
 }

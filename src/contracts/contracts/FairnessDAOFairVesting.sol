@@ -6,7 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from
     "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {FixedPointMathLib} from
-    "@rari-capital/solmate/utils/FixedPointMathLib.sol";
+    "@rari-capital/solmate/src/utils/FixedPointMathLib.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -43,16 +43,21 @@ contract FairnessDAOFairVesting is ERC20 {
     /// @dev Error when user tries to withdraw more than he actually owns.
     error FairnessDAOFairVesting__CannotWithdrawMoreThanYouOwn();
 
+    /// @dev Error when caller tries to mint rewards without being allowed to.
+    error FairnessDAOFairVesting__CallerIsNotAllowedToMintRewards();
+
     struct Vesting {
         uint256 amountVested;
         uint256 startTimestamp;
-        uint256 debt;
+        uint256 lastClaimedTimestamp;
     }
 
     mapping(address => Vesting) public addressToVestingInfo;
     address public fairTokenTarget;
     uint256 public zInflationDelta;
     uint256 public totalOwners;
+
+    address public whitelistedProposalRegistry;
 
     constructor(
         string memory tokenName,
@@ -64,6 +69,26 @@ contract FairnessDAOFairVesting is ERC20 {
     {
         fairTokenTarget = initFairTokenTarget;
         zInflationDelta = initZInflationDelta;
+    }
+
+    /// @dev WARNING, This function is purposely lacking security.
+    /// DO NOT USE THIS IN PRODUCTION.
+    function whitelistProposalRegistryAddress(
+        address setWhitelistedProposalRegistry
+    )
+        external
+    {
+        whitelistedProposalRegistry = setWhitelistedProposalRegistry;
+    }
+
+    function mintRewards(address recipientAddress, uint256 amountToMint)
+        external
+    {
+        if (msg.sender != whitelistedProposalRegistry) {
+            revert FairnessDAOFairVesting__CallerIsNotAllowedToMintRewards();
+        }
+        updateFairVesting(recipientAddress);
+        _mint(recipientAddress, amountToMint);
     }
 
     /// @dev Allow the user to initiate vesting.
@@ -152,7 +177,6 @@ contract FairnessDAOFairVesting is ERC20 {
             unchecked {
                 /// @dev Should be safe since the `unvestedAmountToTransfer` value has been reduced above.
                 userVestingInfo.amountVested -= unvestedAmountToTransfer;
-                userVestingInfo.debt -= amountToWithdraw;
             }
         }
 
@@ -177,10 +201,10 @@ contract FairnessDAOFairVesting is ERC20 {
     function updateFairVesting(address vestedAddress) public {
         uint256 amountToMint = getClaimableFairVesting(vestedAddress);
 
-        if (amountToMint != 0) {
-            /// @dev We update the user debt to avoid reetrancy.
-            addressToVestingInfo[vestedAddress].debt += amountToMint;
+        /// @dev We update the last claimed timestamp to avoid reetrancy.
+        addressToVestingInfo[msg.sender].lastClaimedTimestamp = block.timestamp;
 
+        if (amountToMint != 0) {
             /// @dev We mint the vTokens to the user.
             _mint(vestedAddress, amountToMint);
         }
@@ -206,19 +230,13 @@ contract FairnessDAOFairVesting is ERC20 {
             revert FairnessDAOFairVesting__UserIsNotVesting();
         }
 
-        /// @dev Vesting computation formula: X x Y x Z - debt
+        /// @dev Vesting computation formula: X x Y x Z
         ///      With X:    Amount of locked tokens from the vesting.
-        ///      With Y:    Time between now and the lock timestamp.
+        ///      With Y:    Time between now and the last claim timestamp.
         ///      With Z:    Reward delta, updated each p period.
-        ///      With debt: The amount claimed by the user.
-        uint256 yTime = block.timestamp - userVestingTarget.startTimestamp;
-
-        /// @dev Used before. (works well enough for no decimal computation)
-        // amountToMint = userVestingTarget.amountVested * yTime * zInflationDelta
-        //     - userVestingTarget.debt;
-        amountToMint = (userVestingTarget.amountVested * yTime).mulWadDown(
-            zInflationDelta
-        ) - userVestingTarget.debt;
+        uint256 yTime = block.timestamp - userVestingTarget.lastClaimedTimestamp;
+        amountToMint =
+            (userVestingTarget.amountVested * yTime).mulWadDown(zInflationDelta);
     }
 
     /// @dev Internal method to lock tokens for vesting and start earning vesting tokens.
@@ -241,6 +259,7 @@ contract FairnessDAOFairVesting is ERC20 {
             /// @dev If this is the first vesting deposit, we initialize the base start timestamp.
             if (userVestingTarget.startTimestamp == 0) {
                 userVestingTarget.startTimestamp = block.timestamp;
+                userVestingTarget.lastClaimedTimestamp = block.timestamp;
             }
         }
     }

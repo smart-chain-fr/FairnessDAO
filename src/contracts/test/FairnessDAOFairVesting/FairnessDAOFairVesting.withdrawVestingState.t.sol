@@ -107,11 +107,14 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
 
         fairnessDAOFairVesting.withdrawVesting(userVestedBalance);
 
-        (uint256 amountVested, uint256 startTimestamp, uint256 debt) =
-            fairnessDAOFairVesting.addressToVestingInfo(address(this));
+        (
+            uint256 amountVested,
+            uint256 startTimestamp,
+            uint256 lastClaimedTimestamp
+        ) = fairnessDAOFairVesting.addressToVestingInfo(address(this));
         assertEq(amountVested, 0);
         assertEq(startTimestamp, 0);
-        assertEq(debt, 0);
+        assertEq(lastClaimedTimestamp, 0);
     }
 
     /// @dev Should not allow the caller to withdraw partial vesting with amount too low.
@@ -136,18 +139,4 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
         );
         fairnessDAOFairVesting.withdrawVesting(amountToWithdraw);
     }
-
-    // /// @dev Should allow the caller to initiate vesting with fixed amount.
-    // function test_withdrawVesting_func() public {
-    //     uint256 amountToVest = 1 ether;
-    //     mockERC20.faucet(amountToVest);
-    //     mockERC20.approve(address(fairnessDAOFairVesting), amountToVest);
-    //     fairnessDAOFairVesting.withdrawVesting(amountToVest);
-
-    //     (uint256 amountVested, uint256 startTimestamp, uint256 debt) =
-    //         fairnessDAOFairVesting.addressToVestingInfo(address(this));
-    //     assertEq(amountVested, amountToVest + initialAmountToVest);
-    //     assertEq(startTimestamp, block.timestamp);
-    //     assertEq(debt, 0);
-    // }
 }

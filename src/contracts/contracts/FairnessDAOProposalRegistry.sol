@@ -5,7 +5,7 @@ pragma solidity 0.8.4;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IFairnessDAOFairVesting} from "./Interfaces/IFairnessDAOFairVesting.sol";
 import {FixedPointMathLib} from
-    "@rari-capital/solmate/utils/FixedPointMathLib.sol";
+    "@rari-capital/solmate/src/utils/FixedPointMathLib.sol";
 import {SafeERC20} from
     "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {FairnessDAOPolicyController} from "./FairnessDAOPolicyController.sol";
@@ -53,6 +53,16 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     /// @dev Error when the voter is trying to vote twice for the same proposal.
     error FairnessDAOProposalRegistry__CannotVoteTwiceOnTheSameProposal();
 
+    /// @dev Error when the caller is claiming rewards for proposal with negative outcome.
+    /// A Not Passed status in this context is everything except `Passed` Voting status.
+    error FairnessDAOProposalRegistry__CannotClaimRewardsForNotPassedProposal();
+
+    /// @dev Error when the caller is trying to claim rewards twice for the same proposal vote.
+    error FairnessDAOProposalRegistry__CannotClaimRewardsTwice();
+
+    /// @dev Error when the caller is trying to claim rewards for a proposal he has not voted on.
+    error FairnessDAOProposalRegistry__CannotClaimRewardsForProposalWhereCallerHasNotVoted();
+
     enum VotingStatus {
         NotStarted,
         InProgress,
@@ -79,6 +89,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         string proposalURI;
         VotingStatus votingStatus;
         ProposalLevel proposalLevel;
+        uint256 amountOfVestingTokensBurnt;
     }
 
     struct Voting {
@@ -101,9 +112,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     /// @dev TODO Pop a finalized vote from the queue.
     uint256[] public proposalQueue;
     uint256 public proposalLengthHardcap;
-    uint256 totalAmountOfVestingTokensBurned;
+    uint256 public totalAmountOfVestingTokensBurned;
 
-    address fairnessDAOFairVesting;
+    address public fairnessDAOFairVesting;
 
     mapping(uint256 => Proposal) proposalIdToProposalDetails;
     mapping(uint256 => Voting) proposalIdToVotingStatus;
@@ -122,7 +133,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         uint256 initialMinimumTotalSupplyShareRequiredForSoftProposal,
         uint256 initialMinimumTotalSupplyShareRequiredForHardProposal,
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
-        uint256 initialMinimumVoterShareRequiredForHardProposal
+        uint256 initialMinimumVoterShareRequiredForHardProposal,
+        uint256 initalBoostedRewardBonusValue
     )
         FairnessDAOPolicyController(
             initMinimumSupplyShareRequiredForSubmittingProposals,
@@ -131,7 +143,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
             initialMinimumTotalSupplyShareRequiredForSoftProposal,
             initialMinimumTotalSupplyShareRequiredForHardProposal,
             initialMinimumVoterShareRequiredForSoftProposal,
-            initialMinimumVoterShareRequiredForHardProposal
+            initialMinimumVoterShareRequiredForHardProposal,
+            initalBoostedRewardBonusValue
         )
     {
         fairnessDAOFairVesting = initialFairnessDAOFairVesting;
@@ -176,6 +189,11 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         IFairnessDAOFairVesting(fairnessDAOFairVesting).burn(
             amountRequiredForSubmittingProposals
         );
+        unchecked {
+            /// @dev Should be safu, we cannot burn more than the total supply of the token.
+            totalAmountOfVestingTokensBurned +=
+                amountRequiredForSubmittingProposals;
+        }
 
         /// @dev We add the proposal Id to the active queue.
         proposalQueue.push(proposalCount);
@@ -192,7 +210,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
                 proposalTotalDepth, // proposalLength
                 proposalURI, // proposalURI
                 VotingStatus.NotStarted, // votingStatus
-                proposalLevel // proposalLevel
+                proposalLevel, // proposalLevel
+                amountRequiredForSubmittingProposals // amountOfVestingTokensBurnt
             );
             /// @dev Should never overflow unless someone spams an insane amount of proposals
             /// which should not be possible since vesting tokens are required and burned after each submission.
@@ -371,6 +390,75 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         else {
             proposal.votingStatus = VotingStatus.NotPassed;
         }
+    }
+
+    function claimRewards(uint256 proposalId) external {
+        /// @dev We store the proposal in memory.
+        Proposal memory proposal = proposalIdToProposalDetails[proposalId];
+
+        // @TODO Can use proposalCount instead.
+        /// @dev If the given proposal Id stores 0 as startTime, it means it does not exist.
+        if (proposal.startTime == 0) {
+            revert FairnessDAOProposalRegistry__ProposalDoesNotExist();
+        }
+
+        /// @dev The proposal voting should be passed to allow the reward distribution.
+        if (proposal.votingStatus != VotingStatus.Passed) {
+            revert
+                FairnessDAOProposalRegistry__CannotClaimRewardsForNotPassedProposal();
+        }
+
+        /// @dev We check if the caller has already claimed rewards for this finalized vote.
+        if (proposalIdToVoterAddressToHasClaimedStatus[proposalId][msg.sender])
+        {
+            revert FairnessDAOProposalRegistry__CannotClaimRewardsTwice();
+        }
+
+        /// @dev We store the caller vote in memory.
+        Vote memory callerVote =
+            proposalIdToVoterAddressToUserVote[proposalId][msg.sender];
+        /// @dev We store the Proposal voting details in memory.
+        Voting storage proposalVoting = proposalIdToVotingStatus[proposalId];
+        uint256 claimableAmount;
+        /// @dev If the caller is the original submitter of the proposal, he gets a boosted reward.
+        /// @TODO Optimize this scope.
+        if (proposal.proposerAddress == msg.sender) {
+            uint256 totalAmountOfVotingTokensUsed =
+                proposalVoting.totalAmountOfVotingTokensUsed;
+            uint256 totalAmountOfUniqueVoters =
+                proposalVoting.totalAmountOfUniqueVoters;
+            /// @dev This will return 0 instead of reverting if the result is zero.
+            assembly {
+                claimableAmount :=
+                    div(totalAmountOfVotingTokensUsed, totalAmountOfUniqueVoters)
+            }
+            uint256 boostedReward = proposal
+                .amountOfVestingTokensBurnt
+                .mulWadDown(boostedRewardBonusValue);
+            claimableAmount += boostedReward;
+        }
+        /// @dev Else, if the caller has properly voted on the proposal, we compute simple voting rewards.
+        else if (callerVote.votingPower != 0) {
+            uint256 totalAmountOfVotingTokensUsed =
+                proposalVoting.totalAmountOfVotingTokensUsed;
+            uint256 totalAmountOfUniqueVoters =
+                proposalVoting.totalAmountOfUniqueVoters;
+            /// @dev This will return 0 instead of reverting if the result is zero.
+            assembly {
+                claimableAmount :=
+                    div(totalAmountOfVotingTokensUsed, totalAmountOfUniqueVoters)
+            }
+        }
+        /// @dev Else, the caller has not voted on this passed proposal.
+        else {
+            revert
+                FairnessDAOProposalRegistry__CannotClaimRewardsForProposalWhereCallerHasNotVoted();
+        }
+        proposalIdToVoterAddressToHasClaimedStatus[proposalId][msg.sender] =
+            true;
+        IFairnessDAOFairVesting(fairnessDAOFairVesting).mintRewards(
+            msg.sender, claimableAmount
+        );
     }
 
     function viewProposal(uint256 proposalId)

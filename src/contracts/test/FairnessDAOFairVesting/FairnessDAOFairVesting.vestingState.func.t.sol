@@ -27,14 +27,13 @@ contract FairnessDAOFairVestingVestingStateTest is
 
         fairnessDAOFairVesting.initiateVesting(initialAmountToVest);
 
-        /// @dev Vesting computation formula V = X x Y x Z - debt
+        /// @dev Vesting computation formula V = X x Y x Z
         ///      X:    1 ether
         ///      Y:    ...
         ///      Z:    1
-        ///      debt: 0
 
         /// @dev if Y = 10s;
-        /// V = 1 ether * 10 * 1 - 0 = 10 ether
+        /// V = 1 ether * 10 * 1 = 10 ether
         skip(10);
         assertEq(
             fairnessDAOFairVesting.getClaimableFairVesting(vesterAddress),
@@ -47,12 +46,11 @@ contract FairnessDAOFairVestingVestingStateTest is
 
         /// @dev Vesting computation status:
         ///      X:    1 ether
-        ///      Y:    10...
+        ///      Y:    50
         ///      Z:    1
-        ///      debt: 10 ether
 
-        /// @dev if Y = 60s;
-        /// V = 1 ether * 60 * 1 - 10 ether = 50 ether
+        /// @dev if Y = 50s;
+        /// V = 1 ether * 50 * 1 = 50 ether
         /// @dev We skip 50s, so 10 (from before) + 50 = 60s in total.
         skip(50);
         assertEq(
@@ -71,8 +69,8 @@ contract FairnessDAOFairVestingVestingStateTest is
         );
         assertEq(mockERC20.balanceOf(vesterAddress), initialAmountToVest / 2);
 
-        /// @dev if Y = 160s;
-        /// V = 0.5 ether * 160 * 1 - (60 ether - 30 ether) = 50 ether
+        /// @dev if Y = 100s;
+        /// V = 0.5 ether * 100 * 1 = 50 ether
         /// @dev We skip 100s, so 60 (from before) + 100 = 160s in total.
         skip(100);
         assertEq(
@@ -97,8 +95,8 @@ contract FairnessDAOFairVestingVestingStateTest is
             fairnessDAOFairVesting.getClaimableFairVesting(vesterAddress), 0
         );
 
-        /// @dev if Y = 7129s;
-        /// V = 0.49375 ether * 7129 * 1 - (110 ether - 31 ether)  = 3440.94375 ether
+        /// @dev if Y = 6969s;
+        /// V = 0.49375 ether * 6969s * 1 = 3440.94375 ether
         /// @dev We skip 6969s, so 160 (from before) + 6969 = 7129s in total.
         skip(6969);
         fairnessDAOFairVesting.addressToVestingInfo(vesterAddress);
