@@ -20,18 +20,18 @@
       }
     },
     "pages": {
-      "Home": {
+      "Faucet": {
         "enabled": true,
         "props": {
           "path": "/",
-          "labelKey": "home"
+          "labelKey": "faucet"
         }
       },
-      "Marketplace": {
+      "Dao": {
         "enabled": true,
         "props": {
-          "path": "/marketplace",
-          "labelKey": "marketplace"
+          "path": "/dao",
+          "labelKey": "dao"
         }
       },
       "Staking": {
@@ -145,7 +145,7 @@
           "enabled": true,
           "props": {
             "content": [
-              { "path": "/", "labelKey": "home" },
+              { "path": "/", "labelKey": "faucet" },
               { "path": "/marketplace", "labelKey": "marketplace" },
               { "path": "/staking", "labelKey": "staking" },
               { "path": "/profile", "labelKey": "profile" }

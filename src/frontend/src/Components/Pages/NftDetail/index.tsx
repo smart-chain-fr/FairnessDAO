@@ -1,17 +1,17 @@
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
 import classes from "./classes.module.scss";
-import NftDetailImgMock from "assets/images/nft_detail_mock.png";
-import { ReactComponent as Refresh } from "assets/images/icons/refresh.svg";
-import { ReactComponent as Share } from "assets/images/icons/share.svg";
-import { ReactComponent as FavoriteIcon } from "assets/images/icons/favorite_gray.svg";
+import NftDetailImgMock from "Assets/images/nft_detail_mock.png";
+import { ReactComponent as Refresh } from "Assets/images/icons/refresh.svg";
+import { ReactComponent as Share } from "Assets/images/icons/share.svg";
+import { ReactComponent as FavoriteIcon } from "Assets/images/icons/favorite_gray.svg";
 
 import NftDetailPrices from "./NftDetailPrices";
 import NftDetailActions from "./NftDetailActions";
 import Timer from "Components/Materials/Timer";
 import NftDetailDropdowns from "./NftDetailDropdowns";
 import FromSameCollection from "Components/Materials/FromSameCollection";
-import nftCard from "assets/images/nft-card-mock.png";
+import nftCard from "Assets/images/nft-card-mock.png";
 import I18n from "Components/Materials/I18n";
 
 export default class NftDetail extends BasePage {

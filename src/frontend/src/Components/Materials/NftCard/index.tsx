@@ -2,7 +2,7 @@ import EthPrice from "Components/Elements/EthPrice";
 import React from "react";
 import classes from "./classes.module.scss";
 
-import { ReactComponent as FavIcon } from "assets/images/icons/favorite_gray.svg";
+import { ReactComponent as FavIcon } from "Assets/images/icons/favorite_gray.svg";
 import CheckBox from "Components/Elements/CheckBox";
 
 type IProps = {

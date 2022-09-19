@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./classes.module.scss";
 import Module from "Components/Materials/Module";
 import I18n from "Components/Materials/I18n";
-import { ReactComponent as ArrowRight } from "assets/images/icons/arrow-right-details.svg";
+import { ReactComponent as ArrowRight } from "Assets/images/icons/arrow-right-details.svg";
 type IProps = {};
 
 type IState = {};

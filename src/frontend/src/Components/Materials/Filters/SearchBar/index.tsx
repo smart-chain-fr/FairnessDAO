@@ -1,6 +1,6 @@
 import React from "react";
 
-import Glass from "assets/images/icons/glass.svg";
+import Glass from "Assets/images/icons/glass.svg";
 
 import classes from "./classes.module.scss";
 import I18n from "Components/Materials/I18n";

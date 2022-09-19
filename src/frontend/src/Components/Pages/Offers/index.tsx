@@ -12,7 +12,7 @@ import ButtonElement from "./Elements/ButtonElement";
 import AuctionMenus, { EMENUS } from "./Elements/AuctionMenus";
 import Button from "Components/Elements/Button";
 
-import Export from "assets/images/icons/export.svg";
+import Export from "Assets/images/icons/export.svg";
 import SearchBar from "Components/Materials/Filters/SearchBar";
 
 type IProps = {};

@@ -1,7 +1,7 @@
 import React from "react";
 
-import dark from "assets/images/logos/dark.svg";
-import light from "assets/images/logos/light.svg";
+import dark from "Assets/images/logos/dark.svg";
+import light from "Assets/images/logos/light.svg";
 import ThemeMode, { EThemeModeType } from "Stores/ThemeMode";
 
 type IProps = {};

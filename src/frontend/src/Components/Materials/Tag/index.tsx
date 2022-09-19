@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./classes.module.scss";
 
-import { ReactComponent as Cross } from "assets/images/icons/tag_cross.svg"
+import { ReactComponent as Cross } from "Assets/images/icons/tag_cross.svg"
 import Tags from "Stores/Tags";
 
 type IProps = {

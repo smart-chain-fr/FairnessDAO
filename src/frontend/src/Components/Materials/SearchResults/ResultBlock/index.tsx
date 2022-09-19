@@ -1,7 +1,7 @@
 import React from "react";
 
 import classes from "./classes.module.scss";
-import { ReactComponent as ArrowRight } from "assets/images/icons/arrow-right.svg";
+import { ReactComponent as ArrowRight } from "Assets/images/icons/arrow-right.svg";
 import MockSearchResultImg from "./mock-search-result.png";
 
 type IProps = {

@@ -5,7 +5,7 @@ import SaleContract from "Services/Contracts/Classes/SaleContract";
 import Services from "Services/Contracts/Services";
 import EthBigNumber from "Services/Wallet/EthBigNumber";
 import Wallet, { IWallet } from "Stores/Wallet";
-import SaleContractAbi from "../assets/abi/SaleContract.json";
+import SaleContractAbi from "../Assets/abi/SaleContract.json";
 import EventService from "Services/EventEmitter";
 import Config from "Configs/Config";
 

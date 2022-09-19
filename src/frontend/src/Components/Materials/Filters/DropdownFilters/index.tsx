@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactComponent as FilterIcon } from "assets/images/icons/filter.svg"
+import { ReactComponent as FilterIcon } from "Assets/images/icons/filter.svg"
 import FiltersContent, { IFiltersProps } from "../FiltersContent";
 import Dropdown from "Components/Materials/Dropdown";
 import classes from "./classes.module.scss";

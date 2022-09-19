@@ -2,10 +2,10 @@ import Banner from "Components/Materials/ProfileBanner";
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
 
-import bannerImage from "assets/images/pages/profile/banner.png"
-import profilePicture from "assets/images/pages/profile/picture.svg"
-import certifiedIcon from "assets/images/pages/profile/certified.svg"
-import nftCard from "assets/images/nft-card-mock.png"
+import bannerImage from "Assets/images/pages/profile/banner.png"
+import profilePicture from "Assets/images/pages/profile/picture.svg"
+import certifiedIcon from "Assets/images/pages/profile/certified.svg"
+import nftCard from "Assets/images/nft-card-mock.png"
 
 import classes from "./classes.module.scss";
 import NftCard from "Components/Materials/NftCard";

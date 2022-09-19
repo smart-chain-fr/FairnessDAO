@@ -1,6 +1,6 @@
 import React from "react";
 import classes from "./classes.module.scss";
-import { ReactComponent as Clock } from "assets/images/icons/clock.svg";
+import { ReactComponent as Clock } from "Assets/images/icons/clock.svg";
 
 type IState = {
 	days: number;

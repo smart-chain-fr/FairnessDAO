@@ -14,7 +14,7 @@ import AuctionMenus, { EMENUS } from "./Elements/AuctionMenus";
 import Button from "Components/Elements/Button";
 import SearchBar from "Components/Materials/Filters/SearchBar";
 
-import Export from "assets/images/icons/export.svg";
+import Export from "Assets/images/icons/export.svg";
 
 type IProps = {};
 type IState = {

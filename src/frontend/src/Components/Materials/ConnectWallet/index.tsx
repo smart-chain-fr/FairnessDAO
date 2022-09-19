@@ -1,6 +1,6 @@
 import React from "react";
 
-import ProfileImg from "assets/images/icons/profile.svg";
+import ProfileImg from "Assets/images/icons/profile.svg";
 import Button from "Components/Elements/Button";
 import ProfileMenuStatus from "Stores/ProfileMenuStatus";
 import Wallet, { IWallet } from "Stores/Wallet";
@@ -33,7 +33,7 @@ export default class ConnectWallet extends React.Component<IProps, IState> {
 			<>
 				{!isConnected && (
 					<>
-						<ThemeModeSwitcher variant="secondary" />
+						{/* <ThemeModeSwitcher variant="secondary" /> */}
 						<Button sizing="s" variant="primary" onClick={() => this.connect()}>
 							<I18n map="general_text.connect_wallet" />
 						</Button>
@@ -42,9 +42,9 @@ export default class ConnectWallet extends React.Component<IProps, IState> {
 				)}
 				{isConnected && (
 					<>
-						<Button variant="ghost" sizing="s">
+						{/* <Button variant="ghost" sizing="s">
 							<I18n map={"general_text.create_collection"} />
-						</Button>
+						</Button> */}
 						<div className={classes["profile-container"]}>
 							<WalletAddressShort />
 							<img

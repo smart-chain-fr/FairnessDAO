@@ -1,6 +1,6 @@
 import React from "react";
 import Wallet, { IWallet } from "Stores/Wallet";
-import { ReactComponent as LogOutImg } from "assets/images/icons/log_out.svg";
+import { ReactComponent as LogOutImg } from "Assets/images/icons/log_out.svg";
 import classes from "./classes.module.scss";
 import ProfileMenuStatus from "Stores/ProfileMenuStatus";
 import I18n from "../I18n";

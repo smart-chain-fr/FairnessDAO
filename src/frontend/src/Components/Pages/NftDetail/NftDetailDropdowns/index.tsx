@@ -1,7 +1,7 @@
-import { ReactComponent as DetailsIcon } from "assets/images/icons/details.svg";
-import { ReactComponent as BidIcon } from "assets/images/icons/bids.svg";
-import { ReactComponent as AttributesIcon } from "assets/images/icons/attributes.svg";
-import { ReactComponent as OffersIcon } from "assets/images/icons/offers-dropdown.svg";
+import { ReactComponent as DetailsIcon } from "Assets/images/icons/details.svg";
+import { ReactComponent as BidIcon } from "Assets/images/icons/bids.svg";
+import { ReactComponent as AttributesIcon } from "Assets/images/icons/attributes.svg";
+import { ReactComponent as OffersIcon } from "Assets/images/icons/offers-dropdown.svg";
 import classes from "./classes.module.scss";
 import Dropdown from "Components/Materials/Dropdown";
 import React from "react";

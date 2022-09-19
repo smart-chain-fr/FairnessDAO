@@ -2,7 +2,10 @@
   "pages_title": {
     "marketplace": "Marketplace",
     "auction": "Enchère",
+    "resources": "Resources",
     "staking": "Staking",
+    "faucet": "Faucet",
+    "dao": "DAO",
     "sales_history": "Sales history",
     "nft_detail": "NFT detail",
     "profile": "Profile",

@@ -1,6 +1,6 @@
 import React from "react";
 import classes from "./classes.module.scss";
-import { ReactComponent as ArrowDown } from "assets/images/icons/arrow-down.svg";
+import { ReactComponent as ArrowDown } from "Assets/images/icons/arrow-down.svg";
 import WindowStore from "Stores/WindowStore";
 
 type IProps = {

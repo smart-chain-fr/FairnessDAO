@@ -13,7 +13,7 @@ import I18n from "Components/Materials/I18n";
 import SearchBar from "Components/Materials/Filters/SearchBar";
 import Button from "Components/Elements/Button";
 
-import Export from "assets/images/icons/export.svg";
+import Export from "Assets/images/icons/export.svg";
 type IProps = {};
 type IState = {};
 

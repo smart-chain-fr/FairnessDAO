@@ -1,5 +1,5 @@
 import React from "react";
-import ethIcon from "assets/images/icons/eth-token-symbol.svg";
+import ethIcon from "Assets/images/icons/eth-token-symbol.svg";
 
 import classes from "./classes.module.scss";
 import EthBigNumber from "Services/Wallet/EthBigNumber";

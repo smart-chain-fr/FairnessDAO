@@ -1,5 +1,5 @@
-import { ReactComponent as Burger } from "assets/images/icons/menu-burger.svg";
-import { ReactComponent as Cross } from "assets/images/icons/menu-cross.svg";
+import { ReactComponent as Burger } from "Assets/images/icons/menu-burger.svg";
+import { ReactComponent as Cross } from "Assets/images/icons/menu-cross.svg";
 import classes from "./classes.module.scss";
 
 type IProps = {

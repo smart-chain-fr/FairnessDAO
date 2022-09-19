@@ -1,4 +1,4 @@
-import Currency from "assets/images/icons/currency.png";
+import Currency from "Assets/images/icons/currency.png";
 import I18n from "Components/Materials/I18n";
 import React from "react";
 import classes from "./classes.module.scss";

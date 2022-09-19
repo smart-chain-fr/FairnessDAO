@@ -1,5 +1,5 @@
 import React from "react";
-import nftCard from "assets/images/nft-card-mock.png";
+import nftCard from "Assets/images/nft-card-mock.png";
 
 //import EthPrice from "Components/Elements/EthPrice";
 

@@ -1,7 +1,7 @@
 import React from "react";
 
-import { ReactComponent as Cross } from "assets/images/icons/cross-search.svg";
-import Glass from "assets/images/icons/glass.svg";
+import { ReactComponent as Cross } from "Assets/images/icons/cross-search.svg";
+import Glass from "Assets/images/icons/glass.svg";
 import SearchResultsStatus from "Stores/SearchResultsStatus";
 import WindowStore from "Stores/WindowStore";
 
@@ -9,7 +9,7 @@ import classes from "./classes.module.scss";
 import SearchResults from "../../SearchResults";
 import TopSearchBarStatus, { EOpeningState } from "Stores/TopSearchBar";
 import I18n from "Components/Materials/I18n";
-import { ReactComponent as ArrowLeft } from "assets/images/icons/arrow-left-close.svg";
+import { ReactComponent as ArrowLeft } from "Assets/images/icons/arrow-left-close.svg";
 type IProps = {};
 
 type IState = {

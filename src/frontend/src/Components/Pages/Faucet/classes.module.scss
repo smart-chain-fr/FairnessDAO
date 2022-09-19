@@ -1,0 +1,54 @@
+@import "../Base/classes.module.scss";
+
+.root {
+	font-family: var(--font-primary);
+	font-style: normal;
+	font-size: 16px;
+	padding: 0 70px;
+	margin: 0 auto;
+
+	h1 {
+		font-size: 24px;
+		margin: 24px 0;
+	}
+
+	.card {
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 24px;
+		gap: 24px;
+		width: 100%;
+
+		background: #ffffff;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+
+		flex: none;
+		order: 2;
+		align-self: stretch;
+		flex-grow: 0;
+	}
+
+	.subcard {
+		width: 100%;
+		background: #f9fafb;
+		border-radius: 8px;
+		padding: 24px;
+		
+		button {
+			margin: auto;
+		}
+
+		h2 {
+			font-family: "Inter";
+			font-style: normal;
+			font-weight: 700;
+			font-size: 20px;
+			line-height: 28px;
+			color: #111827;
+		}
+	}
+}
+

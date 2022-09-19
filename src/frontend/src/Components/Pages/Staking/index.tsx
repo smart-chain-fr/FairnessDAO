@@ -6,6 +6,8 @@ import { ethers } from "ethers";
 import { useState } from "react";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
+import TokenContractAbi from "../../../Assets/abi/TokenContract.json"
+import DaoContractAbi from "../../../Assets/abi/DaoContract.json"
 
 type IProps = {};
 
@@ -29,9 +31,14 @@ export default class Staking extends BasePage<IProps, IState> {
 
 		if (provider) {
 			const signer = provider.getSigner();
-			// const contract = new ethers.Contract("0x...", abi, provider);
-			// const contractWithSigner = contract.connect(signer);
-			// const tx = await contractWithSigner.stake(this.state.stakeAmount);
+
+			const tokenContract = new ethers.Contract("0xb082f8547F959417b0c75Da4a8E1F291F0495b54", TokenContractAbi.abi, provider);
+			const tokenContractWithSigner = tokenContract.connect(signer);
+
+			const daoContract = new ethers.Contract("0x9FB6d267a169B51faE65c6C482B06C278EC9d83C", DaoContractAbi.abi, provider);
+			const daoContractWithSigner = daoContract.connect(signer);
+
+			// const tx = await tokenContractWithSigner.stake(this.state.stakeAmount);
 			// const receipt = await tx.wait();
 			// console.log(receipt);
 		}
@@ -50,7 +57,7 @@ export default class Staking extends BasePage<IProps, IState> {
 								<div className={classes["subcard"]}>
 									<div className={[classes["staking-amount"], classes["left"]].join(" ")}>
 										<img alt="logo" src="/logo.svg" />
-										<div className={classes["amount-value"]}>237,80 SMART</div>
+										<div className={classes["amount-value"]}>237,80 FDAO</div>
 									</div>
 									<div className={classes["staking-input-input-container"]}>
 										<div className={classes["staking-input-input-title"]}>Amount to stake</div>
@@ -73,18 +80,18 @@ export default class Staking extends BasePage<IProps, IState> {
 
 								<div className={classes["subgrid"]}>
 									<div className={[classes["subcard"], classes["subcenter"]].join(" ")}>
-										<h2>Staked SMART</h2>
+										<h2>Staked FDAO</h2>
 										<div className={classes["staking-amount"]}>
 											<img alt="logo" src="/logo.svg" />
-											<div className={classes["amount-value"]}>237,80 SMART</div>
+											<div className={classes["amount-value"]}>237,80 FDAO</div>
 										</div>
 										<Button variant="ghost">Unstake</Button>
 									</div>
 									<div className={[classes["subcard"], classes["subcenter"]].join(" ")}>
-										<h2>Claimable vSMART</h2>
+										<h2>Claimable VeFDAO</h2>
 										<div className={classes["staking-amount"]}>
 											<img alt="logo" src="/logo.svg" />
-											<div className={classes["amount-value"]}>237,80 vSMART</div>
+											<div className={classes["amount-value"]}>237,80 VeFDAO</div>
 										</div>
 										<Button>Redeem</Button>
 									</div>

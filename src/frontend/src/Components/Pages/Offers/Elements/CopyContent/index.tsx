@@ -2,7 +2,7 @@ import AddressShort from "Components/Elements/AddressShort";
 import CopyClipboard from "Components/Elements/CopyClipboard";
 import React from "react";
 
-import copyIcon from "assets/images/icons/copy.svg";
+import copyIcon from "Assets/images/icons/copy.svg";
 import classes from "./classes.module.scss";
 
 type IProps = {

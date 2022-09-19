@@ -2,8 +2,8 @@ import React from "react";
 import classes from "./classes.module.scss";
 import Button from "Components/Elements/Button";
 
-import { ReactComponent as RightArrow } from "assets/images/icons/arrow-right.svg";
-import { ReactComponent as Cross } from "assets/images/icons/cross.svg";
+import { ReactComponent as RightArrow } from "Assets/images/icons/arrow-right.svg";
+import { ReactComponent as Cross } from "Assets/images/icons/cross.svg";
 
 type IProps = {
 	text: "Accept" | "Cancel";

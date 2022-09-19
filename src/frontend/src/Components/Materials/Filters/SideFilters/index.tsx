@@ -1,9 +1,9 @@
 import React from "react";
 import classes from "./classes.module.scss";
 
-import { ReactComponent as ArrowLeft } from "assets/images/icons/long-arrow-left.svg"
-import { ReactComponent as ArrowRight } from "assets/images/icons/long-arrow-right.svg"
-import { ReactComponent as FilterIcon } from "assets/images/icons/filter.svg"
+import { ReactComponent as ArrowLeft } from "Assets/images/icons/long-arrow-left.svg"
+import { ReactComponent as ArrowRight } from "Assets/images/icons/long-arrow-right.svg"
+import { ReactComponent as FilterIcon } from "Assets/images/icons/filter.svg"
 import I18n from "Components/Materials/I18n";
 import FiltersContent, { IFiltersProps } from "../FiltersContent";
 import SearchBar from "../SearchBar";

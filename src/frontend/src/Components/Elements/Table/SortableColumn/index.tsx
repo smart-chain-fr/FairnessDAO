@@ -1,7 +1,7 @@
 import BasePage from "Components/Pages/Base";
 import classes from "./classes.module.scss";
 
-import { ReactComponent as SortIcon } from "assets/images/icons/arrow-down.svg";
+import { ReactComponent as SortIcon } from "Assets/images/icons/arrow-down.svg";
 
 type IProps = {
 	text: React.ReactNode;

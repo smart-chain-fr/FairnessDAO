@@ -2,7 +2,7 @@ import React from "react";
 
 import classes from "./classes.module.scss";
 import ResultBlock from "./ResultBlock";
-import { ReactComponent as ArrowRight } from "assets/images/icons/arrow-right.svg";
+import { ReactComponent as ArrowRight } from "Assets/images/icons/arrow-right.svg";
 import SearchResultsStatus, { EOpeningState } from "Stores/SearchResultsStatus";
 import I18n from "../I18n";
 

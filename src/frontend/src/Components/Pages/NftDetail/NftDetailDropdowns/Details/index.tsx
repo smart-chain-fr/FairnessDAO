@@ -1,8 +1,8 @@
 import classes from "./classes.module.scss";
 import React from "react";
 import AddressShort from "Components/Elements/AddressShort";
-import { ReactComponent as ArrowRight } from "assets/images/icons/arrow-right-details.svg";
-import { ReactComponent as CopyIcon } from "assets/images/icons/copy.svg";
+import { ReactComponent as ArrowRight } from "Assets/images/icons/arrow-right-details.svg";
+import { ReactComponent as CopyIcon } from "Assets/images/icons/copy.svg";
 import CopyClipboard from "Components/Elements/CopyClipboard";
 import { Link } from "react-router-dom";
 import I18n from "Components/Materials/I18n";

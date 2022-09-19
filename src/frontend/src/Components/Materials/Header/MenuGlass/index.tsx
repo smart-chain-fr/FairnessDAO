@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactComponent as GlassMobile } from "assets/images/icons/glass-mobile.svg";
+import { ReactComponent as GlassMobile } from "Assets/images/icons/glass-mobile.svg";
 import TopSearchBarStatus, { EOpeningState } from "Stores/TopSearchBar";
 import classes from "./classes.module.scss";
 type IState = {

@@ -1,19 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { ReactComponent as AuctionsImg } from "assets/images/icons/auctions.svg";
-import { ReactComponent as FavoritesImg } from "assets/images/icons/favorites.svg";
-import { ReactComponent as CollectionsImg } from "assets/images/icons/my_collections.svg";
-import { ReactComponent as OffersImg } from "assets/images/icons/offers.svg";
-import { ReactComponent as ProfileImg } from "assets/images/icons/profile-second.svg";
-import { ReactComponent as SalesHistoryImg } from "assets/images/icons/sales_history.svg";
-import { ReactComponent as ReservationsImg } from "assets/images/icons/reservations.svg";
+import { ReactComponent as AuctionsImg } from "Assets/images/icons/auctions.svg";
+import { ReactComponent as FavoritesImg } from "Assets/images/icons/favorites.svg";
+import { ReactComponent as CollectionsImg } from "Assets/images/icons/my_collections.svg";
+import { ReactComponent as OffersImg } from "Assets/images/icons/offers.svg";
+import { ReactComponent as ProfileImg } from "Assets/images/icons/profile-second.svg";
+import { ReactComponent as SalesHistoryImg } from "Assets/images/icons/sales_history.svg";
+import { ReactComponent as ReservationsImg } from "Assets/images/icons/reservations.svg";
 
-import { ReactComponent as HomeImg } from "assets/images/icons/home.svg";
-import { ReactComponent as MarketplaceImg } from "assets/images/icons/marketplace.svg";
-import { ReactComponent as ResourcesImg } from "assets/images/icons/resources.svg";
-import { ReactComponent as ProfileAddressImg } from "assets/images/icons/profile.svg";
-import { ReactComponent as LotteryImg } from "assets/images/icons/lottery.svg";
+import { ReactComponent as HomeImg } from "Assets/images/icons/home.svg";
+import { ReactComponent as MarketplaceImg } from "Assets/images/icons/marketplace.svg";
+import { ReactComponent as ResourcesImg } from "Assets/images/icons/resources.svg";
+import { ReactComponent as ProfileAddressImg } from "Assets/images/icons/profile.svg";
+import { ReactComponent as LotteryImg } from "Assets/images/icons/lottery.svg";
 
 import ProfileMenuStatus, { EOpeningState } from "Stores/ProfileMenuStatus";
 import Wallet, { IWallet } from "Stores/Wallet";
@@ -55,7 +55,7 @@ export default class ProfileMenu extends React.Component<IProps, IState> {
 		const isConnected = !!this.state.useraddress;
 		return (
 			<div className={classes["root"]} {...this.state} ref={this.ref}>
-				{config.Kyc.enabled && <PassKyc />}
+				{/* {config.Kyc.enabled && <PassKyc />}
 				<div className={classes["links-container-mobile"]}>
 					{isConnected && (
 						<>
@@ -87,9 +87,9 @@ export default class ProfileMenu extends React.Component<IProps, IState> {
 						</div>
 						<div className={classes["separator"]} />
 					</>
-				)}
+				)} */}
 				<div>
-					<ThemeModeSwitcher />
+					{/* <ThemeModeSwitcher /> */}
 					<LogoutButton />
 				</div>
 			</div>

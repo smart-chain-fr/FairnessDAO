@@ -1,7 +1,7 @@
-import lightPrimary from "assets/images/icons/light-mode-icon-primary.svg";
-import darkPrimary from "assets/images/icons/dark-mode-icon-primary.svg"
-import lightSecondary from "assets/images/icons/light-mode-icon-secondary.svg";
-import darkSecondary from "assets/images/icons/dark-mode-icon-secondary.svg"
+import lightPrimary from "Assets/images/icons/light-mode-icon-primary.svg";
+import darkPrimary from "Assets/images/icons/dark-mode-icon-primary.svg"
+import lightSecondary from "Assets/images/icons/light-mode-icon-secondary.svg";
+import darkSecondary from "Assets/images/icons/dark-mode-icon-secondary.svg"
 import React from "react";
 import ThemeMode, { EThemeModeType } from "Stores/ThemeMode";
 

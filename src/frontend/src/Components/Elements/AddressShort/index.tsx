@@ -1,7 +1,7 @@
 import React from "react";
 
 import classes from "./classes.module.scss";
-import copyIcon from "assets/images/icons/copy.svg"
+import copyIcon from "Assets/images/icons/copy.svg"
 
 type IProps = {
 	text: string;

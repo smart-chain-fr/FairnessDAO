@@ -1,7 +1,7 @@
 import BasePage from "Components/Pages/Base";
 import classes from "./classes.module.scss";
 
-import nftCard from "assets/images/nft-card-mock.png";
+import nftCard from "Assets/images/nft-card-mock.png";
 
 type IHeader = {
 	element: React.ReactNode;

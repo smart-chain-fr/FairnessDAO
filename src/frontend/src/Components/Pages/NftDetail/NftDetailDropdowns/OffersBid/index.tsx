@@ -1,11 +1,11 @@
 import classes from "./classes.module.scss";
 import React from "react";
 import Button from "Components/Elements/Button";
-import Currency from "assets/images/icons/currency.png";
+import Currency from "Assets/images/icons/currency.png";
 import { Link } from "react-router-dom";
 import Desktop from "Components/Materials/UserAgent/Desktop";
 import Mobile from "Components/Materials/UserAgent/Mobile";
-import { ReactComponent as More } from "assets/images/icons/more.svg";
+import { ReactComponent as More } from "Assets/images/icons/more.svg";
 import I18n from "Components/Materials/I18n";
 
 type IState = {

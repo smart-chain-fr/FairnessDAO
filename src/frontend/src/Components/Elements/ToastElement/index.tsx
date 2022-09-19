@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./classes.module.scss";
 import Toasts, { Toast as ToastProps } from "Stores/Toasts";
 import Button from "../Button";
-import { ReactComponent as Cross } from "assets/images/icons/cross.svg";
+import { ReactComponent as Cross } from "Assets/images/icons/cross.svg";
 type IProps = {
 	toast: ToastProps;
 };

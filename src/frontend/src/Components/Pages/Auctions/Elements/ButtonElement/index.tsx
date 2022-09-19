@@ -2,9 +2,9 @@ import React from "react";
 import classes from "./classes.module.scss";
 import Button from "Components/Elements/Button";
 
-import { ReactComponent as ArrowLeftUp } from "assets/images/icons/arrow-leftUp.svg";
-import { ReactComponent as RightArrow } from "assets/images/icons/arrow-right.svg";
-import { ReactComponent as ArrowBull } from "assets/images/icons/arrow-bull.svg";
+import { ReactComponent as ArrowLeftUp } from "Assets/images/icons/arrow-leftUp.svg";
+import { ReactComponent as RightArrow } from "Assets/images/icons/arrow-right.svg";
+import { ReactComponent as ArrowBull } from "Assets/images/icons/arrow-bull.svg";
 
 type IProps = {
 	text: "Re-bid" | "Finalize" | "Top bid"| "";

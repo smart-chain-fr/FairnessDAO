@@ -1,4 +1,4 @@
-import {ReactComponent as Logo} from "assets/images/logos/simple.svg";
+import {ReactComponent as Logo} from "Assets/images/logos/simple.svg";
 import React from "react";
 import ThemeMode, { EThemeModeType } from "Stores/ThemeMode";
 

@@ -16,6 +16,8 @@ import StoreWorkflow from "Services/StoreWorkflow";
 import SalesHistory from "./Pages/SalesHistory";
 import Offers from "./Pages/Offers";
 import I18n from "./Materials/I18n";
+import Faucet from "./Pages/Faucet";
+import Dao from "./Pages/Dao";
 // import Toasts from "Stores/Toasts";
 
 type IProps = {};
@@ -85,19 +87,19 @@ export default class Main extends React.Component<IProps, IState> {
 			<>
 				<Route
 					element={
-						<Module from={pageConfig.Home}>
-							<Home />
+						<Module from={pageConfig.Faucet}>
+							<Faucet />
 						</Module>
 					}
-					path={pageConfig.Home.props.path}
+					path={pageConfig.Faucet.props.path}
 				/>
 				<Route
 					element={
-						<Module from={pageConfig.Marketplace}>
-							<Marketplace />
+						<Module from={pageConfig.Dao}>
+							<Dao />
 						</Module>
 					}
-					path={pageConfig.Marketplace.props.path}
+					path={pageConfig.Dao.props.path}
 				/>
 				<Route
 					element={

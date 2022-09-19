@@ -1,6 +1,6 @@
 import React from "react";
 import classes from "./classes.module.scss";
-import { ReactComponent as Glass } from "assets/images/icons/glass.svg";
+import { ReactComponent as Glass } from "Assets/images/icons/glass.svg";
 import SearchResultsStatus from "Stores/SearchResultsStatus";
 import TopSearchBarStatus, { EOpeningState } from "Stores/TopSearchBar";
 import I18n from "../I18n";

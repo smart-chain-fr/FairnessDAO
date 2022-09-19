@@ -51,15 +51,14 @@ export default class Header extends React.Component<IProps, IState> {
 						</div>
 
 						<div className={[classes["segment"], classes["segment-right"]].join(" ")}>
-							<SearchBar />
-							<Module from={pageConfig.Home}>
-								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Home.props.path}>
-									<I18n map={"pages_title.".concat(pageConfig.Home.props.labelKey)} />
+							<Module from={pageConfig.Faucet}>
+								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Faucet.props.path}>
+									<I18n map={"pages_title.".concat(pageConfig.Faucet.props.labelKey)} />
 								</NavLink>
 							</Module>
-							<Module from={pageConfig.Marketplace}>
-								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Marketplace.props.path}>
-									<I18n map={"pages_title.".concat(pageConfig.Marketplace.props.labelKey)} />
+							<Module from={pageConfig.Dao}>
+								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Dao.props.path}>
+									<I18n map={"pages_title.".concat(pageConfig.Dao.props.labelKey)} />
 								</NavLink>
 							</Module>
 							<Module from={pageConfig.Staking}>
