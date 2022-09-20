@@ -20,6 +20,8 @@ type IState = {
 };
 
 export default class Staking extends BasePage<IProps, IState> {
+	private timer: any;
+
 	public constructor(props: IProps) {
 		super(props);
 		this.state = {
@@ -31,7 +33,11 @@ export default class Staking extends BasePage<IProps, IState> {
 	}
 
 	public componentDidMount() {
-		this.getBalances();
+		this.timer = setInterval(() => this.getBalances(), 1000);
+	}
+
+	public componentWillUnmount() {
+		clearInterval(this.timer);
 	}
 
 	private stake = async (amountToStake: string) => {
@@ -47,10 +53,10 @@ export default class Staking extends BasePage<IProps, IState> {
 			const approveTxReceipt = await approveTx.wait();
 			console.log(approveTxReceipt);
 
-			let functionToCall = "initiateVesting"
+			let functionToCall = "initiateVesting";
 			try {
 				await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress).amountVested;
-				functionToCall = "increaseVesting"
+				functionToCall = "increaseVesting";
 			} catch (e: any) {
 				console.log("User not staking");
 			}
@@ -67,7 +73,7 @@ export default class Staking extends BasePage<IProps, IState> {
 			const signer = provider.getSigner();
 			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
 			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
-			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner["withdrawVesting"](this.state.stakeAmount);
+			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner["withdrawVesting"](await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!));
 			const increaseVestingReceipt = await increaseVestingTx.wait();
 			console.log(increaseVestingReceipt);
 		}
@@ -79,9 +85,9 @@ export default class Staking extends BasePage<IProps, IState> {
 			const signer = provider.getSigner();
 			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
 			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
-			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner["updateFairVesting"](ethers.utils.parseEther(Wallet.getInstance().walletData?.userAddress!));
-			const increaseVestingReceipt = await increaseVestingTx.wait();
-			console.log(increaseVestingReceipt);
+			const updateVestingTx = await fairnessDAOFairVestingContractWithSigner["updateFairVesting"](Wallet.getInstance().walletData?.userAddress!);
+			const updateVestingReceipt = await updateVestingTx.wait();
+			console.log(updateVestingReceipt);
 		}
 	};
 
@@ -160,14 +166,16 @@ export default class Staking extends BasePage<IProps, IState> {
 										<div className={classes["staking-balance"]}>
 											<div className={classes["amount-value"]}>{this.state.stakedFdaoBalance} FDAO</div>
 										</div>
-										<Button variant="ghost">Unstake</Button>
+										<Button variant="ghost" onClick={() => this.unstake()}>
+											Unstake
+										</Button>
 									</div>
 									<div className={[classes["subcard"], classes["subcenter"]].join(" ")}>
 										<h2>Claimable VeFDAO</h2>
 										<div className={classes["staking-balance"]}>
 											<div className={classes["amount-value"]}>{this.state.claimableVeFdaoBalance} VeFDAO</div>
 										</div>
-										<Button>Redeem</Button>
+										<Button onClick={() => this.claim()}>Redeem</Button>
 									</div>
 								</div>
 							</div>
