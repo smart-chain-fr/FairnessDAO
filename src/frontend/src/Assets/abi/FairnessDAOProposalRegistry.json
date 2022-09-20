@@ -1,0 +1,458 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "initialFairnessDAOFairVesting",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initMinimumSupplyShareRequiredForSubmittingProposals",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initialVoteTimeLengthSoftProposal",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initialVoteTimeLengthHardProposal",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initialMinimumTotalSupplyShareRequiredForSoftProposal",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initialMinimumTotalSupplyShareRequiredForHardProposal",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initialMinimumVoterShareRequiredForSoftProposal",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initialMinimumVoterShareRequiredForHardProposal",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CallerDoesNotHaveEnoughVestingTokens",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotClaimRewardsForNotPassedProposal",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotClaimRewardsTwice",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotSetEmptyProposalURI",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotSetProposalDepthToBelowTwo",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotSetStartTimeBelowCurrentTime",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotVoteTwiceOnTheSameProposal",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__CannotVoteWithZeroWeight",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__IncorrectBoundIndex",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__ProposalDoesNotExist",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__VotingDepthDoesNotExistInProposalDepth",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__VotingPeriodHasAlreadyEnded",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__VotingPeriodHasNotEndedYet",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FairnessDAOProposalRegistry__VotingPeriodHasNotStartedYet",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "fairnessDAOFairVesting",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        }
+      ],
+      "name": "finalizeProposal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minimumSupplyShareRequiredForSubmittingProposals",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minimumTotalSupplyShareRequiredForHardProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minimumTotalSupplyShareRequiredForSoftProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minimumVoterShareRequiredForHardProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minimumVoterShareRequiredForSoftProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proposalCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proposalLengthHardcap",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "proposalQueue",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "startTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "proposalURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "proposalTotalDepth",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum FairnessDAOProposalRegistry.ProposalLevel",
+          "name": "proposalLevel",
+          "type": "uint8"
+        }
+      ],
+      "name": "submitProposal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalAmountOfVestingTokensBurned",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "fromIndex",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "endIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "viewMultipleProposals",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "proposerAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "proposalTotalDepth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "proposalURI",
+              "type": "string"
+            },
+            {
+              "internalType": "enum FairnessDAOProposalRegistry.VotingStatus",
+              "name": "votingStatus",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FairnessDAOProposalRegistry.ProposalLevel",
+              "name": "proposalLevel",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct FairnessDAOProposalRegistry.Proposal[]",
+          "name": "proposals",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        }
+      ],
+      "name": "viewProposal",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "proposerAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "startTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "proposalTotalDepth",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "proposalURI",
+              "type": "string"
+            },
+            {
+              "internalType": "enum FairnessDAOProposalRegistry.VotingStatus",
+              "name": "votingStatus",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FairnessDAOProposalRegistry.ProposalLevel",
+              "name": "proposalLevel",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct FairnessDAOProposalRegistry.Proposal",
+          "name": "proposal",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "chosenProposalDepth",
+          "type": "uint256"
+        }
+      ],
+      "name": "voteOnProposal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "voteTimeLengthHardProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "voteTimeLengthSoftProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}
