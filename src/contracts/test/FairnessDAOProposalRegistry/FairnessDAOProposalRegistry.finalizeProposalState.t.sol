@@ -60,22 +60,31 @@ contract FairnessDAOProposalRegistryFinalizeProposalStateTest is
         /// vm.stopPrank();
     }
 
-    // /// @dev Should not allow the caller to vote on proposal if the latter does not exist.
-    // function testFuzz_voteOnProposal_func_withRevert_proposalDoesNotExist(
-    //     uint256 proposalId,
-    //     uint256 chosenProposalDepth
-    // )
-    //     public
-    // {
-    //     vm.assume(proposalId != 0);
+    /// @dev Should not allow the caller to finalize a proposal if the latter does not exist.
+    function testFuzz_finalizeProposal_func_withRevert_proposalDoesNotExist(
+        uint256 proposalId
+    )
+        public
+    {
+        vm.assume(proposalId != 0);
 
-    //     vm.expectRevert(
-    //         FairnessDAOProposalRegistry
-    //             .FairnessDAOProposalRegistry__ProposalDoesNotExist
-    //             .selector
-    //     );
-    //     fairnessDAOProposalRegistry.voteOnProposal(
-    //         proposalId, chosenProposalDepth
-    //     );
-    // }
+        vm.expectRevert(
+            FairnessDAOProposalRegistry
+                .FairnessDAOProposalRegistry__ProposalDoesNotExist
+                .selector
+        );
+        fairnessDAOProposalRegistry.finalizeProposal(proposalId);
+    }
+
+    /// @dev Should not allow the caller to finalize a proposal if the latter has not finished its voting period.
+    function test_finalizeProposal_func_withRevert_proposalDoesNotExist()
+        public
+    {
+        vm.expectRevert(
+            FairnessDAOProposalRegistry
+                .FairnessDAOProposalRegistry__VotingPeriodHasNotEndedYet
+                .selector
+        );
+        fairnessDAOProposalRegistry.finalizeProposal(initialProposalId);
+    }
 }
