@@ -246,7 +246,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
 
         /// @dev If the given voter choice does not exist in the proposal depth, it means it does not exist.
-        if (chosenProposalDepth > proposal.proposalTotalDepth) {
+        if (chosenProposalDepth >= proposal.proposalTotalDepth) {
             revert
                 FairnessDAOProposalRegistry__VotingDepthDoesNotExistInProposalDepth();
         }
@@ -288,6 +288,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
             IFairnessDAOFairVesting(fairnessDAOFairVesting).balanceOf(msg.sender);
 
         /// @dev The user shall not be able to vote with zero voting power.
+        /// This condition seems to never happen since this check is already done in `updateFairVesting()` above.
+        /// @TODO Let's see if we keep this line or not after a few battle-test.
         if (voterVestingTokenBalance == 0) {
             revert FairnessDAOProposalRegistry__CannotVoteWithZeroWeight();
         }

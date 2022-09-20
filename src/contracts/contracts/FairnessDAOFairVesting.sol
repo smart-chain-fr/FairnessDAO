@@ -202,7 +202,8 @@ contract FairnessDAOFairVesting is ERC20 {
         uint256 amountToMint = getClaimableFairVesting(vestedAddress);
 
         /// @dev We update the last claimed timestamp to avoid reetrancy.
-        addressToVestingInfo[msg.sender].lastClaimedTimestamp = block.timestamp;
+        addressToVestingInfo[vestedAddress].lastClaimedTimestamp =
+            block.timestamp;
 
         if (amountToMint != 0) {
             /// @dev We mint the vTokens to the user.

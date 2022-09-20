@@ -26,7 +26,6 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
 
         /// @dev We initialize a vesting with the vesting contract.
         /// We then make a proposal, and set another account on the vesting governance to allow another party for voting.
-
         mockERC20.faucet(initialAmountToVest);
         mockERC20.approve(address(fairnessDAOFairVesting), initialAmountToVest);
         fairnessDAOFairVesting.initiateVesting(initialAmountToVest);
@@ -56,7 +55,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
         fairnessDAOFairVesting.initiateVesting(initialAmountToVest);
         /// @dev We skip 1 second, which should reward the user of 1 ether equivalent of vesting tokens.
         skip(1);
-        fairnessDAOFairVesting.updateFairVesting(address(this));
+        // fairnessDAOFairVesting.updateFairVesting(address(this));
         /// @dev The `voterAddress` account is the one executing the following tests.
         /// vm.stopPrank();
     }
@@ -99,13 +98,13 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     }
 
     /// @dev Should not allow the caller to vote on proposal if the voting period for the latter has not started yet.
-    function test_voteOnProposal_func_withRevert_votingPeriodHasNotStartedYet(
+    function testFuzz_voteOnProposal_func_withRevert_votingPeriodHasNotStartedYet(
         uint8 chosenProposalDepth
     )
         public
     {
-        if (chosenProposalDepth > proposalTotalDepth) {
-            chosenProposalDepth = proposalTotalDepth;
+        if (chosenProposalDepth >= proposalTotalDepth) {
+            chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
         }
 
         vm.expectRevert(
@@ -119,13 +118,13 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     }
 
     /// @dev Should not allow the caller to vote on proposal if the voting period for the latter has ended.
-    function test_voteOnProposal_func_withRevert_votingPeriodHasEnded(
+    function testFuzz_voteOnProposal_func_withRevert_votingPeriodHasEnded(
         uint8 chosenProposalDepth
     )
         public
     {
-        if (chosenProposalDepth > proposalTotalDepth) {
-            chosenProposalDepth = proposalTotalDepth;
+        if (chosenProposalDepth >= proposalTotalDepth) {
+            chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
         }
 
         vm.expectRevert(
@@ -134,6 +133,91 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
                 .selector
         );
         skip(type(uint128).max);
+        fairnessDAOProposalRegistry.voteOnProposal(
+            initialProposalId, chosenProposalDepth
+        );
+    }
+
+    /// @dev Should not allow the caller to vote on proposal if the caller has no voting tokens/is not vesting.
+    function testFuzz_voteOnProposal_func_withRevert_cannotVoteIfUserIsNotVesting(
+        address randomVoterWithZeroVotingTokens,
+        uint8 chosenProposalDepth
+    )
+        public
+    {
+        vm.assume(randomVoterWithZeroVotingTokens != address(this));
+        vm.assume(randomVoterWithZeroVotingTokens != address(voterAddress));
+
+        if (chosenProposalDepth >= proposalTotalDepth) {
+            chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
+        }
+
+        vm.expectRevert(
+            FairnessDAOFairVesting.FairnessDAOFairVesting__UserIsNotVesting.selector
+        );
+        skip(defaultStartTime);
+        vm.stopPrank();
+        hoax(randomVoterWithZeroVotingTokens);
+        fairnessDAOProposalRegistry.voteOnProposal(
+            initialProposalId, chosenProposalDepth
+        );
+    }
+
+    /// @dev Should allow the caller to vote on proposal.
+    function testFuzz_voteOnProposal_func(uint8 chosenProposalDepth) public {
+        if (chosenProposalDepth >= proposalTotalDepth) {
+            chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
+        }
+
+        skip(defaultStartTime);
+
+        fairnessDAOProposalRegistry.voteOnProposal(
+            initialProposalId, chosenProposalDepth
+        );
+
+        (
+            uint256 userChosenProposalDepth,
+            uint256 userVotingPower,
+            uint256 userVotedAtTimestamp
+        ) = fairnessDAOProposalRegistry.proposalIdToVoterAddressToUserVote(
+            initialProposalId, voterAddress
+        );
+        assertEq(userChosenProposalDepth, chosenProposalDepth);
+        assertEq(
+            userVotingPower,
+            fairnessDAOFairVesting.balanceOf(address(voterAddress))
+        );
+        assertEq(userVotedAtTimestamp, block.timestamp);
+
+        (
+            uint256 totalAmountOfVotingTokensUsed, uint256 totalAmountOfUniqueVoters
+        ) =
+            fairnessDAOProposalRegistry.proposalIdToVotingStatus(initialProposalId);
+        assertEq(
+            totalAmountOfVotingTokensUsed,
+            fairnessDAOFairVesting.balanceOf(address(voterAddress))
+        );
+        assertEq(totalAmountOfUniqueVoters, 1);
+    }
+
+    /// @dev Should not allow the caller to vote on proposal if the caller has already voted on the same proposal.
+    function testFuzz_voteOnProposal_func_withRevert_cannotVoteTwiceOnSameProposal(
+        uint8 chosenProposalDepth
+    )
+        public
+    {
+        if (chosenProposalDepth >= proposalTotalDepth) {
+            chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
+        }
+
+        testFuzz_voteOnProposal_func(chosenProposalDepth);
+
+        vm.expectRevert(
+            FairnessDAOProposalRegistry
+                .FairnessDAOProposalRegistry__CannotVoteTwiceOnTheSameProposal
+                .selector
+        );
+
         fairnessDAOProposalRegistry.voteOnProposal(
             initialProposalId, chosenProposalDepth
         );
