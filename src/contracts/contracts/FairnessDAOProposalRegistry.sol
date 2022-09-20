@@ -536,7 +536,10 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         /// @dev Else we check if the proposal voting time has expired but still has not finalized.
         else if (
             (block.timestamp > proposal.endTime)
-                && (proposal.votingStatus == VotingStatus.InProgress)
+                && (
+                    (proposal.votingStatus == VotingStatus.InProgress)
+                        || (proposal.votingStatus == VotingStatus.NotStarted)
+                )
         ) {
             return VotingStatus.WaitingForFinalized;
         }
