@@ -1,0 +1,138 @@
+@import "../Base/classes.module.scss";
+
+.root {
+	font-family: var(--font-primary);
+	font-style: normal;
+	font-size: 16px;
+	padding: 0 70px;
+	margin: 0 auto;
+
+	h1 {
+		font-size: 24px;
+		margin: 24px 0;
+	}
+
+	.card {
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 24px;
+		gap: 24px;
+		width: 100%;
+		height: 400px;
+
+		background: #ffffff;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+
+		flex: none;
+		order: 2;
+		align-self: stretch;
+		flex-grow: 0;
+	}
+
+	.subcard {
+		width: 100%;
+		background: #f9fafb;
+		border-radius: 8px;
+		padding: 24px;
+
+		h2 {
+			font-family: "Inter";
+			font-style: normal;
+			font-weight: 700;
+			font-size: 20px;
+			line-height: 28px;
+			color: #111827;
+		}
+	}
+
+	.subgrid {
+		width: 100%;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 24px;
+	}
+
+	.left {
+		float: left;
+	}
+
+    .subcenter {
+        text-align: center;
+
+        button {
+            width: 100%;
+        }
+    }
+
+	.staking-amount {
+        margin: 24px auto;
+        width: 180px;
+		display: grid;
+		grid-template-columns: 20px auto;
+		gap: 10px;
+	}
+
+	.amount-value {
+		font-family: "Inter";
+		font-style: normal;
+		font-weight: 600;
+		font-size: 18px;
+		line-height: 20px;
+	}
+
+	.staking-input-input-title {
+		font-size: 14px;
+		margin-bottom: 10px;
+	}
+
+	.staking-input-input-container {
+		float: right;
+	}
+
+	.staking-input-grid {
+		// display: grid;
+		// grid-template-columns: 300px 80px;
+		// gap: 10px;
+
+		input {
+			float: left;
+		}
+
+		button {
+			float: right;
+		}
+	}
+
+	.staking-input-input {
+		margin-right: 10px;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 10px 12px;
+		gap: 12px;
+		width: 300px;
+		height: 42px;
+		background: #ffffff;
+		border: 1px solid #d1d5db;
+		box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+		border-radius: 6px;
+		flex: none;
+		order: 1;
+		align-self: stretch;
+		flex-grow: 0;
+
+		&::placeholder {
+			font-family: var(--font-primary);
+			font-style: normal;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 20px;
+			color: var(--color-neutral-5);
+		}
+	}
+}
+

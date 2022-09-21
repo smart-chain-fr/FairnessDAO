@@ -5,8 +5,6 @@ import Version, { IConfig } from "Stores/Version";
 
 import ThemeMode from "../Stores/ThemeMode";
 import ComingSoon from "./Pages/ComingSoon";
-import Home from "./Pages/Home";
-import Marketplace from "./Pages/Marketplace";
 import Staking from "./Pages/Staking";
 import Module from "./Materials/Module";
 import NftDetail from "./Pages/NftDetail";
@@ -17,7 +15,9 @@ import SalesHistory from "./Pages/SalesHistory";
 import Offers from "./Pages/Offers";
 import I18n from "./Materials/I18n";
 import Faucet from "./Pages/Faucet";
-import Dao from "./Pages/Dao";
+import DaoListProposals from "./Pages/DaoListProposals";
+import DaoProposalDetails from "./Pages/DaoProposalDetails";
+import DaoNewProposal from "./Pages/DaoNewProposal";
 // import Toasts from "Stores/Toasts";
 
 type IProps = {};
@@ -95,11 +95,27 @@ export default class Main extends React.Component<IProps, IState> {
 				/>
 				<Route
 					element={
-						<Module from={pageConfig.Dao}>
-							<Dao />
+						<Module from={pageConfig.DaoListProposals}>
+							<DaoListProposals />
 						</Module>
 					}
-					path={pageConfig.Dao.props.path}
+					path={pageConfig.DaoListProposals.props.path}
+				/>
+				<Route
+					element={
+						<Module from={pageConfig.DaoProposalDetails}>
+							<DaoProposalDetails />
+						</Module>
+					}
+					path={pageConfig.DaoProposalDetails.props.path}
+				/>
+				<Route
+					element={
+						<Module from={pageConfig.DaoNewProposal}>
+							<DaoNewProposal />
+						</Module>
+					}
+					path={pageConfig.DaoNewProposal.props.path}
 				/>
 				<Route
 					element={

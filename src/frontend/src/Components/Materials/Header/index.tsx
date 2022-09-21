@@ -56,9 +56,9 @@ export default class Header extends React.Component<IProps, IState> {
 									<I18n map={"pages_title.".concat(pageConfig.Faucet.props.labelKey)} />
 								</NavLink>
 							</Module>
-							<Module from={pageConfig.Dao}>
-								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.Dao.props.path}>
-									<I18n map={"pages_title.".concat(pageConfig.Dao.props.labelKey)} />
+							<Module from={pageConfig.DaoListProposals}>
+								<NavLink className={(navData) => this.activeLink(navData.isActive)} to={pageConfig.DaoListProposals.props.path}>
+									<I18n map={"pages_title.".concat(pageConfig.DaoListProposals.props.labelKey)} />
 								</NavLink>
 							</Module>
 							<Module from={pageConfig.Staking}>

@@ -27,11 +27,25 @@
           "labelKey": "faucet"
         }
       },
-      "Dao": {
+      "DaoListProposals": {
         "enabled": true,
         "props": {
-          "path": "/dao",
-          "labelKey": "dao"
+          "path": "/proposals",
+          "labelKey": "dao_list_proposals"
+        }
+      },
+      "DaoProposalDetails": {
+        "enabled": true,
+        "props": {
+          "path": "/proposal/:proposalId",
+          "labelKey": "dao_proposal_details"
+        }
+      },
+      "DaoNewProposal": {
+        "enabled": true,
+        "props": {
+          "path": "/new-proposal",
+          "labelKey": "dao_new_proposal"
         }
       },
       "Staking": {

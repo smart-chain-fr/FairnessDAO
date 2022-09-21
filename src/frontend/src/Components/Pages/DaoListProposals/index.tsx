@@ -3,7 +3,6 @@ import I18n from "Components/Materials/I18n";
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
 import { ethers } from "ethers";
-import { useState } from "react";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
 import MockERC20Abi from "../../../Assets/abi/MockERC20.json";
@@ -15,7 +14,7 @@ type IState = {
 	stakeAmount: string;
 };
 
-export default class Dao extends BasePage<IProps, IState> {
+export default class DaoListProposals extends BasePage<IProps, IState> {
 	public constructor(props: IProps) {
 		super(props);
 	}
@@ -28,7 +27,6 @@ export default class Dao extends BasePage<IProps, IState> {
 
 		if (provider) {
 			const signer = provider.getSigner();
-
 			const mockERC20Contract = new ethers.Contract(Config.getInstance().get().contracts.MockERC20ContractAddress, MockERC20Abi.abi, provider);
 			const mockERC20ContractWithSigner = mockERC20Contract.connect(signer);
 
