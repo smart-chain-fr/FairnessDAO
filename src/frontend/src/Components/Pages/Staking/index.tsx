@@ -20,8 +20,6 @@ type IState = {
 };
 
 export default class Staking extends BasePage<IProps, IState> {
-	private timer: any;
-
 	public constructor(props: IProps) {
 		super(props);
 		this.state = {
@@ -33,11 +31,10 @@ export default class Staking extends BasePage<IProps, IState> {
 	}
 
 	public componentDidMount() {
-		this.timer = setInterval(() => this.getBalances(), 1000);
+		setTimeout(() => this.getBalances(), 1000);
 	}
 
 	public componentWillUnmount() {
-		clearInterval(this.timer);
 	}
 
 	private stake = async (amountToStake: string) => {
@@ -54,12 +51,14 @@ export default class Staking extends BasePage<IProps, IState> {
 			console.log(approveTxReceipt);
 
 			let functionToCall = "initiateVesting";
+			let stakedFdaoBalanceBn;
 			try {
-				await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress).amountVested;
-				functionToCall = "increaseVesting";
-			} catch (e: any) {
-				console.log("User not staking");
-			}
+				stakedFdaoBalanceBn = (await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress)).amountVested;
+				console.log('stakedFdaoBalanceBn', stakedFdaoBalanceBn);
+			} catch (e: any) {}
+
+			if(stakedFdaoBalanceBn) functionToCall = "increaseVesting";
+			console.log('functionToCall', functionToCall);
 
 			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner[functionToCall](ethers.utils.parseEther(amountToStake));
 			const increaseVestingReceipt = await increaseVestingTx.wait();
@@ -73,9 +72,11 @@ export default class Staking extends BasePage<IProps, IState> {
 			const signer = provider.getSigner();
 			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
 			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
-			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner["withdrawVesting"](await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!));
-			const increaseVestingReceipt = await increaseVestingTx.wait();
-			console.log(increaseVestingReceipt);
+			const withdrawBalanceBn = await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!)
+			console.log(withdrawBalanceBn)
+			const withdrawVestingTx = await fairnessDAOFairVestingContractWithSigner["withdrawVesting"](withdrawBalanceBn);
+			const withdrawVestingReceipt = await withdrawVestingTx.wait();
+			console.log(withdrawVestingReceipt);
 		}
 	};
 
