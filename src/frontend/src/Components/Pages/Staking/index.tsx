@@ -52,13 +52,14 @@ export default class Staking extends BasePage<IProps, IState> {
 			console.log(approveTxReceipt);
 
 			let functionToCall = "initiateVesting";
-			let stakedFdaoBalanceBn;
+			let stakedFdaoBalance;
 			try {
-				stakedFdaoBalanceBn = (await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress)).amountVested;
-				console.log("stakedFdaoBalanceBn", stakedFdaoBalanceBn);
+				const stakedFdaoBalanceBn = (await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress)).amountVested;
+				stakedFdaoBalance = new EthBigNumber(stakedFdaoBalanceBn).removeDecimals().toNumber();
+				console.log("stakedFdaoBalance", stakedFdaoBalance);
 			} catch (e: any) {}
 
-			if (stakedFdaoBalanceBn) functionToCall = "increaseVesting";
+			if (stakedFdaoBalance) functionToCall = "increaseVesting";
 			console.log("functionToCall", functionToCall);
 
 			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner[functionToCall](ethers.utils.parseEther(amountToStake));
@@ -117,7 +118,8 @@ export default class Staking extends BasePage<IProps, IState> {
 			let claimableVeFdaoBalance = 0;
 			try {
 				const claimableVeFdaoBalanceBn = await fairnessDAOFairVestingContractWithSigner["getClaimableFairVesting"](Wallet.getInstance().walletData?.userAddress);
-				claimableVeFdaoBalance = new EthBigNumber(claimableVeFdaoBalanceBn).removeDecimals().toNumber();
+				console.log('claimableVeFdaoBalanceBn', parseFloat(ethers.utils.formatEther(claimableVeFdaoBalanceBn)))
+				claimableVeFdaoBalance = parseFloat(ethers.utils.formatEther(claimableVeFdaoBalanceBn)) // new EthBigNumber(claimableVeFdaoBalanceBn).removeDecimals().toNumber();
 				console.log("claimableVeFdaoBalance", claimableVeFdaoBalance);
 			} catch (e: any) {
 				console.log("User not staking");
@@ -182,7 +184,7 @@ export default class Staking extends BasePage<IProps, IState> {
 										<div className={classes["staking-balance"]}>
 											<div className={classes["amount-value"]}>{this.state.claimableVeFdaoBalance} VeFDAO</div>
 										</div>
-										<Button onClick={() => this.claim()}>Redeem</Button>
+										<Button disabled={this.state.claimableVeFdaoBalance === 0} onClick={() => this.claim()}>Redeem</Button>
 									</div>
 								</div>
 							</div>

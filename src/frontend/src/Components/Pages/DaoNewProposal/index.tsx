@@ -25,7 +25,7 @@ export type Proposal = {
 	proposalLevel: number; /// @dev Must be either 0 (Soft) or 1 (Hard).
 	submittedAt: number; // Or Date or String since it's not used on-chain.
 	submitterAddress: string;
-	signedProposal: string;
+	// signedProposal: string;
 };
 
 export default class DaoNewProposal extends BasePage<IProps, IState> {
@@ -56,11 +56,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 				voteChoices: ["Yes", "No", "Maybe"],
 				totalVoteChoices: 3,
-				startTime: 1663766604,
+				startTime: 1663792076,
 				proposalLevel: 0,
-				submittedAt: 1663759426,
+				submittedAt: 1663777776,
 				submitterAddress: ethers.constants.AddressZero,
-				signedProposal: "",
+				// signedProposal: "",
 			};
 
 			const projectId = "2F2BKlDPX4CaBF8TGPLey2zwkP7";
@@ -75,13 +75,15 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 				},
 			});
 			const proposalURI: any = await client.add(JSON.stringify(proposalToSubmit));
-			console.log('proposalURI', proposalURI)
+			console.log("proposalURI", proposalURI);
 
 			const allowanceTx = await fairnessDAOFairVestingContractWithSigner['approve'](Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, ethers.utils.parseEther("999999999999999999999999999999"));
 			await allowanceTx.wait();
 			console.log(`allowance tx hash: ${allowanceTx.hash}`);
 
-			const submitProposalTx = await fairnessDAOProposalRegistryContractWithSigner['submitProposal'](proposalToSubmit.startTime, proposalURI.path, proposalToSubmit.totalVoteChoices, proposalToSubmit.proposalLevel);
+			console.log(proposalToSubmit.startTime, proposalURI.path, proposalToSubmit.totalVoteChoices, proposalToSubmit.proposalLevel)
+			
+			const submitProposalTx = await fairnessDAOProposalRegistryContractWithSigner["submitProposal"](proposalToSubmit.startTime, proposalURI.path, proposalToSubmit.totalVoteChoices, proposalToSubmit.proposalLevel);
 			await submitProposalTx.wait();
 			console.log(`submitProposal tx hash: ${submitProposalTx.hash}`);
 		}

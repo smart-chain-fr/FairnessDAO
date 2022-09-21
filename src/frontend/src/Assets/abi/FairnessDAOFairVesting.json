@@ -28,6 +28,11 @@
     },
     {
       "inputs": [],
+      "name": "FairnessDAOFairVesting__CallerIsNotAllowedToMintRewards",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "FairnessDAOFairVesting__CannotIncreaseVestingForNonVestedUser",
       "type": "error"
     },
@@ -133,7 +138,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "debt",
+          "name": "lastClaimedTimestamp",
           "type": "uint256"
         }
       ],
@@ -340,6 +345,24 @@
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "recipientAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountToMint",
+          "type": "uint256"
+        }
+      ],
+      "name": "mintRewards",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "name",
       "outputs": [
@@ -460,6 +483,32 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "setWhitelistedProposalRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "whitelistProposalRegistryAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "whitelistedProposalRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "amountToWithdraw",
           "type": "uint256"
@@ -483,5 +532,4 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ]
-}
+  ]}

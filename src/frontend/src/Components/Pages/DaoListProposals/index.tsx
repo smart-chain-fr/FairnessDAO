@@ -9,6 +9,7 @@ import FairnessDAOProposalRegistryAbi from "../../../Assets/abi/FairnessDAOPropo
 import Config from "Configs/Config";
 import { Link } from "react-router-dom";
 import { Proposal } from "../DaoNewProposal";
+import EthBigNumber from "Services/Wallet/EthBigNumber";
 
 type IProps = {};
 
@@ -36,6 +37,15 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 			const signer = provider.getSigner();
 			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
 			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
+
+			const proposalCountBn = await fairnessDAOProposalRegistryContract['proposalCount']()
+			const proposalCount = new EthBigNumber(proposalCountBn).removeDecimals().toNumber();
+			console.log('proposalCount', proposalCount);
+
+			if(proposalCount > 0) {
+			const proposals = await fairnessDAOProposalRegistryContract['viewMultipleProposals'](0, proposalCount - 1)
+			console.log(proposals);
+			}
 
 			// const tx = await mockERC20ContractWithSigner.stake(this.state.stakeAmount);
 			// const receipt = await tx.wait();
