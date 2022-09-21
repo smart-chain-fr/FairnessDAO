@@ -8,7 +8,6 @@ import {SafeERC20} from
 import {FixedPointMathLib} from
     "@rari-capital/solmate/src/utils/FixedPointMathLib.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-// import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title FairnessDAOFairVesting
 /// @dev Vesting manager for the voting token.
@@ -18,6 +17,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 /// @dev TODO: Remove ERC20 inheritance and simply keep the standard interface.
 /// @dev TODO: Add automated zInflationDelta after each update between epochs.
 /// @dev TODO: Add snapshot mechanism.
+/// @dev TODO: Add initializer.
 contract FairnessDAOFairVesting is ERC20 {
     using SafeERC20 for IERC20;
     using FixedPointMathLib for uint256;
@@ -56,8 +56,8 @@ contract FairnessDAOFairVesting is ERC20 {
     address public fairTokenTarget;
     uint256 public zInflationDelta;
     uint256 public totalOwners;
-
     address public whitelistedProposalRegistry;
+    bool private _initializing;
 
     constructor(
         string memory tokenName,
@@ -73,14 +73,23 @@ contract FairnessDAOFairVesting is ERC20 {
 
     /// @dev WARNING, This function is purposely lacking security.
     /// DO NOT USE THIS IN PRODUCTION.
+    /// @dev Temporary initializer for registering ProposalRegistry address.
+    /// @param setWhitelistedProposalRegistry Address of the ProposalRegistry.
     function whitelistProposalRegistryAddress(
         address setWhitelistedProposalRegistry
     )
         external
     {
+        /// @dev This function can only be called once, preferrably during initialization inside the Factory.
+        require(!_initializing);
+        _initializing = true;
         whitelistedProposalRegistry = setWhitelistedProposalRegistry;
     }
 
+    /// @dev Allow the whitelisted Proposal Registry to mint rewards for voters.
+    /// The method will also update and claim pending vesting token rewards.
+    /// @param recipientAddress Recipient address of the minted rewards.
+    /// @param amountToMint Amount of rewards to mint.
     function mintRewards(address recipientAddress, uint256 amountToMint)
         external
     {

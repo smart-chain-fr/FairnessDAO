@@ -129,6 +129,12 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     mapping(uint256 => mapping(address => bool)) public
         proposalIdToVoterAddressToHasClaimedStatus;
 
+    event RewardsClaimed(
+        uint256 indexed proposalId,
+        address indexed redeemerAddress,
+        uint256 amountRedeemed
+    );
+
     constructor(
         address initialFairnessDAOFairVesting,
         uint256 initMinimumSupplyShareRequiredForSubmittingProposals,
@@ -154,6 +160,12 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         fairnessDAOFairVesting = initialFairnessDAOFairVesting;
     }
 
+    /// @dev Allow a vesting token holder to submit a proposal for vote.
+    /// In order to push a proposal, the caller needs to burn a small amount of vesting tokens.
+    /// @param startTime Timestamp to start the voting process. The timestamp must be greater than current time.
+    /// @param proposalURI URI of the proposal.
+    /// @param proposalTotalDepth Total amount of voting choices inside the proposal.
+    /// @param proposalLevel The priority level of the proposal (SP/HP).
     function submitProposal(
         uint256 startTime,
         string memory proposalURI,
@@ -234,6 +246,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
     }
 
+    /// @dev Allow a vesting token holder to vote on a proposal previously submitted for voting.
+    /// @param proposalId Proposal Id of the proposal to vote for.
+    /// @param chosenProposalDepth depth of the choice chosen by caller to attribute voting weight on.
     function voteOnProposal(uint256 proposalId, uint256 chosenProposalDepth)
         external
     {
@@ -313,7 +328,10 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
     }
 
+    /// @dev TODO Add MEV bonus rewards.
     /// @notice Anyone, even someone outside of the DAO can finalize a vote.
+    /// @dev Allow anyone to finalize a proposal, which will update its final voting status on-chain based on quorum parameters.
+    /// @param proposalId The proposal Id to finalize.
     function finalizeProposal(uint256 proposalId) external {
         Proposal storage proposal = proposalIdToProposalDetails[proposalId];
 
@@ -409,6 +427,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
     }
 
+    /// @dev Allow voters to claim rewards for voted proposals that met quorum.
+    /// An additionnal bonus is given if the caller was the submitter of the proposal.
+    /// @param proposalId The proposal Id to claim rewards for.
     function claimRewards(uint256 proposalId) external {
         /// @dev We store the proposal in memory.
         Proposal memory proposal = proposalIdToProposalDetails[proposalId];
@@ -476,8 +497,13 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         IFairnessDAOFairVesting(fairnessDAOFairVesting).mintRewards(
             msg.sender, claimableAmount
         );
+
+        emit RewardsClaimed(proposalId, msg.sender, claimableAmount);
     }
 
+    /// @dev Return the proposal data with its updated voting status as a view, without needing the caller to update the storage beforehand.
+    /// @param proposalId The proposal Id to retrieve from storage.
+    /// @return proposal Proposal data.
     function viewProposal(uint256 proposalId)
         external
         view
@@ -492,6 +518,10 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         proposal.votingStatus = getCurrentVotingStatusOfProposal(proposal);
     }
 
+    /// @dev Return mutliple proposal data with their updated voting status as a view, without needing the caller to update the storage beforehand.
+    /// @param fromIndex Start index to retrieve from storage.
+    /// @param endIndex End index to retrieve from storage.
+    /// @return proposals Array of proposal data.
     function viewMultipleProposals(uint256 fromIndex, uint256 endIndex)
         external
         view
@@ -521,6 +551,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     //     return true;
     // }
 
+    /// @dev Return the updated voting status of a proposal as a view, without needing the caller to update the storage beforehand.
+    /// @return VotingStatus Voting status of the proposal.
     function getCurrentVotingStatusOfProposal(Proposal memory proposal)
         internal
         view
@@ -549,6 +581,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
     }
 
+    /// @dev Return the minimum amount required for submitting a proposal based on the formula:
+    /// minimumSupplyShareRequiredForSubmittingProposals = totalSupplyOfVestingToken / 1_000;
+    /// @return uint256 Minimum amount required.
     function _amountRequiredForSubmittingProposals()
         internal
         view
