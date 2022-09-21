@@ -5,7 +5,7 @@ import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
 import { ethers } from "ethers";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
-import MockERC20Abi from "../../../Assets/abi/MockERC20.json";
+import FairnessDAOFairVestingAbi from "../../../Assets/abi/FairnessDAOFairVesting.json";
 import Config from "Configs/Config";
 
 type IProps = {};
@@ -27,8 +27,8 @@ export default class DaoProposalDetails extends BasePage<IProps, IState> {
 
 		if (provider) {
 			const signer = provider.getSigner();
-			const mockERC20Contract = new ethers.Contract(Config.getInstance().get().contracts.MockERC20ContractAddress, MockERC20Abi.abi, provider);
-			const mockERC20ContractWithSigner = mockERC20Contract.connect(signer);
+			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
+			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
 
 			// const tx = await mockERC20ContractWithSigner.stake(this.state.stakeAmount);
 			// const receipt = await tx.wait();
