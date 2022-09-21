@@ -17,6 +17,7 @@ type IState = {
 	fdaoBalance: number;
 	stakedFdaoBalance: number;
 	claimableVeFdaoBalance: number;
+	withdrawBalance: number
 };
 
 export default class Staking extends BasePage<IProps, IState> {
@@ -27,6 +28,7 @@ export default class Staking extends BasePage<IProps, IState> {
 			fdaoBalance: 0,
 			stakedFdaoBalance: 0,
 			claimableVeFdaoBalance: 0,
+			withdrawBalance: 0,
 		};
 	}
 
@@ -34,8 +36,7 @@ export default class Staking extends BasePage<IProps, IState> {
 		setTimeout(() => this.getBalances(), 1000);
 	}
 
-	public componentWillUnmount() {
-	}
+	public componentWillUnmount() {}
 
 	private stake = async (amountToStake: string) => {
 		const provider = Wallet.getInstance().walletData?.provider;
@@ -54,11 +55,11 @@ export default class Staking extends BasePage<IProps, IState> {
 			let stakedFdaoBalanceBn;
 			try {
 				stakedFdaoBalanceBn = (await fairnessDAOFairVestingContractWithSigner["addressToVestingInfo"](Wallet.getInstance().walletData?.userAddress)).amountVested;
-				console.log('stakedFdaoBalanceBn', stakedFdaoBalanceBn);
+				console.log("stakedFdaoBalanceBn", stakedFdaoBalanceBn);
 			} catch (e: any) {}
 
-			if(stakedFdaoBalanceBn) functionToCall = "increaseVesting";
-			console.log('functionToCall', functionToCall);
+			if (stakedFdaoBalanceBn) functionToCall = "increaseVesting";
+			console.log("functionToCall", functionToCall);
 
 			const increaseVestingTx = await fairnessDAOFairVestingContractWithSigner[functionToCall](ethers.utils.parseEther(amountToStake));
 			const increaseVestingReceipt = await increaseVestingTx.wait();
@@ -72,8 +73,8 @@ export default class Staking extends BasePage<IProps, IState> {
 			const signer = provider.getSigner();
 			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
 			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
-			const withdrawBalanceBn = await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!)
-			console.log(withdrawBalanceBn)
+			const withdrawBalanceBn = await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!);
+			console.log(withdrawBalanceBn);
 			const withdrawVestingTx = await fairnessDAOFairVestingContractWithSigner["withdrawVesting"](withdrawBalanceBn);
 			const withdrawVestingReceipt = await withdrawVestingTx.wait();
 			console.log(withdrawVestingReceipt);
@@ -109,6 +110,10 @@ export default class Staking extends BasePage<IProps, IState> {
 			const stakedFdaoBalance = new EthBigNumber(stakedFdaoBalanceBn).removeDecimals().toNumber();
 			console.log("stakedFdaoBalance", stakedFdaoBalance);
 
+			const withdrawBalanceBn = await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!);
+			const withdrawBalance = new EthBigNumber(withdrawBalanceBn).removeDecimals().toNumber();
+			console.log("withdrawBalance", withdrawBalance);
+
 			let claimableVeFdaoBalance = 0;
 			try {
 				const claimableVeFdaoBalanceBn = await fairnessDAOFairVestingContractWithSigner["getClaimableFairVesting"](Wallet.getInstance().walletData?.userAddress);
@@ -123,6 +128,7 @@ export default class Staking extends BasePage<IProps, IState> {
 				fdaoBalance,
 				stakedFdaoBalance,
 				claimableVeFdaoBalance,
+				withdrawBalance,
 			});
 		}
 	}
@@ -167,7 +173,7 @@ export default class Staking extends BasePage<IProps, IState> {
 										<div className={classes["staking-balance"]}>
 											<div className={classes["amount-value"]}>{this.state.stakedFdaoBalance} FDAO</div>
 										</div>
-										<Button variant="ghost" onClick={() => this.unstake()}>
+										<Button disabled={this.state.withdrawBalance === 0} onClick={() => this.unstake()}>
 											Unstake
 										</Button>
 									</div>
