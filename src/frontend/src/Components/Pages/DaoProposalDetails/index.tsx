@@ -56,6 +56,7 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
 			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
 
+			console.log(proposalId, choice)
 			const voteOnProposalTx = await fairnessDAOProposalRegistryContractWithSigner["voteOnProposal"](proposalId, choice);
 			const voteOnProposalReceipt = await voteOnProposalTx.wait();
 			console.log(voteOnProposalReceipt);
