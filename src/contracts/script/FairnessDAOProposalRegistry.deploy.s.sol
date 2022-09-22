@@ -19,7 +19,7 @@ contract DeployFairnessDAOProposalRegistry is Test {
 
     /// @dev To replace with the proper values in production.
     address public initialFairnessDAOFairVesting =
-        address(0xDd4EeB6C1E6eDD368B452D963FD96F9FcbCE4CD4);
+        address(0xF5FBB09BA243DF4189B978a127a5716C6fAC3F05);
     uint256 public initMinimumSupplyShareRequiredForSubmittingProposals =
         (1e18 * 1) / 1000;
     uint256 public initialVoteTimeLengthSoftProposal = 1_209_600; // 14 days: 1209600s

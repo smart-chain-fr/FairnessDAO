@@ -18,12 +18,13 @@ const rlp = require("rlp");
 import keccak from "keccak";
 import fs from "fs";
 import clui from "clui";
+import { ethers } from "hardhat";
 const Spinner = clui.Spinner;
 const log = console.log;
 
 // const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
-// const ROPSTEN_PRIVATE_KEY = process.env.ROPSTEN_PRIVATE_KEY || "";
 // const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY || "";
+// const ROPSTEN_PRIVATE_KEY = process.env.ROPSTEN_PRIVATE_KEY || "";
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || "";
 // const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || '';

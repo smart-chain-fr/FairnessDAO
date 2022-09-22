@@ -546,6 +546,18 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
     }
 
+    function getProposalIdToProposalDepthToTotalAmountOfVote(
+        uint256 proposalId,
+        uint256 proposalDepth
+    )
+        external
+        view
+        returns (uint256)
+    {
+        return proposalIdToVotingStatus[proposalId]
+            .proposalDepthToTotalAmountOfVote[proposalDepth];
+    }
+
     /// @dev TODO
     // function canSubmitWithProposalLevel() public view returns (bool) {
     //     return true;
