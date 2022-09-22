@@ -8,6 +8,7 @@ pragma solidity 0.8.4;
 /// @dev First draft of FairnessDAO protocol.
 /// @author Smart-Chain Team
 /// @dev TODO Optimize the internal storage.
+/// @dev TODO Set up a generic storage which will be read by all fairness DAOs to streamline everything and avoid broken governances.
 abstract contract FairnessDAOPolicyController {
     /// @dev Minimum supply share for submitting proposals should be set with 18 decimals.
     /// ex: 1/1000 = 0.1% = ((1e18 * 1) / 1000);

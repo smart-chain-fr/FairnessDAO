@@ -90,13 +90,10 @@ interface IFairnessDAOProposalRegistry {
         external
         view
         returns (uint256);
-    // function viewMultipleProposals(uint256 fromIndex, uint256 endIndex)
-    //     external
-    //     view
-    //     returns (
-    //         (address, uint256, uint256, uint256, string, uint8, uint8, uint256)[] memory
-    //             proposals
-    //     );
+    function viewMultipleProposals(uint256 fromIndex, uint256 endIndex)
+        external
+        view
+        returns (Proposal[] memory proposals);
     function viewProposal(uint256 proposalId)
         external
         view
