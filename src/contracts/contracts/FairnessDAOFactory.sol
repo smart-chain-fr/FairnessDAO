@@ -10,6 +10,9 @@ import {FairnessDAOProposalRegistry} from "./FairnessDAOProposalRegistry.sol";
 /// @author Smart-Chain Team
 
 contract FairnessDAOFactory {
+    mapping(address => address) public
+        fairnessDAOProposalRegistryAddressToOwnerAddress;
+
     function deployFairGovernanceForERC20Token(
         string memory tokenName,
         string memory tokenSymbol,
@@ -42,6 +45,10 @@ contract FairnessDAOFactory {
         fairnessDAOFairVesting.whitelistProposalRegistryAddress(
             address(fairnessDAOProposalRegistry)
         );
+
+        fairnessDAOProposalRegistryAddressToOwnerAddress[address(
+            fairnessDAOProposalRegistry
+        )] = msg.sender;
 
         return (
             address(fairnessDAOFairVesting), address(fairnessDAOProposalRegistry)

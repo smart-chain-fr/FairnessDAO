@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.4;
 
+import {IFairnessDAOFactory} from "./Interfaces/IFairnessDAOFactory.sol";
 import {IPublicResolver} from "./Interfaces/IPublicResolver.sol";
 import {IENSRegistryWithFallback} from
     "./Interfaces/IENSRegistryWithFallback.sol";
@@ -28,11 +29,19 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
     /// @dev Error when the caller is not the FairnessDAOFactory.
     error FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
 
+    /// @dev Error when the caller is not the deployer of the FairnessDAOProposalRegistry.
+    error FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer();
+
+    /// @dev Error when the caller is registering a subdomain for a FairnessDAOProposalRegistry twice.
+    error FairnessDAOFactoryServiceRegistry__CannotClaimSubdomainTwiceForSameFairnessDAO();
+
     address public ensRegistryWithFallbackAddress;
     address public publicResolverAddress;
     address public fairnessDAOFactoryAddress;
     bytes32 emptyNamehash = 0x00;
     bytes32 public topdomainNamehash;
+    mapping(address => bool) public
+        fairnessDAOProposalRegistryAdressToSubdomainClaimStatus;
 
     event SubdomainCreated(
         address indexed owner, string subdomain, string domain
@@ -76,6 +85,21 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
             revert FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
         }
 
+        if (
+            IFairnessDAOFactory(fairnessDAOFactoryAddress)
+                .fairnessDAOProposalRegistryAddressToOwnerAddress(_target)
+                != msg.sender
+        ) {
+            revert
+                FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer();
+        }
+
+        if (fairnessDAOProposalRegistryAdressToSubdomainClaimStatus[_target]) {
+            revert
+                FairnessDAOFactoryServiceRegistry__CannotClaimSubdomainTwiceForSameFairnessDAO();
+        }
+        fairnessDAOProposalRegistryAdressToSubdomainClaimStatus[_target] = true;
+
         /// @dev We create a namehash for the domain.
         bytes32 domainNamehash = keccak256(
             abi.encodePacked(topdomainNamehash, keccak256(abi.encodePacked(_domain)))
@@ -97,6 +121,7 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
             keccak256(abi.encodePacked(domainNamehash, subdomainLabelhash));
 
         /// @dev We verify if the subdomain is not already owned.
+        /// @TODO Change to revert().
         require(
             IENSRegistryWithFallback(ensRegistryWithFallbackAddress).owner(
                 subdomainNamehash
