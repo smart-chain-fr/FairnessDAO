@@ -112,7 +112,7 @@ export default class Staking extends BasePage<IProps, IState> {
 			console.log("stakedFdaoBalance", stakedFdaoBalance);
 
 			const withdrawBalanceBn = await fairnessDAOFairVestingContractWithSigner["balanceOf"](Wallet.getInstance().walletData?.userAddress!);
-			const withdrawBalance = new EthBigNumber(withdrawBalanceBn).removeDecimals().toNumber();
+			const withdrawBalance = parseFloat(ethers.utils.formatEther(withdrawBalanceBn))
 			console.log("withdrawBalance", withdrawBalance);
 
 			let claimableVeFdaoBalance = 0;

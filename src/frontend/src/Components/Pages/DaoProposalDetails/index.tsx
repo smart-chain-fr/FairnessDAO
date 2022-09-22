@@ -34,27 +34,31 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 
 	private getProposal = async (proposalId: number) => {
 		const provider = Wallet.getInstance().walletData?.provider;
-		console.log(provider);
-
 		if (provider) {
 			const signer = provider.getSigner();
 			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
 			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
 
-			const proposalCountBn = await fairnessDAOProposalRegistryContract["proposalCount"]();
-			console.log("proposalCountBn", proposalCountBn);
-			const proposalCount = proposalCountBn.toNumber();
-			console.log("proposalCount", proposalCount);
+			const proposal = await fairnessDAOProposalRegistryContract["viewProposal"](proposalId);
+			// const proposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
+			console.log(proposal);
+			this.setState({
+				...this.state,
+				proposal,
+			});
+		}
+	};
 
-			if (proposalCount > 0) {
-				const proposal = await fairnessDAOProposalRegistryContract["viewProposal"](proposalId);
-				// const proposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
-				console.log(proposal);
-				this.setState({
-					...this.state,
-					proposal,
-				});
-			}
+	private vote = async (proposalId: number, choice: number) => {
+		const provider = Wallet.getInstance().walletData?.provider;
+		if (provider) {
+			const signer = provider.getSigner();
+			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
+			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
+
+			const voteOnProposalTx = await fairnessDAOProposalRegistryContractWithSigner["voteOnProposal"](proposalId, choice);
+			const voteOnProposalReceipt = await voteOnProposalTx.wait();
+			console.log(voteOnProposalReceipt);
 		}
 	};
 
@@ -71,6 +75,9 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 								<div className={classes["subcard"]}>
 									<div className={classes["subcard"]}>{JSON.stringify(this.state.proposal)}</div>
 								</div>
+								<Button onClick={() => this.vote(this.props.proposalId, 0)}>Vote 0</Button>
+								<Button onClick={() => this.vote(this.props.proposalId, 1)}>Vote 1</Button>
+								<Button onClick={() => this.vote(this.props.proposalId, 2)}>Vote 2</Button>
 							</div>
 						</div>
 					</DefaultTemplate>
