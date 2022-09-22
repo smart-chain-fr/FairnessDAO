@@ -35,8 +35,8 @@
     { "version": "v2", "date": "2022/06/10 18:02:00", "pagesComingSoon": {} }
   ],
   "contracts": {
-    "FairnessDAOFairVestingContractAddress": "0xdd4eeb6c1e6edd368b452d963fd96f9fcbce4cd4",
-    "FairnessDAOProposalRegistryContractAddress": "0x165d05092377512d2f04BfF5Cee1b7d97d106A32",
+    "FairnessDAOFairVestingContractAddress": "0xf5fbb09ba243df4189b978a127a5716c6fac3f05",
+    "FairnessDAOProposalRegistryContractAddress": "0x14b77c863d5334fa47D8A6b340A3aB249425E950",
     "MockERC20ContractAddress": "0xb082f8547F959417b0c75Da4a8E1F291F0495b54",
     "icoToken": {
       "symbol": "",
