@@ -14,15 +14,15 @@ import EthBigNumber from "Services/Wallet/EthBigNumber";
 type IProps = {};
 
 type IState = {
-	proposals: Proposal[];
+	proposals: any[];
 };
 
 export default class DaoListProposals extends BasePage<IProps, IState> {
 	public constructor(props: IProps) {
 		super(props);
 		this.state = {
-			proposals: []
-		}
+			proposals: [],
+		};
 	}
 
 	public componentDidMount() {
@@ -38,13 +38,19 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
 			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
 
-			const proposalCountBn = await fairnessDAOProposalRegistryContract['proposalCount']()
-			const proposalCount = new EthBigNumber(proposalCountBn).removeDecimals().toNumber();
-			console.log('proposalCount', proposalCount);
+			const proposalCountBn = await fairnessDAOProposalRegistryContract["proposalCount"]();
+			console.log("proposalCountBn", proposalCountBn);
+			const proposalCount = proposalCountBn.toNumber();
+			console.log("proposalCount", proposalCount);
 
-			if(proposalCount > 0) {
-			const proposals = await fairnessDAOProposalRegistryContract['viewMultipleProposals'](0, proposalCount - 1)
-			console.log(proposals);
+			if (proposalCount > 0) {
+				// const proposals = await fairnessDAOProposalRegistryContract["viewProposal"](0);
+				const proposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
+				console.log(proposals);
+				this.setState({
+					...this.state,
+					proposals,
+				});
 			}
 
 			// const tx = await mockERC20ContractWithSigner.stake(this.state.stakeAmount);
@@ -61,10 +67,16 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 					<DefaultTemplate title={title!}>
 						<div className={classes["root"]}>
 							<h1>Proposals</h1>
-							<Link to="/new-proposal"><Button>New Proposal</Button></Link>
+							<Link to="/new-proposal">
+								<Button>New Proposal</Button>
+							</Link>
 							<div className={classes["card"]}>
 								<div className={classes["subcard"]}>
-									<Button>Get Some Tokens</Button>
+									{this.state.proposals.map((proposal, i) => (
+										<Link key="i" to={`/proposal/${i}`}>
+											{JSON.stringify(proposal)}
+										</Link>
+									))}
 								</div>
 							</div>
 						</div>
