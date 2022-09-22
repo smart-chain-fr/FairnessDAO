@@ -13,7 +13,14 @@ const ipfsClient = require("ipfs-http-client");
 type IProps = {};
 
 type IState = {
-	stakeAmount: string;
+	title: string;
+	description: string;
+	voteChoices: string[];
+	totalVoteChoices: number;
+	startTime: number;
+	proposalLevel: number;
+	submittedAt: number;
+	submitterAddress: string;
 };
 
 export type Proposal = {
@@ -22,17 +29,23 @@ export type Proposal = {
 	voteChoices: string[];
 	totalVoteChoices: number;
 	startTime: number;
-	proposalLevel: number; /// @dev Must be either 0 (Soft) or 1 (Hard).
-	submittedAt: number; // Or Date or String since it's not used on-chain.
+	proposalLevel: number;
+	submittedAt: number;
 	submitterAddress: string;
-	// signedProposal: string;
 };
 
 export default class DaoNewProposal extends BasePage<IProps, IState> {
 	public constructor(props: IProps) {
 		super(props);
 		this.state = {
-			stakeAmount: "",
+			title: "",
+			description: "",
+			voteChoices: ["Yes", "No", "Maybe"],
+			totalVoteChoices: 3,
+			startTime: Date.now(),
+			proposalLevel: 0,
+			submittedAt: Date.now() + 3600,
+			submitterAddress: Wallet.getInstance().walletData?.userAddress!,
 		};
 	}
 
@@ -49,20 +62,6 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
 			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
 
-			// ---------------- TEST ---------------- //
-			const proposalToSubmit: Proposal = {
-				title: "FIP#X: Lorem ipsum",
-				description:
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-				voteChoices: ["Yes", "No", "Maybe"],
-				totalVoteChoices: 3,
-				startTime: 1663792076,
-				proposalLevel: 0,
-				submittedAt: 1663777776,
-				submitterAddress: ethers.constants.AddressZero,
-				// signedProposal: "",
-			};
-
 			const projectId = "2F2BKlDPX4CaBF8TGPLey2zwkP7";
 			const projectSecret = "75be29d11dffc3a0a53702d8259e71f3";
 			const auth = "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
@@ -74,16 +73,16 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 					authorization: auth,
 				},
 			});
-			const proposalURI: any = await client.add(JSON.stringify(proposalToSubmit));
+			const proposalURI: any = await client.add(JSON.stringify(this.state));
 			console.log("proposalURI", proposalURI);
 
-			const allowanceTx = await fairnessDAOFairVestingContractWithSigner['approve'](Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, ethers.utils.parseEther("999999999999999999999999999999"));
+			const allowanceTx = await fairnessDAOFairVestingContractWithSigner["approve"](Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, ethers.utils.parseEther("999999999999999999999999999999"));
 			await allowanceTx.wait();
 			console.log(`allowance tx hash: ${allowanceTx.hash}`);
 
-			console.log(proposalToSubmit.startTime, proposalURI.path, proposalToSubmit.totalVoteChoices, proposalToSubmit.proposalLevel)
-			
-			const submitProposalTx = await fairnessDAOProposalRegistryContractWithSigner["submitProposal"](proposalToSubmit.startTime, proposalURI.path, proposalToSubmit.totalVoteChoices, proposalToSubmit.proposalLevel);
+			console.log(this.state);
+
+			const submitProposalTx = await fairnessDAOProposalRegistryContractWithSigner["submitProposal"](this.state.startTime, proposalURI.path, this.state.totalVoteChoices, this.state.proposalLevel);
 			await submitProposalTx.wait();
 			console.log(`submitProposal tx hash: ${submitProposalTx.hash}`);
 		}
@@ -97,19 +96,85 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 					<DefaultTemplate title={title!}>
 						<div className={classes["root"]}>
 							<h1>New Proposal</h1>
-
 							<div className={classes["card"]}>
 								<div className={classes["subcard"]}>
 									<input
 										type="text"
 										className={classes["staking-input-input"]}
-										value={this.state.stakeAmount}
+										value={this.state.title}
 										onChange={(e) => {
 											this.setState({
-												stakeAmount: e.target.value,
+												title: e.target.value,
 											});
 										}}
-										placeholder="Amount"
+										placeholder="Title"
+									/>
+									<input
+										type="text"
+										className={classes["staking-input-input"]}
+										value={this.state.description}
+										onChange={(e) => {
+											this.setState({
+												description: e.target.value,
+											});
+										}}
+										placeholder="Description"
+									/>
+									<input
+										type="text"
+										className={classes["staking-input-input"]}
+										value={this.state.voteChoices.toString()}
+										onChange={(e) => {
+											this.setState({
+												voteChoices: e.target.value.split(","),
+												totalVoteChoices: e.target.value.split(",").length,
+											});
+										}}
+										placeholder="Choices"
+									/>
+									<input
+										type="text"
+										className={classes["staking-input-input"]}
+										value={this.state.startTime}
+										onChange={(e) => {
+											this.setState({
+												startTime: parseInt(e.target.value),
+											});
+										}}
+										placeholder="Start time"
+									/>
+									<input
+										type="string"
+										className={classes["staking-input-input"]}
+										value={this.state.proposalLevel}
+										onChange={(e) => {
+											this.setState({
+												proposalLevel: parseInt(e.target.value),
+											});
+										}}
+										placeholder="Proposal Level"
+									/>
+									<input
+										type="text"
+										className={classes["staking-input-input"]}
+										value={this.state.submittedAt}
+										onChange={(e) => {
+											this.setState({
+												submittedAt: parseInt(e.target.value),
+											});
+										}}
+										placeholder="Submitted at"
+									/>
+									<input
+										type="text"
+										className={classes["staking-input-input"]}
+										value={this.state.submitterAddress}
+										onChange={(e) => {
+											this.setState({
+												submitterAddress: e.target.value,
+											});
+										}}
+										placeholder="Submitter Address"
 									/>
 
 									<Button onClick={() => this.submitProposal()}>Submit proposal</Button>

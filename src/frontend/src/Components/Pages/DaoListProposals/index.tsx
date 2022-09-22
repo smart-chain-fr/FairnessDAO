@@ -52,10 +52,6 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 					proposals,
 				});
 			}
-
-			// const tx = await mockERC20ContractWithSigner.stake(this.state.stakeAmount);
-			// const receipt = await tx.wait();
-			// console.log(receipt);
 		}
 	};
 
@@ -71,13 +67,11 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 								<Button>New Proposal</Button>
 							</Link>
 							<div className={classes["card"]}>
-								<div className={classes["subcard"]}>
-									{this.state.proposals.map((proposal, i) => (
-										<Link key="i" to={`/proposal/${i}`}>
-											{JSON.stringify(proposal)}
-										</Link>
-									))}
-								</div>
+								{this.state.proposals.map((proposal, i) => (
+									<Link key="i" to={`/proposal/${i}`}>
+										<div className={classes["subcard"]}>{JSON.stringify(proposal)}</div>
+									</Link>
+								))}
 							</div>
 						</div>
 					</DefaultTemplate>

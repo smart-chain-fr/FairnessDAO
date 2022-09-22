@@ -5,7 +5,7 @@ import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
 import { ethers } from "ethers";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
-import FairnessDAOFairVestingAbi from "../../../Assets/abi/FairnessDAOFairVesting.json";
+import FairnessDAOProposalRegistryAbi from "../../../Assets/abi/FairnessDAOProposalRegistry.json";
 import Config from "Configs/Config";
 import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 
@@ -17,30 +17,44 @@ type IPropsClass = IProps & {
 };
 
 type IState = {
-	stakeAmount: string;
+	proposal: any;
 };
 
 class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 	public constructor(props: IPropsClass) {
 		super(props);
+		this.state = {
+			proposal: undefined,
+		};
 	}
 
 	public componentDidMount() {
-		console.log(this.props.proposalId);
+		this.getProposal(this.props.proposalId);
 	}
 
-	private getTokens = async () => {
+	private getProposal = async (proposalId: number) => {
 		const provider = Wallet.getInstance().walletData?.provider;
 		console.log(provider);
 
 		if (provider) {
 			const signer = provider.getSigner();
-			const fairnessDAOFairVestingContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOFairVestingContractAddress, FairnessDAOFairVestingAbi.abi, provider);
-			const fairnessDAOFairVestingContractWithSigner = fairnessDAOFairVestingContract.connect(signer);
+			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
+			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
 
-			// const tx = await mockERC20ContractWithSigner.stake(this.state.stakeAmount);
-			// const receipt = await tx.wait();
-			// console.log(receipt);
+			const proposalCountBn = await fairnessDAOProposalRegistryContract["proposalCount"]();
+			console.log("proposalCountBn", proposalCountBn);
+			const proposalCount = proposalCountBn.toNumber();
+			console.log("proposalCount", proposalCount);
+
+			if (proposalCount > 0) {
+				const proposal = await fairnessDAOProposalRegistryContract["viewProposal"](proposalId);
+				// const proposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
+				console.log(proposal);
+				this.setState({
+					...this.state,
+					proposal,
+				});
+			}
 		}
 	};
 
@@ -51,11 +65,11 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 				content={([title]) => (
 					<DefaultTemplate title={title!}>
 						<div className={classes["root"]}>
-							<h1>Proposal </h1>
+							<h1>Proposal</h1>
 
 							<div className={classes["card"]}>
 								<div className={classes["subcard"]}>
-									<Button>Get Some Tokens</Button>
+									<div className={classes["subcard"]}>{JSON.stringify(this.state.proposal)}</div>
 								</div>
 							</div>
 						</div>
