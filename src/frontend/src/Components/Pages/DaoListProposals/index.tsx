@@ -2,14 +2,15 @@ import Button from "Components/Elements/Button";
 import I18n from "Components/Materials/I18n";
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
 import FairnessDAOProposalRegistryAbi from "../../../Assets/abi/FairnessDAOProposalRegistry.json";
 import Config from "Configs/Config";
 import { Link } from "react-router-dom";
-import { Proposal } from "../DaoNewProposal";
+import { Proposal, ProposalInfo } from "../DaoNewProposal";
 import EthBigNumber from "Services/Wallet/EthBigNumber";
+import axios from "axios";
 
 type IProps = {};
 
@@ -45,12 +46,53 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 
 			if (proposalCount > 0) {
 				// const proposals = await fairnessDAOProposalRegistryContract["viewProposal"](0);
-				const proposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
-				console.log(proposals);
-				this.setState({
-					...this.state,
-					proposals,
-				});
+				const tmpProposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
+				const proposals: ProposalInfo[] = [];
+
+				for (var i = 0; i < tmpProposals.length; ++i) {
+					const tmpProposal = tmpProposals[i];
+					console.log("Reading", i);
+
+					const tmpProposalInfo: ProposalInfo = {
+						proposerAddress: tmpProposal.proposerAddress,
+						startTime: tmpProposal.startTime.toNumber(),
+						endTime: tmpProposal.endTime.toNumber(),
+						proposalTotalDepth: tmpProposal.proposalTotalDepth.toNumber(),
+						proposalURI: tmpProposal.proposalURI,
+						votingStatus: tmpProposal.votingStatus, /// @dev Between 0 and 6.
+						proposalLevel: tmpProposal.proposalLevel, /// @dev Either 0 or 1.
+						amountOfVestingTokensBurnt: tmpProposal.amountOfVestingTokensBurnt,
+						proposalDepthToTotalAmountOfVote: new Array<BigNumber>(),
+					};
+
+					console.log("Axios", `https://ipfs.io/ipfs/${tmpProposalInfo.proposalURI}`);
+					/// @dev We retrieve the content of the proposal from IPFS.
+					const ipfsData: any = await axios.get(`https://ipfs.io/ipfs/${tmpProposalInfo.proposalURI}`);
+					console.log(ipfsData);
+					tmpProposalInfo.title = ipfsData.data.title;
+					tmpProposalInfo.description = ipfsData.data.description;
+					tmpProposalInfo.voteChoices = ipfsData.data.voteChoices;
+
+					/// @dev We now retrieve the info of the proposal from the voting phase.
+					/// If the proposal is not in active or passed voting status, everything should be set at 0 by default.
+					const tmpVotingStatus: any = await fairnessDAOProposalRegistryContract["proposalIdToVotingStatus"](i);
+					tmpProposalInfo.totalAmountOfVotingTokensUsed = tmpVotingStatus.totalAmountOfVotingTokensUsed;
+					tmpProposalInfo.totalAmountOfUniqueVoters = tmpVotingStatus.totalAmountOfUniqueVoters;
+
+					/// @dev We then retrieve the amount of vesting tokens used for voting for each proposal voting choice.
+					for (var j = 0; j < BigNumber.from(tmpProposalInfo.proposalTotalDepth).toNumber(); ++j) {
+						const tmpProposalDepthToTotalAmountOfVote: any = await fairnessDAOProposalRegistryContract["getProposalIdToProposalDepthToTotalAmountOfVote"](i, j);
+						tmpProposalInfo.proposalDepthToTotalAmountOfVote.push(tmpProposalDepthToTotalAmountOfVote);
+					}
+
+					proposals.push(tmpProposalInfo);
+
+					this.setState({
+						proposals,
+					});
+				}
+
+	
 			}
 		}
 	};
@@ -63,15 +105,44 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 					<DefaultTemplate title={title!}>
 						<div className={classes["root"]}>
 							<h1>Proposals</h1>
-							<Link to="/new-proposal">
-								<Button>New Proposal</Button>
-							</Link>
+							<div className={classes["new-proposal"]}>
+								<Link to="/new-proposal">
+									<Button>New Proposal</Button>
+								</Link>
+							</div>
 							<div className={classes["card"]}>
-								{this.state.proposals.map((proposal, i) => (
-									<Link key="i" to={`/proposal/${i}`}>
-										<div className={classes["subcard"]}>{JSON.stringify(proposal)}</div>
-									</Link>
-								))}
+								{this.state.proposals.length === 0 ? (
+									<div>Loading...</div>
+								) : (
+									<>
+										{this.state.proposals.map((proposal, i) => (
+											<Link key={`proposal-${i}`} to={`/proposal/${i}`}>
+												<div className={classes["subcard"]}>
+													<div>Title {proposal.title}</div>
+													<div>Description {proposal.description}</div>
+													<div>startTime {parseFloat(ethers.utils.formatEther(proposal.startTime!))}</div>
+													<div>endTime {parseFloat(ethers.utils.formatEther(proposal.endTime!))}</div>
+													<div>proposerAddress {proposal.proposerAddress}</div>
+													<div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(proposal.proposalTotalDepth!))}</div>
+													<div>proposalURI {proposal.proposalURI}</div>
+													<div>votingStatus {proposal.votingStatus}</div>
+													<div>proposalLevel {proposal.proposalLevel}</div>
+													<div>amountOfVestingTokensBurnt {parseFloat(ethers.utils.formatEther(proposal.amountOfVestingTokensBurnt!))}</div>
+													<div>totalAmountOfVotingTokensUsed {parseFloat(ethers.utils.formatEther(proposal.totalAmountOfVotingTokensUsed!))}</div>
+													<div>totalAmountOfUniqueVoters {parseFloat(ethers.utils.formatEther(proposal.totalAmountOfUniqueVoters!))}</div>
+													{proposal.proposalDepthToTotalAmountOfVote.map((depth: any) => (
+														<div>proposalDepthToTotalAmountOfVote {parseFloat(ethers.utils.formatEther(depth!))}</div>
+													))}
+													{proposal.voteChoices?.map((choice: string, i: number) => (
+														<div>
+															{choice} {i}
+														</div>
+													))}
+												</div>
+											</Link>
+										))}
+									</>
+								)}
 							</div>
 						</div>
 					</DefaultTemplate>

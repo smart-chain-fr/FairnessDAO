@@ -2,7 +2,7 @@ import Button from "Components/Elements/Button";
 import I18n from "Components/Materials/I18n";
 import BasePage from "Components/Pages/Base";
 import DefaultTemplate from "Components/PageTemplates/DefaultTemplate";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import Wallet from "Stores/Wallet";
 import classes from "./classes.module.scss";
 import FairnessDAOProposalRegistryAbi from "../../../Assets/abi/FairnessDAOProposalRegistry.json";
@@ -33,6 +33,26 @@ export type Proposal = {
 	submittedAt: number;
 	submitterAddress: string;
 };
+
+export type ProposalInfo = {
+    /// On-Chain ProposalDetails
+    proposerAddress?: string;
+    startTime?: BigNumber;
+    endTime?: BigNumber;
+    proposalTotalDepth: BigNumber;
+    proposalURI?: string;
+    votingStatus?: number; /// @dev Between 0 and 6.
+    proposalLevel?: number; /// @dev Either 0 or 1.
+    amountOfVestingTokensBurnt?: BigNumber; /// @dev use `ethers.utils.formatUnits(_BigNumValue_, 18)` to display it as a string.
+    /// IPFS ProposalDetails
+    title?: string;
+    description?: string;
+    voteChoices?: string[];
+    /// VotingStatus
+    totalAmountOfVotingTokensUsed?: BigNumber; /// @dev use `ethers.utils.formatUnits(_BigNumValue_, 18)` to display it as a string.
+    totalAmountOfUniqueVoters?: BigNumber;
+    proposalDepthToTotalAmountOfVote: BigNumber[];
+  };
 
 export default class DaoNewProposal extends BasePage<IProps, IState> {
 	public constructor(props: IProps) {
