@@ -45,7 +45,9 @@ export default class Header extends React.Component<IProps, IState> {
 							<Module from={Module.config.Logo}>
 								<Link className={classes["logo"]} to={Module.config.Logo.props.url}>
 									{/* <Logo /> */}
-									<div className={classes["title"]}>FairnessDAO</div>
+									<div className={classes["title"]}>
+										<img alt="logo" src="/logo.png" />
+									</div>
 								</Link>
 							</Module>
 						</div>

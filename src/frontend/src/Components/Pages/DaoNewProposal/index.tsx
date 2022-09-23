@@ -37,8 +37,8 @@ export type Proposal = {
 export type ProposalInfo = {
     /// On-Chain ProposalDetails
     proposerAddress?: string;
-    startTime?: BigNumber;
-    endTime?: BigNumber;
+    startTime?: number;
+    endTime?: number;
     proposalTotalDepth: BigNumber;
     proposalURI?: string;
     votingStatus?: number; /// @dev Between 0 and 6.

@@ -10,6 +10,7 @@
 	h1 {
 		font-size: 24px;
 		margin: 24px 0;
+		display: inline-block;
 	}
 
 	.card {
@@ -31,22 +32,6 @@
 		flex-grow: 0;
 	}
 
-	.subcard {
-		width: 100%;
-		background: #f9fafb;
-		border-radius: 8px;
-		padding: 24px;
-
-		h2 {
-			font-family: "Inter";
-			font-style: normal;
-			font-weight: 700;
-			font-size: 20px;
-			line-height: 28px;
-			color: #111827;
-		}
-	}
-
 	.subgrid {
 		width: 100%;
 		display: grid;
@@ -58,17 +43,17 @@
 		float: left;
 	}
 
-    .subcenter {
-        text-align: center;
+	.subcenter {
+		text-align: center;
 
-        button {
-            width: 100%;
-        }
-    }
+		button {
+			width: 100%;
+		}
+	}
 
 	.staking-amount {
-        margin: 24px auto;
-        width: 180px;
+		margin: 24px auto;
+		width: 180px;
 		display: grid;
 		grid-template-columns: 20px auto;
 		gap: 10px;
@@ -134,8 +119,76 @@
 		}
 	}
 
+	.proposal-subcard {
+		width: 100%;
+		background: #f9fafb;
+		border-radius: 8px;
+		padding: 24px;
+		box-sizing: border-box;
+
+		&:hover {
+			border: 1px solid #e5e7eb;
+		}
+	}
+
 	.new-proposal {
 		float: right;
+		display: inline-block;
+		margin: 16px 0 0 0;
+
+		> a {
+			text-decoration: none;
+		}
+	}
+
+	.proposal-link {
+		text-decoration: none;
+		width: 100%;
+	}
+
+	.proposal-author {
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 20px;
+		color: #4b5563;
+	}
+
+	.proposal-title {
+		font-weight: 700;
+		font-size: 20px;
+		line-height: 28px;
+		color: #111827;
+	}
+
+	.proposal-description {
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 20px;
+		color: #6b7280;
+		margin: 16px 0;
+	}
+
+	.proposal-status-open {
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 17px;
+		color: #008baa;
+		float: right;
+	}
+
+	.proposal-status-closed {
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 17px;
+		color: #ed306a;
+		float: right;
+	}
+
+	.proposal-vefdao {
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 20px;
+		color: #6b7280;
 	}
 }
 

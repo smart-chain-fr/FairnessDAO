@@ -11,11 +11,12 @@ import { Link } from "react-router-dom";
 import { Proposal, ProposalInfo } from "../DaoNewProposal";
 import EthBigNumber from "Services/Wallet/EthBigNumber";
 import axios from "axios";
+import moment from "moment";
 
 type IProps = {};
 
 type IState = {
-	proposals: any[];
+	proposals: ProposalInfo[];
 };
 
 export default class DaoListProposals extends BasePage<IProps, IState> {
@@ -49,7 +50,7 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 				const tmpProposals = await fairnessDAOProposalRegistryContract["viewMultipleProposals"](0, proposalCount - 1);
 				const proposals: ProposalInfo[] = [];
 
-				for (var i = 0; i < tmpProposals.length; ++i) {
+				for (var i = tmpProposals.length - 1; i >= 0; --i) {
 					const tmpProposal = tmpProposals[i];
 					console.log("Reading", i);
 
@@ -91,8 +92,6 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 						proposals,
 					});
 				}
-
-	
 			}
 		}
 	};
@@ -116,14 +115,19 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 								) : (
 									<>
 										{this.state.proposals.map((proposal, i) => (
-											<Link key={`proposal-${i}`} to={`/proposal/${i}`}>
-												<div className={classes["subcard"]}>
-													<div>Title {proposal.title}</div>
-													<div>Description {proposal.description}</div>
-													<div>startTime {parseFloat(ethers.utils.formatEther(proposal.startTime!))}</div>
-													<div>endTime {parseFloat(ethers.utils.formatEther(proposal.endTime!))}</div>
-													<div>proposerAddress {proposal.proposerAddress}</div>
-													<div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(proposal.proposalTotalDepth!))}</div>
+											<Link key={`proposal-${i}`} to={`/proposal/${i}`} className={classes["proposal-link"]}>
+												<div className={classes["proposal-subcard"]}>
+													{Date.now() / 1000 > proposal.startTime! && Date.now() / 1000 < proposal.endTime! ? (
+														<div className={classes["proposal-status-open"]}>{`OPEN FOR ${-moment().diff(moment.unix(proposal.endTime!), "days")} DAYS`}</div>
+													) : (
+														<div className={classes["proposal-status-closed"]}>CLOSED</div>
+													)}
+
+													<div className={classes["proposal-author"]}>{proposal.proposerAddress}</div>
+													<div className={classes["proposal-title"]}>{proposal.title}</div>
+													<div className={classes["proposal-description"]}>Description {proposal.description}</div>
+													<div className={classes["proposal-vefdao"]}>{parseFloat(ethers.utils.formatEther(proposal.totalAmountOfVotingTokensUsed!)).toFixed(5)} VeFDAO</div>
+													{/* <div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(proposal.proposalTotalDepth!))}</div>
 													<div>proposalURI {proposal.proposalURI}</div>
 													<div>votingStatus {proposal.votingStatus}</div>
 													<div>proposalLevel {proposal.proposalLevel}</div>
@@ -137,7 +141,7 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 														<div>
 															{choice} {i}
 														</div>
-													))}
+													))} */}
 												</div>
 											</Link>
 										))}
