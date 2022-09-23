@@ -64,6 +64,7 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 						proposalLevel: tmpProposal.proposalLevel, /// @dev Either 0 or 1.
 						amountOfVestingTokensBurnt: tmpProposal.amountOfVestingTokensBurnt,
 						proposalDepthToTotalAmountOfVote: new Array<BigNumber>(),
+						id: i
 					};
 
 					console.log("Axios", `https://ipfs.io/ipfs/${tmpProposalInfo.proposalURI}`);
@@ -114,8 +115,8 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 									<div>Loading...</div>
 								) : (
 									<>
-										{this.state.proposals.map((proposal, i) => (
-											<Link key={`proposal-${i}`} to={`/proposal/${i}`} className={classes["proposal-link"]}>
+										{this.state.proposals.map((proposal) => (
+											<Link key={`proposal-${proposal.id}`} to={`/proposal/${proposal.id}`} className={classes["proposal-link"]}>
 												<div className={classes["proposal-subcard"]}>
 													{Date.now() / 1000 > proposal.startTime! && Date.now() / 1000 < proposal.endTime! ? (
 														<div className={classes["proposal-status-open"]}>{`OPEN FOR ${-moment().diff(moment.unix(proposal.endTime!), "days")} DAYS`}</div>

@@ -35,24 +35,25 @@ export type Proposal = {
 };
 
 export type ProposalInfo = {
-    /// On-Chain ProposalDetails
-    proposerAddress?: string;
-    startTime?: number;
-    endTime?: number;
-    proposalTotalDepth: BigNumber;
-    proposalURI?: string;
-    votingStatus?: number; /// @dev Between 0 and 6.
-    proposalLevel?: number; /// @dev Either 0 or 1.
-    amountOfVestingTokensBurnt?: BigNumber; /// @dev use `ethers.utils.formatUnits(_BigNumValue_, 18)` to display it as a string.
-    /// IPFS ProposalDetails
-    title?: string;
-    description?: string;
-    voteChoices?: string[];
-    /// VotingStatus
-    totalAmountOfVotingTokensUsed?: BigNumber; /// @dev use `ethers.utils.formatUnits(_BigNumValue_, 18)` to display it as a string.
-    totalAmountOfUniqueVoters?: BigNumber;
-    proposalDepthToTotalAmountOfVote: BigNumber[];
-  };
+	/// On-Chain ProposalDetails
+	proposerAddress?: string;
+	startTime?: number;
+	endTime?: number;
+	proposalTotalDepth: BigNumber;
+	proposalURI?: string;
+	votingStatus?: number; /// @dev Between 0 and 6.
+	proposalLevel?: number; /// @dev Either 0 or 1.
+	amountOfVestingTokensBurnt?: BigNumber; /// @dev use `ethers.utils.formatUnits(_BigNumValue_, 18)` to display it as a string.
+	/// IPFS ProposalDetails
+	title?: string;
+	description?: string;
+	voteChoices?: string[];
+	/// VotingStatus
+	totalAmountOfVotingTokensUsed?: BigNumber; /// @dev use `ethers.utils.formatUnits(_BigNumValue_, 18)` to display it as a string.
+	totalAmountOfUniqueVoters?: BigNumber;
+	proposalDepthToTotalAmountOfVote: BigNumber[];
+	id: number
+};
 
 export default class DaoNewProposal extends BasePage<IProps, IState> {
 	public constructor(props: IProps) {
@@ -118,9 +119,10 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 							<h1>New Proposal</h1>
 							<div className={classes["card"]}>
 								<div className={classes["subcard"]}>
+									<label className={classes["proposal-label"]}>Title</label>
 									<input
 										type="text"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.title}
 										onChange={(e) => {
 											this.setState({
@@ -129,9 +131,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 										}}
 										placeholder="Title"
 									/>
+
+									<label className={classes["proposal-label"]}>Description</label>
 									<input
 										type="text"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.description}
 										onChange={(e) => {
 											this.setState({
@@ -140,9 +144,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 										}}
 										placeholder="Description"
 									/>
+
+									<label className={classes["proposal-label"]}>Choices (separated by commas)</label>
 									<input
 										type="text"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.voteChoices.toString()}
 										onChange={(e) => {
 											this.setState({
@@ -152,9 +158,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 										}}
 										placeholder="Choices"
 									/>
+
+									<label className={classes["proposal-label"]}>Start time (Unix)</label>
 									<input
 										type="text"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.startTime}
 										onChange={(e) => {
 											this.setState({
@@ -163,9 +171,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 										}}
 										placeholder="Start time"
 									/>
+
+									<label className={classes["proposal-label"]}>Proposal Level (0 or 1)</label>
 									<input
 										type="string"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.proposalLevel}
 										onChange={(e) => {
 											this.setState({
@@ -174,9 +184,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 										}}
 										placeholder="Proposal Level"
 									/>
+
+									<label className={classes["proposal-label"]}>Submitted at (Unix)</label>
 									<input
 										type="text"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.submittedAt}
 										onChange={(e) => {
 											this.setState({
@@ -185,9 +197,11 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 										}}
 										placeholder="Submitted at"
 									/>
+
+									<label className={classes["proposal-label"]}>Submitter Address</label>
 									<input
 										type="text"
-										className={classes["staking-input-input"]}
+										className={classes["proposal-input"]}
 										value={this.state.submitterAddress}
 										onChange={(e) => {
 											this.setState({

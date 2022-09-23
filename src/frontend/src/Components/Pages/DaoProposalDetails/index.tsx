@@ -10,6 +10,7 @@ import Config from "Configs/Config";
 import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 import { ProposalInfo } from "../DaoNewProposal";
 import axios from "axios";
+import moment from "moment";
 
 type IProps = {};
 
@@ -56,6 +57,7 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 				proposalLevel: tmpProposal.proposalLevel, /// @dev Either 0 or 1.
 				amountOfVestingTokensBurnt: tmpProposal.amountOfVestingTokensBurnt,
 				proposalDepthToTotalAmountOfVote: new Array<BigNumber>(),
+				id: proposalId,
 			};
 
 			/// @dev We retrieve the content of the proposal from IPFS.
@@ -112,27 +114,41 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 									<div>Loading....</div>
 								) : (
 									<div className={classes["subcard"]}>
-										<div className={classes["subcard"]}>
-											<div>Title {this.state.proposal?.title}</div>
-											<div>Description {this.state.proposal?.description}</div>
-											<div>startTime {parseFloat(ethers.utils.formatEther(this.state.proposal?.startTime!))}</div>
-											<div>endTime {parseFloat(ethers.utils.formatEther(this.state.proposal?.endTime!))}</div>
-											<div>proposerAddress {this.state.proposal?.proposerAddress}</div>
-											<div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(this.state.proposal?.proposalTotalDepth!))}</div>
-											<div>proposalURI {this.state.proposal?.proposalURI}</div>
-											<div>votingStatus {this.state.proposal?.votingStatus}</div>
-											<div>proposalLevel {this.state.proposal?.proposalLevel}</div>
-											<div>amountOfVestingTokensBurnt {parseFloat(ethers.utils.formatEther(this.state.proposal?.amountOfVestingTokensBurnt!))}</div>
-											<div>totalAmountOfVotingTokensUsed {parseFloat(ethers.utils.formatEther(this.state.proposal?.totalAmountOfVotingTokensUsed!))}</div>
-											<div>totalAmountOfUniqueVoters {parseFloat(ethers.utils.formatEther(this.state.proposal?.totalAmountOfUniqueVoters!))}</div>
-											{this.state.proposal?.proposalDepthToTotalAmountOfVote.map((depth) => (
-												<div>proposalDepthToTotalAmountOfVote {parseFloat(ethers.utils.formatEther(depth!))}</div>
-											))}
-											{this.state.proposal?.voteChoices?.map((choice, i) => (
-												<Button key={`choice-${i}`} onClick={() => this.vote(this.props.proposalId, i)}>
-													{choice}
-												</Button>
-											))}
+										<div className={classes["proposal-subcard"]}>
+											{Date.now() / 1000 > this.state.proposal!.startTime! && Date.now() / 1000 < this.state.proposal!.endTime! ? (
+												<div className={classes["proposal-status-open"]}>{`OPEN FOR ${-moment().diff(moment.unix(this.state.proposal!.endTime!), "days")} DAYS`}</div>
+											) : (
+												<div className={classes["proposal-status-closed"]}>CLOSED</div>
+											)}
+
+											<div className={classes["proposal-author"]}>{this.state.proposal!.proposerAddress}</div>
+											<div className={classes["proposal-title"]}>{this.state.proposal!.title}</div>
+											<div className={classes["proposal-description"]}>Description {this.state.proposal!.description}</div>
+											<div className={classes["proposal-vefdao"]}>{parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!)).toFixed(5)} VeFDAO</div>
+											{/* <div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(this.state.proposal!.proposalTotalDepth!))}</div>
+													<div>proposalURI {this.state.proposal!.proposalURI}</div>
+													<div>votingStatus {this.state.proposal!.votingStatus}</div>
+													<div>proposalLevel {this.state.proposal!.proposalLevel}</div>
+													<div>amountOfVestingTokensBurnt {parseFloat(ethers.utils.formatEther(this.state.proposal!.amountOfVestingTokensBurnt!))}</div>
+													<div>totalAmountOfVotingTokensUsed {parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!))}</div>
+													<div>totalAmountOfUniqueVoters {parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfUniqueVoters!))}</div>
+													{this.state.proposal!.proposalDepthToTotalAmountOfVote.map((depth: any) => (
+														<div>proposalDepthToTotalAmountOfVote {parseFloat(ethers.utils.formatEther(depth!))}</div>
+													))}
+													{this.state.proposal!.voteChoices?.map((choice: string, i: number) => (
+														<div>
+															{choice} {i}
+														</div>
+													))} */}
+
+											<div className={classes["proposal-vote"]}>Vote</div>
+											<div className={classes["proposal-votes"]}>
+												{this.state.proposal?.voteChoices?.map((choice, i) => (
+													<Button key={`choice-${i}`} onClick={() => this.vote(this.props.proposalId, i)}>
+														{choice}
+													</Button>
+												))}
+											</div>
 										</div>
 									</div>
 								)}

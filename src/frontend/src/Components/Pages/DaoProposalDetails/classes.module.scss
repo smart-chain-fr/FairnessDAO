@@ -133,5 +133,90 @@
 			color: var(--color-neutral-5);
 		}
 	}
+
+	.proposal-subcard {
+		width: 100%;
+		background: #f9fafb;
+		border-radius: 8px;
+		padding: 24px;
+		box-sizing: border-box;
+	}
+
+	.new-proposal {
+		float: right;
+		display: inline-block;
+		margin: 16px 0 0 0;
+
+		> a {
+			text-decoration: none;
+		}
+	}
+
+	.proposal-link {
+		text-decoration: none;
+		width: 100%;
+	}
+
+	.proposal-author {
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 20px;
+		color: #4b5563;
+	}
+
+	.proposal-title {
+		font-weight: 700;
+		font-size: 40px;
+		line-height: 48px;		
+		color: #111827;
+	}
+
+	.proposal-description {
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 20px;
+		color: #6b7280;
+		margin: 16px 0;
+	}
+
+	.proposal-status-open {
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 17px;
+		color: #008baa;
+		float: right;
+	}
+
+	.proposal-status-closed {
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 17px;
+		color: #ed306a;
+		float: right;
+	}
+
+	.proposal-vefdao {
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 20px;
+		color: #6b7280;
+	}
+
+	.proposal-vote {
+		font-family: 'Inter';
+		font-style: normal;
+		font-weight: 700;
+		font-size: 20px;
+		line-height: 28px;
+		color: #111827;
+		margin-top: 50px;
+	}
+
+	.proposal-votes {
+		button {
+			display: inline-block;
+			margin-right: 20px;
+		}
+	}
 }
 

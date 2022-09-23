@@ -58,17 +58,17 @@
 		float: left;
 	}
 
-    .subcenter {
-        text-align: center;
+	.subcenter {
+		text-align: center;
 
-        button {
-            width: 100%;
-        }
-    }
+		button {
+			width: 100%;
+		}
+	}
 
 	.staking-amount {
-        margin: 24px auto;
-        width: 180px;
+		margin: 24px auto;
+		width: 180px;
 		display: grid;
 		grid-template-columns: 20px auto;
 		gap: 10px;
@@ -105,8 +105,8 @@
 		}
 	}
 
-	.staking-input-input {
-		margin-right: 10px;
+	.proposal-input {
+		margin: 5px 0 20px 0;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: row;
@@ -123,6 +123,7 @@
 		order: 1;
 		align-self: stretch;
 		flex-grow: 0;
+		width: 100%;
 
 		&::placeholder {
 			font-family: var(--font-primary);
@@ -132,6 +133,13 @@
 			line-height: 20px;
 			color: var(--color-neutral-5);
 		}
+	}
+
+	.proposal-label {
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 20px;
+		color: #111827;
 	}
 }
 
