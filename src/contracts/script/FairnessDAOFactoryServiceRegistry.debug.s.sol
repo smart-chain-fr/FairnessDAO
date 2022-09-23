@@ -8,13 +8,16 @@ import {IFairnessDAOFactoryServiceRegistry} from
     "../contracts/Interfaces/IFairnessDAOFactoryServiceRegistry.sol";
 
 /// @title DebugFairnessDAOFactoryServiceRegistry
-/// @dev Simple deploying script.
+/// @dev Simple debugging script.
 /// @author Smart-Chain Team
 
 contract DebugFairnessDAOFactoryServiceRegistry is Test {
     /// @dev To replace with the proper values in production.
     address public fairnessDAOFactoryServiceRegistryAddress =
-        address(0xf096791906B7D07C560F3D127D52f570feC90948);
+        address(0x9C28a736a6645fF601B6f651d5A10Db4f6cDe1Fd);
+
+    address public fairnessDAOProposalRegistryTargetAddress =
+        address(0xe7Be23E07FA4309f121E4c78B87720bb0Ee1E89f);
 
     function run() public {
         vm.startBroadcast();
@@ -24,7 +27,12 @@ contract DebugFairnessDAOFactoryServiceRegistry is Test {
         ).owner();
         IFairnessDAOFactoryServiceRegistry(
             fairnessDAOFactoryServiceRegistryAddress
-        ).newSubdomain("subdomaintest", "ftest", msg.sender, msg.sender);
+        ).newSubdomain(
+            "youcansetanysubdomainyouwanthere", // "youcansetanysubdomainyouwanthere" is taken now, use something else. // "subdomaintest",
+            "ftest",
+            msg.sender,
+            fairnessDAOProposalRegistryTargetAddress
+        );
 
         console.log(msg.sender);
         console.log(address(fairnessDAOFactoryServiceRegistryAddress));

@@ -20,6 +20,9 @@ contract DeployFairnessDAOFactoryServiceRegistry is Test {
     address public initialPublicResolverAddress =
         address(0xf6305c19e814d2a75429Fd637d01F7ee0E77d615);
     string public topdomain = "eth";
+    /// @dev Update this address.
+    address public initialFairnessDAOFactoryAddress =
+        address(0x6CaE3a76d2dBB49301A5dc4aFADeDC1d1375d0Ed);
 
     function run() public {
         vm.startBroadcast();
@@ -27,6 +30,10 @@ contract DeployFairnessDAOFactoryServiceRegistry is Test {
         fairnessDAOFactoryServiceRegistry =
         new FairnessDAOFactoryServiceRegistry(
        initialENSRegistryWithFallbackAddress,initialPublicResolverAddress,topdomain
+        );
+
+        fairnessDAOFactoryServiceRegistry.setFairnessDAOFactoryAddress(
+            initialFairnessDAOFactoryAddress
         );
 
         console.log(msg.sender);

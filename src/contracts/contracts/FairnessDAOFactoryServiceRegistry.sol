@@ -27,7 +27,7 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
     error FairnessDAOFactoryServiceRegistry__SubdomainAlreadyAllocated();
 
     /// @dev Error when the caller is not the FairnessDAOFactory.
-    error FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
+    /// error FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
 
     /// @dev Error when the caller is not the deployer of the FairnessDAOProposalRegistry.
     error FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer();
@@ -67,7 +67,7 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
         fairnessDAOFactoryAddress = newFairnessDAOFactoryAddress;
     }
 
-    /// @dev Allows to create a subdomain (e.g. "fairnessdao.mycustomsubfairdao.eth"),
+    /// @dev Allows to create a subdomain (e.g. "mycustomsubfairdao.fairnessdao.eth"),
     /// set its resolver and set its target address.
     /// @param _subdomain - sub domain name only e.g. "mycustomsubfairdao"
     /// @param _domain - domain name e.g. "fairnessdao"
@@ -81,9 +81,10 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
     )
         external
     {
-        if (msg.sender != fairnessDAOFactoryAddress) {
-            revert FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
-        }
+        /// @dev @TODO For later maybe.
+        // if (msg.sender != fairnessDAOFactoryAddress) {
+        //     revert FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
+        // }
 
         if (
             IFairnessDAOFactory(fairnessDAOFactoryAddress)
@@ -129,7 +130,7 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
                 || IENSRegistryWithFallback(ensRegistryWithFallbackAddress).owner(
                     subdomainNamehash
                 ) == msg.sender,
-            "This sub domain is already owned."
+            "newSubdomain: This sub domain is already owned."
         );
         /// @dev We create a new subdomain, temporarily this smart-contract is the owner.
         IENSRegistryWithFallback(ensRegistryWithFallbackAddress).setSubnodeOwner(
