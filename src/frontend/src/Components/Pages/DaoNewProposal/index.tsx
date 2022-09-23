@@ -42,9 +42,9 @@ export default class DaoNewProposal extends BasePage<IProps, IState> {
 			description: "",
 			voteChoices: ["Yes", "No", "Maybe"],
 			totalVoteChoices: 3,
-			startTime: Math.floor(Date.now() / 1000) + 120,
+			startTime: Math.floor(Date.now() / 1000) + 60,
 			proposalLevel: 0,
-			submittedAt: Math.floor(Date.now() / 1000) + 120,
+			submittedAt: Math.floor(Date.now() / 1000),
 			submitterAddress: Wallet.getInstance().walletData?.userAddress!,
 		};
 	}
