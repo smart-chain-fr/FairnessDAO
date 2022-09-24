@@ -36,9 +36,7 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 		console.log(provider);
 
 		if (provider) {
-			const signer = provider.getSigner();
 			const fairnessDAOProposalRegistryContract = new ethers.Contract(Config.getInstance().get().contracts.FairnessDAOProposalRegistryContractAddress, FairnessDAOProposalRegistryAbi.abi, provider);
-			const fairnessDAOProposalRegistryContractWithSigner = fairnessDAOProposalRegistryContract.connect(signer);
 
 			const proposalCountBn = await fairnessDAOProposalRegistryContract["proposalCount"]();
 			console.log("proposalCountBn", proposalCountBn);
