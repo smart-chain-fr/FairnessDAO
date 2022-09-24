@@ -62,7 +62,7 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 						proposalLevel: tmpProposal.proposalLevel, /// @dev Either 0 or 1.
 						amountOfVestingTokensBurnt: tmpProposal.amountOfVestingTokensBurnt,
 						proposalDepthToTotalAmountOfVote: new Array<BigNumber>(),
-						id: i
+						id: i,
 					};
 
 					console.log("Axios", `https://ipfs.io/ipfs/${tmpProposalInfo.proposalURI}`);
@@ -124,8 +124,14 @@ export default class DaoListProposals extends BasePage<IProps, IState> {
 
 													<div className={classes["proposal-author"]}>{proposal.proposerAddress}</div>
 													<div className={classes["proposal-title"]}>{proposal.title}</div>
+													<div className={classes["proposal-level"]}>
+														{proposal.proposalLevel === 0 ? <div className={classes["proposal-level-soft"]}>SOFT</div> : <div className={classes["proposal-level-hard"]}>HARD</div>}
+													</div>
 													<div className={classes["proposal-description"]}>Description {proposal.description}</div>
 													<div className={classes["proposal-vefdao"]}>{parseFloat(ethers.utils.formatEther(proposal.totalAmountOfVotingTokensUsed!)).toFixed(5)} VeFDAO</div>
+													<div className={classes["proposal-view-more"]}>
+														<Button variant="ghost">View More</Button>
+													</div>
 													{/* <div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(proposal.proposalTotalDepth!))}</div>
 													<div>proposalURI {proposal.proposalURI}</div>
 													<div>votingStatus {proposal.votingStatus}</div>

@@ -22,6 +22,7 @@ type IPropsClass = IProps & {
 type IState = {
 	loading: boolean;
 	proposal?: ProposalInfo;
+	vote: number;
 };
 
 class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
@@ -30,6 +31,7 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 		this.state = {
 			loading: true,
 			proposal: undefined,
+			vote: 0,
 		};
 	}
 
@@ -109,50 +111,105 @@ class DaoProposalDetailsClass extends BasePage<IPropsClass, IState> {
 						<div className={classes["root"]}>
 							<h1>Proposal</h1>
 
-							<div className={classes["card"]}>
-								{this.state.loading ? (
-									<div>Loading....</div>
-								) : (
-									<div className={classes["subcard"]}>
-										<div className={classes["proposal-subcard"]}>
-											{Date.now() / 1000 > this.state.proposal!.startTime! && Date.now() / 1000 < this.state.proposal!.endTime! ? (
-												<div className={classes["proposal-status-open"]}>{`OPEN FOR ${-moment().diff(moment.unix(this.state.proposal!.endTime!), "days")} DAYS`}</div>
-											) : (
-												<div className={classes["proposal-status-closed"]}>CLOSED</div>
-											)}
+							{this.state.loading ? (
+								<div>Loading....</div>
+							) : (
+								<div className={classes["proposal-page"]}>
+									<div className={classes["proposal-card"]}>
+										{Date.now() / 1000 > this.state.proposal!.startTime! && Date.now() / 1000 < this.state.proposal!.endTime! ? (
+											<div className={classes["proposal-status-open"]}>{`OPEN FOR ${-moment().diff(moment.unix(this.state.proposal!.endTime!), "days")} DAYS`}</div>
+										) : (
+											<div className={classes["proposal-status-closed"]}>CLOSED</div>
+										)}
 
-											<div className={classes["proposal-author"]}>{this.state.proposal!.proposerAddress}</div>
-											<div className={classes["proposal-title"]}>{this.state.proposal!.title}</div>
-											<div className={classes["proposal-description"]}>Description {this.state.proposal!.description}</div>
-											<div className={classes["proposal-vefdao"]}>{parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!)).toFixed(5)} VeFDAO</div>
-											{/* <div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(this.state.proposal!.proposalTotalDepth!))}</div>
-													<div>proposalURI {this.state.proposal!.proposalURI}</div>
-													<div>votingStatus {this.state.proposal!.votingStatus}</div>
-													<div>proposalLevel {this.state.proposal!.proposalLevel}</div>
-													<div>amountOfVestingTokensBurnt {parseFloat(ethers.utils.formatEther(this.state.proposal!.amountOfVestingTokensBurnt!))}</div>
-													<div>totalAmountOfVotingTokensUsed {parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!))}</div>
-													<div>totalAmountOfUniqueVoters {parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfUniqueVoters!))}</div>
-													{this.state.proposal!.proposalDepthToTotalAmountOfVote.map((depth: any) => (
-														<div>proposalDepthToTotalAmountOfVote {parseFloat(ethers.utils.formatEther(depth!))}</div>
-													))}
-													{this.state.proposal!.voteChoices?.map((choice: string, i: number) => (
-														<div>
-															{choice} {i}
-														</div>
-													))} */}
+										<div className={classes["proposal-author"]}>{this.state.proposal!.proposerAddress}</div>
+										<div className={classes["proposal-title"]}>{this.state.proposal!.title}</div>
+										<div className={classes["proposal-level"]}>
+											{this.state.proposal!.proposalLevel === 0 ? <div className={classes["proposal-level-soft"]}>SOFT</div> : <div className={classes["proposal-level-hard"]}>HARD</div>}
+										</div>
+										<div className={classes["proposal-description"]}>Description {this.state.proposal!.description}</div>
 
-											<div className={classes["proposal-vote"]}>Vote</div>
-											<div className={classes["proposal-votes"]}>
-												{this.state.proposal?.voteChoices?.map((choice, i) => (
-													<Button key={`choice-${i}`} onClick={() => this.vote(this.props.proposalId, i)}>
-														{choice}
-													</Button>
-												))}
+										{/* <div>proposalTotalDepth {parseFloat(ethers.utils.formatEther(this.state.proposal!.proposalTotalDepth!))}</div>
+										<div>proposalURI {this.state.proposal!.proposalURI}</div>
+										<div>votingStatus {this.state.proposal!.votingStatus}</div>
+										<div>proposalLevel {this.state.proposal!.proposalLevel}</div>
+										<div>amountOfVestingTokensBurnt {parseFloat(ethers.utils.formatEther(this.state.proposal!.amountOfVestingTokensBurnt!))}</div>
+										<div>totalAmountOfVotingTokensUsed {parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!))}</div>
+										<div>totalAmountOfUniqueVoters {parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfUniqueVoters!))}</div>
+										{this.state.proposal!.proposalDepthToTotalAmountOfVote.map((depth: any) => (
+											<div>proposalDepthToTotalAmountOfVote {parseFloat(ethers.utils.formatEther(depth!))}</div>
+										))}
+										{this.state.proposal!.voteChoices?.map((choice: string, i: number) => (
+											<div>
+												{choice} {i}
+											</div>
+										))} */}
+
+										<div className={classes["proposal-vote"]}>Vote</div>
+										<div className={classes["proposal-votes"]}>
+											{this.state.proposal?.voteChoices?.map((choice, i) => (
+												<div key={`choice-${i}`} className={classes["proposal-choice"]} onClick={() => this.setState({ vote: i })} style={this.state.vote === i ? { background: "#E5E7EB" } : {}}>
+													{choice}
+												</div>
+											))}
+											<div className={classes["proposal-send-vote"]} onClick={() => this.vote(this.props.proposalId, this.state.vote)}>
+												Vote
 											</div>
 										</div>
 									</div>
-								)}
-							</div>
+
+									<div>
+										<div className={classes["proposal-card"]}>
+											<h2>Proposal informations</h2>
+											<div className={classes["proposal-detail"]}>
+												<div className={classes["proposal-detail-title"]}>Start</div>
+												<div className={classes["proposal-detail-value"]}>{moment(this.state.proposal!.startTime).format()}</div>
+											</div>
+											<div className={classes["proposal-detail"]}>
+												<div className={classes["proposal-detail-title"]}>End</div>
+												<div className={classes["proposal-detail-value"]}>{moment(this.state.proposal!.endTime).format()}</div>
+											</div>
+											<div className={classes["proposal-detail"]}>
+												<div className={classes["proposal-detail-title"]}>Link</div>
+												<div className={classes["proposal-detail-value"]}>
+													<a href={`https://ipfs.io/ipfs/${this.state.proposal!.proposalURI}`} target="_blank" rel="noreferrer">
+														ipfs
+													</a>
+												</div>
+											</div>
+											<div className={classes["proposal-detail"]}>
+												<div className={classes["proposal-detail-title"]}>Type</div>
+												<div className={classes["proposal-detail-value"]}>{this.state.proposal!.proposalLevel === 0 ? "Soft" : "Hard"}</div>
+											</div>
+										</div>
+										<div className={classes["proposal-card"]}>
+											<h2>Results</h2>
+											<div className={classes["proposal-results-live"]}>LIVE</div>
+											<div className={classes["proposal-vefdao"]}>{parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!)).toFixed(5)} VeFDAO</div>
+											<div className={classes["proposal-results"]}>
+												{this.state.proposal?.voteChoices?.map((choice, i) => {
+													const total = parseFloat(ethers.utils.formatEther(this.state.proposal!.totalAmountOfVotingTokensUsed!));
+													const tokens = parseFloat(ethers.utils.formatEther(this.state.proposal!.proposalDepthToTotalAmountOfVote[i]!));
+													const percent = (tokens / (total || 1)) * 100;
+													return (
+														<div key={`choice-${i}`} className={classes["proposal-results-choice"]}>
+															<div className={classes["proposal-results-choice-bar"]} style={{ width: `${percent}%` }} />
+															<div className={classes["proposal-results-choice-grid"]} >
+																<div className={classes["proposal-results-choice-title"]}>{choice}</div>
+																<div className={classes["proposal-results-choice-tokens"]}>{tokens.toFixed(5)} VeFDAO</div>
+																<div className={classes["proposal-results-choice-percent"]}>{percent.toFixed(0)} %</div>
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+										{/* <div className={classes["proposal-card"]}>
+											<h2>Quorum</h2>
+										</div> */}
+									</div>
+								</div>
+							)}
 						</div>
 					</DefaultTemplate>
 				)}

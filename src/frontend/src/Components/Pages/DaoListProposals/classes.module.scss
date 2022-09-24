@@ -156,8 +156,10 @@
 	.proposal-title {
 		font-weight: 700;
 		font-size: 20px;
-		line-height: 28px;
+		line-height: 24px;
 		color: #111827;
+		display: inline-block;
+		vertical-align: middle;
 	}
 
 	.proposal-description {
@@ -189,6 +191,48 @@
 		font-size: 14px;
 		line-height: 20px;
 		color: #6b7280;
+	}
+
+	.proposal-view-more {
+		float: right;
+		display: inline-block;
+		margin-top: -35px;
+	}
+
+	.proposal-level {
+		display: inline-block;
+	}
+
+	.proposal-level-soft {
+		padding: 0 10px;
+		height: 24px;
+		margin: 0 0 0 10px;
+		background: rgba(170, 92, 0, 0.12);
+		border-radius: 25px;
+		font-weight: 600;
+		font-size: 12px;
+		line-height: 20px;
+		display: flex;
+		align-items: center;
+		text-align: center;
+		font-feature-settings: "salt" on;
+		color: #e68a00;
+	}
+
+	.proposal-level-hard {
+		padding: 0 10px;
+		height: 24px;
+		margin: 0 0 0 10px;
+		background: rgba(105, 0, 170, 0.12);
+		border-radius: 25px;
+		font-weight: 600;
+		font-size: 12px;
+		line-height: 20px;
+		display: flex;
+		align-items: center;
+		text-align: center;
+		font-feature-settings: "salt" on;
+		color: #c545c8;
 	}
 }
 
