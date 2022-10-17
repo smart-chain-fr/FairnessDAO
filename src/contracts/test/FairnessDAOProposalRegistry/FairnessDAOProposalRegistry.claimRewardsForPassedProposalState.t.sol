@@ -3,7 +3,8 @@ pragma solidity 0.8.4;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {EventsUtils} from "../EventsUtils.sol";
+import {EventsUtils} from "../utils/EventsUtils.sol";
+import {EventsUtilsERC20} from "../utils/EventsUtilsERC20.sol";
 import {InitFairnessDAOProposalRegistry} from
     "../initState/InitFairnessDAOProposalRegistry.sol";
 import {FairnessDAOProposalRegistry} from
@@ -33,9 +34,6 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
         /// @dev We skip 1 second, which should reward the user of 1 ether equivalent of vesting tokens.
         skip(1);
         fairnessDAOFairVesting.updateFairVesting(address(this));
-        fairnessDAOFairVesting.whitelistProposalRegistryAddress(
-            address(fairnessDAOProposalRegistry)
-        );
 
         fairnessDAOFairVesting.approve(
             address(fairnessDAOProposalRegistry), type(uint256).max
@@ -113,7 +111,10 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
         );
         uint256 amountThatShouldBeReceivedByAllVoters =
             totalAmountOfVotingTokensUsed / totalAmountOfUniqueVoters;
-
+        vm.expectEmit(true, true, false, true);
+        emit EventsUtilsERC20.Transfer(
+            address(0), voterAddress, amountThatShouldBeReceivedByAllVoters
+            );
         vm.expectEmit(true, true, false, true);
         emit EventsUtils.RewardsClaimed(
             initialProposalId,
@@ -151,6 +152,12 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
             boostedReward + amountThatShouldBeReceivedByAllVoters;
 
         vm.expectEmit(true, true, false, true);
+        emit EventsUtilsERC20.Transfer(
+            address(0),
+            address(this),
+            amountThatShouldBeReceivedByProposalSubmitter
+            );
+        vm.expectEmit(true, true, false, true);
         emit EventsUtils.RewardsClaimed(
             initialProposalId,
             address(this),
@@ -164,8 +171,8 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
         uint160 callerSeed
     ) public {
         vm.assume(callerSeed > 11);
+        vm.assume(address(callerSeed) != voterAddress);
         vm.assume(address(callerSeed) != address(this));
-        vm.assume(address(callerSeed) != address(voterAddress));
         vm.stopPrank();
 
         hoax(address(callerSeed));

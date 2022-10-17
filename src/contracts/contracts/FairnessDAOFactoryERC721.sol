@@ -5,7 +5,7 @@ pragma solidity 0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {FairnessDAOFairVesting} from "./FairnessDAOFairVesting.sol";
+import {FairnessDAOFairERC721Vesting} from "./FairnessDAOFairERC721Vesting.sol";
 import {FairnessDAOProposalRegistry} from "./FairnessDAOProposalRegistry.sol";
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -13,7 +13,7 @@ import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 /// @dev First draft of FairnessDAO protocol.
 /// @author Smart-Chain Team
 
-contract FairnessDAOFactory is Ownable {
+contract FairnessDAOFactoryERC721 is Ownable {
     using Counters for Counters.Counter;
 
     mapping(address => address) public
@@ -21,14 +21,14 @@ contract FairnessDAOFactory is Ownable {
     mapping(uint256 => address) public indexToFairnessDAOProposalRegistryAddress;
     mapping(uint256 => address) public indexToFairnessDAOVestingAddress;
 
-    Counters.Counter private fairnessDAOVestingId;
-    Counters.Counter private fairnessDAOProposalRegistryId;
+    Counters.Counter public fairnessDAOVestingERC721Id;
+    Counters.Counter public fairnessDAOProposalRegistryId;
 
-    address public vestingLibraryAddress;
-    address public proposalLibraryAddress;
+    address vestingLibraryAddress;
+    address proposalLibraryAddress;
 
     event NewFairVesting(
-        address indexed instance, uint256 indexed fairnessDAOVestingId
+        address indexed instance, uint256 indexed fairnessDAOVestingERC721Id
     );
     event NewFairGovernance(
         address indexed owner,
@@ -45,12 +45,6 @@ contract FairnessDAOFactory is Ownable {
     ) external onlyOwner {
         vestingLibraryAddress = _vestingLibraryAddress;
         proposalLibraryAddress = _proposalLibraryAddress;
-        fairnessDAOVestingId.increment();
-        fairnessDAOProposalRegistryId.increment();
-        indexToFairnessDAOVestingAddress[fairnessDAOVestingId.current()] =
-            _vestingLibraryAddress;
-        indexToFairnessDAOProposalRegistryAddress[fairnessDAOProposalRegistryId
-            .current()] = _proposalLibraryAddress;
     }
 
     function deployFairVestingForERC20TokenClone(
@@ -59,11 +53,11 @@ contract FairnessDAOFactory is Ownable {
         address initFairTokenTarget,
         uint256 initZInflationDelta,
         uint256 fairnessDAOFairProposalRegistryIndex
-    ) external returns (address) {
-        FairnessDAOFairVesting fairnessDAOFairVesting =
-            FairnessDAOFairVesting(Clones.clone(vestingLibraryAddress));
+    ) external returns (address, address) {
+        FairnessDAOFairERC721Vesting fairnessDAOFairERC721Vesting =
+            FairnessDAOFairERC721Vesting(Clones.clone(vestingLibraryAddress));
 
-        fairnessDAOFairVesting.initialize(
+        fairnessDAOFairERC721Vesting.initialize(
             tokenName,
             tokenSymbol,
             initFairTokenTarget,
@@ -71,20 +65,20 @@ contract FairnessDAOFactory is Ownable {
             indexToFairnessDAOProposalRegistryAddress[fairnessDAOFairProposalRegistryIndex]
         );
 
-        fairnessDAOVestingId.increment();
-        uint256 _fairnessDAOVestingId = fairnessDAOVestingId.current();
+        fairnessDAOVestingERC721Id.increment();
+        uint256 _fairnessDAOVestingERC721Id =
+            fairnessDAOVestingERC721Id.current();
 
-        indexToFairnessDAOVestingAddress[_fairnessDAOVestingId] =
-            address(fairnessDAOFairVesting);
+        indexToFairnessDAOVestingAddress[_fairnessDAOVestingERC721Id] =
+            address(fairnessDAOFairERC721Vesting);
 
         emit NewFairVesting(
-            address(fairnessDAOFairVesting), _fairnessDAOVestingId
+            address(fairnessDAOFairERC721Vesting), _fairnessDAOVestingERC721Id
             );
-        return address(fairnessDAOFairVesting);
     }
 
-    function deployFairGovernanceForERC20TokenClone(
-        uint256 fairnessDAOFairVestingIndex,
+    function deployFairGovernanceForERC721TokenClone(
+        uint256 fairnessDAOFairERC721VestingIndex,
         uint256 initMinimumSupplyShareRequiredForSubmittingProposals,
         uint256 initialVoteTimeLengthSoftProposal,
         uint256 initialVoteTimeLengthHardProposal,
@@ -93,18 +87,12 @@ contract FairnessDAOFactory is Ownable {
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
         uint256 initialMinimumVoterShareRequiredForHardProposal,
         uint256 initalBoostedRewardBonusValue
-<<<<<<< HEAD
     ) external returns (address, address) {
-        FairnessDAOFairVesting fairnessDAOFairVesting =
-        new FairnessDAOFairVesting(tokenName,tokenSymbol,initFairTokenTarget,initZInflationDelta);
-=======
-    ) external returns (address) {
->>>>>>> 540695a (refacto(contract): factory optimization)
         FairnessDAOProposalRegistry fairnessDAOProposalRegistry =
             FairnessDAOProposalRegistry(Clones.clone(proposalLibraryAddress));
 
         fairnessDAOProposalRegistry.initialize(
-            indexToFairnessDAOVestingAddress[fairnessDAOFairVestingIndex],
+            indexToFairnessDAOVestingAddress[fairnessDAOFairERC721VestingIndex],
             initMinimumSupplyShareRequiredForSubmittingProposals,
             initialVoteTimeLengthSoftProposal,
             initialVoteTimeLengthHardProposal,
@@ -131,13 +119,5 @@ contract FairnessDAOFactory is Ownable {
             address(fairnessDAOProposalRegistry),
             _fairnessDAOProposalRegistryId
             );
-        return address(fairnessDAOProposalRegistry);
-    }
-
-    function getCountersId() external view returns (uint256, uint256) {
-        return (
-            fairnessDAOVestingId.current(),
-            fairnessDAOProposalRegistryId.current()
-        );
     }
 }

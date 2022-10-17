@@ -32,9 +32,6 @@ contract FairnessDAOProposalRegistryFinalizeSPProposalStateTest is
         /// @dev We skip 1 second, which should reward the user of 1 ether equivalent of vesting tokens.
         skip(1);
         fairnessDAOFairVesting.updateFairVesting(address(this));
-        fairnessDAOFairVesting.whitelistProposalRegistryAddress(
-            address(fairnessDAOProposalRegistry)
-        );
 
         fairnessDAOFairVesting.approve(
             address(fairnessDAOProposalRegistry), type(uint256).max
@@ -194,41 +191,27 @@ contract FairnessDAOProposalRegistryFinalizeSPProposalStateTest is
     function test_finalizeProposal_func_SoftProposalMeetsCompleteQuorumButTies()
         public
     {
-        vm.stopPrank();
-
         skip(defaultStartTime);
 
-        /// @dev We setup a lot of DAO voters, but they only vote with a single 1e-17 vesting token.
-        /// It allows the contract to confirm the account threshold, but still locks the quantity threshold.
+        /// @dev With the vote from this voter (which has the majority of the voting supply), the contract can now confirm the quantity threshold and the proposal should pass.
+        fairnessDAOProposalRegistry.voteOnProposal(initialProposalId, 1);
+        vm.stopPrank();
+
+        /// @dev We setup 10 DAO voters. Each of them vote with a amount equal to 1/10 of vToken hold by `voterAddress`.
+        /// It allows the contract to confirm the account threshold, together those 10 DAO voters have the same voting power as `voterAddress`
         for (uint256 i = 1; i < 11;) {
-            uint256 tmpAmountToVest = 1;
+            uint256 tmpAmountToVest = initialAmountToVest / 10;
             startHoax(address(uint160(i)));
             mockERC20.faucet(tmpAmountToVest);
             mockERC20.approve(address(fairnessDAOFairVesting), tmpAmountToVest);
             fairnessDAOFairVesting.initiateVesting(tmpAmountToVest);
-            skip(1);
+            skip(defaultStartTime + 1);
             fairnessDAOProposalRegistry.voteOnProposal(initialProposalId, 0);
             vm.stopPrank();
             unchecked {
                 ++i;
             }
         }
-
-        hoax(voterAddress);
-        /// @dev With the vote from this voter (which has the majority of the voting supply), the contract can now confirm the quantity threshold and the proposal should pass.
-        fairnessDAOProposalRegistry.voteOnProposal(initialProposalId, 1);
-
-        /// @dev We create another voter account with the same voting power, to create a tie in this situation.
-        uint256 anotherTmpAmountToVest = 21 ether;
-        startHoax(makeAddr("tieVoter"));
-        mockERC20.faucet(anotherTmpAmountToVest);
-        mockERC20.approve(
-            address(fairnessDAOFairVesting), anotherTmpAmountToVest
-        );
-        fairnessDAOFairVesting.initiateVesting(anotherTmpAmountToVest);
-        skip(1);
-        fairnessDAOProposalRegistry.voteOnProposal(initialProposalId, 2);
-        vm.stopPrank();
 
         skip(14 days);
         /// @dev 14 days is the voting duration of an SP proposal level.
@@ -238,6 +221,7 @@ contract FairnessDAOProposalRegistryFinalizeSPProposalStateTest is
         fairnessDAOProposalRegistry.proposalIdToProposalDetails(
             initialProposalId
         );
+        /// @dev voting should be Tie since the proposal have two options voted with the same weight
         assertEq(
             uint8(votingStatus),
             uint8(FairnessDAOProposalRegistry.VotingStatus.Tie)

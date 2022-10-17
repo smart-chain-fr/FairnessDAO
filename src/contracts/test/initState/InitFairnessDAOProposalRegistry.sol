@@ -3,17 +3,13 @@ pragma solidity 0.8.4;
 
 import "forge-std/Test.sol";
 import {InitMockERC20} from "../initState/InitMockERC20.sol";
-import {InitFairnessDAOFairVestingWithERC20} from
-    "./InitFairnessDAOFairVestingWithERC20.sol";
-import {FairnessDAOProposalRegistry} from
-    "../../contracts/FairnessDAOProposalRegistry.sol";
+import {InitFairnessDAOFactory} from "./InitFairnessDAOFactory.sol";
 
 abstract contract InitFairnessDAOProposalRegistry is
     Test,
-    InitFairnessDAOFairVestingWithERC20
+    InitFairnessDAOFactory,
+    InitMockERC20
 {
-    FairnessDAOProposalRegistry fairnessDAOProposalRegistry;
-
     uint256 public initMinimumSupplyShareRequiredForSubmittingProposals =
         ((1e18 * 1) / 1000);
     uint256 public initialVoteTimeLengthSoftProposal = 14 days;
@@ -30,8 +26,17 @@ abstract contract InitFairnessDAOProposalRegistry is
 
     function setUp() public virtual override {
         super.setUp();
+        setUpERC20();
 
-        fairnessDAOProposalRegistry = new FairnessDAOProposalRegistry(
+        fairnessDAOFairVesting.initialize(
+            "tokenName",
+            "tokenSymbol",
+            address(mockERC20),
+            1e18, // (1e18 * zInflationDeltaBp) / 1000; with zInflationDeltaBp = 1000 (100%)
+            address(fairnessDAOProposalRegistry)
+        );
+
+        fairnessDAOProposalRegistry.initialize(
             address(fairnessDAOFairVesting),
             initMinimumSupplyShareRequiredForSubmittingProposals,
             initialVoteTimeLengthSoftProposal,
@@ -40,6 +45,7 @@ abstract contract InitFairnessDAOProposalRegistry is
             initialMinimumTotalSupplyShareRequiredForHardProposal,
             initialMinimumVoterShareRequiredForSoftProposal,
             initialMinimumVoterShareRequiredForHardProposal,
-            initalBoostedRewardBonusValue);
+            initalBoostedRewardBonusValue
+        );
     }
 }

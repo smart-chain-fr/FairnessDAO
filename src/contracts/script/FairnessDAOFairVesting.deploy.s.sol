@@ -18,6 +18,8 @@ contract DeployFairnessDAOFairVesting is Test {
     string public initTokenSymbol = "VeFDAO";
     address public initFairTokenTarget =
         address(0xb082f8547F959417b0c75Da4a8E1F291F0495b54);
+    address public initFairDAOProposalRegistry =
+        address(0xb082f8547F959417b0c75Da4a8E1F291F0495b54);
     /// @notice zInflationDeltaBp:
     uint256 zInflationDeltaBpPoC = 32; // 0.0000032%
     /// @dev (1e+18* 3,154e+7* (1e+18 * 32/1_000_000_000))/1e+18 = 1e+18
@@ -26,11 +28,13 @@ contract DeployFairnessDAOFairVesting is Test {
     function run() public {
         vm.startBroadcast();
 
-        fairnessDAOFairVesting = new FairnessDAOFairVesting(
-          initTokenName,
+        fairnessDAOFairVesting = new FairnessDAOFairVesting();
+        fairnessDAOFairVesting.initialize(
+            initTokenName,
             initTokenSymbol,
             address(initFairTokenTarget),
-            initZInflationDelta
+            initZInflationDelta,
+            address(initFairDAOProposalRegistry)
         );
 
         console.log(msg.sender);

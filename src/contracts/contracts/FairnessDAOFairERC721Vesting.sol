@@ -2,60 +2,63 @@
 
 pragma solidity 0.8.4;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {Initializable} from
     "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {SafeERC20} from
-    "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {FixedPointMathLib} from
     "@rari-capital/solmate/src/utils/FixedPointMathLib.sol";
+import {ERC721Holder} from
+    "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import {ERC20Upgradeable} from
     "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-/// @title FairnessDAOFairVesting
+/// @title FairnessDAOFairERC721Vesting
 /// @dev Vesting manager for the voting token.
 /// @author Smart-Chain Team
 
-/// @dev TODO: Evolve contract to FairnessDAOFairVestingEscrow later.
+/// @dev TODO: Evolve contract to FairnessDAOFairERC721VestingEscrow later.
 /// @dev TODO: Remove ERC20 inheritance and simply keep the standard interface.
 /// @dev TODO: Add automated zInflationDelta after each update between epochs.
 /// @dev TODO: Add snapshot mechanism.
 /// @dev TODO: Add initializer.
-contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
-    using SafeERC20 for IERC20;
+contract FairnessDAOFairERC721Vesting is
+    Initializable,
+    ERC20Upgradeable,
+    ERC721Holder
+{
     using FixedPointMathLib for uint256;
 
     /// @dev Error when zero amount of token is given.
-    error FairnessDAOFairVesting__CannotSetZeroAmount();
+    error FairnessDAOFairERC721Vesting__CannotSetZeroAmount();
 
     /// @dev Error when user is not vesting tokens.
-    error FairnessDAOFairVesting__UserIsNotVesting();
+    error FairnessDAOFairERC721Vesting__UserIsNotVesting();
 
     /// @dev Error when caller is trying to increase the vesting of a non vested user.
-    error FairnessDAOFairVesting__CannotIncreaseVestingForNonVestedUser();
+    error FairnessDAOFairERC721Vesting__CannotIncreaseVestingForNonVestedUser();
 
     /// @dev Error when user tries to initiate a vesting contract twice.
-    error FairnessDAOFairVesting__UserAlreadyHasActiveVesting();
+    error FairnessDAOFairERC721Vesting__UserAlreadyHasActiveVesting();
 
     /// @dev Error when caller is trying to transfer vesting tokens.
-    error FairnessDAOFairVesting__VestingTokenIsNonTransferable();
+    error FairnessDAOFairERC721Vesting__VestingTokenIsNonTransferable();
 
     /// @dev Error when user withdrawal amount is too low.
-    error FairnessDAOFairVesting__WithdrawalAmountIsTooLow();
+    error FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow();
 
     /// @dev Error when user tries to withdraw more than he actually owns.
-    error FairnessDAOFairVesting__CannotWithdrawMoreThanYouOwn();
+    error FairnessDAOFairERC721Vesting__CannotWithdrawMoreThanYouOwn();
 
     /// @dev Error when caller tries to mint rewards without being allowed to.
-    error FairnessDAOFairVesting__CallerIsNotAllowedToMintRewards();
+    error FairnessDAOFairERC721Vesting__CallerIsNotAllowedToMintRewards();
 
     struct Vesting {
-        uint256 amountVested;
         uint256 startTimestamp;
         uint256 lastClaimedTimestamp;
     }
 
     mapping(address => Vesting) public addressToVestingInfo;
+    mapping(address => uint256[]) public addressToTokenIdsVested;
     address public fairTokenTarget;
     uint256 public zInflationDelta;
     uint256 public totalOwners;
@@ -82,23 +85,24 @@ contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
         external
     {
         if (msg.sender != whitelistedProposalRegistry) {
-            revert FairnessDAOFairVesting__CallerIsNotAllowedToMintRewards();
+            revert FairnessDAOFairERC721Vesting__CallerIsNotAllowedToMintRewards(
+            );
         }
         updateFairVesting(recipientAddress);
         _mint(recipientAddress, amountToMint);
     }
 
     /// @dev Allow the user to initiate vesting.
-    /// @param amountToVest Amount to send for vesting.
-    function initiateVesting(uint256 amountToVest) external {
-        if (amountToVest == 0) {
-            revert FairnessDAOFairVesting__CannotSetZeroAmount();
+    /// @param tokenIds Array of ERC-721 tokens Ids to send for vesting.
+    function initiateVesting(uint256[] memory tokenIds) external {
+        if (tokenIds.length == 0) {
+            revert FairnessDAOFairERC721Vesting__CannotSetZeroAmount();
         }
-        if (addressToVestingInfo[msg.sender].amountVested != 0) {
-            revert FairnessDAOFairVesting__UserAlreadyHasActiveVesting();
+        if (addressToTokenIdsVested[msg.sender].length != 0) {
+            revert FairnessDAOFairERC721Vesting__UserAlreadyHasActiveVesting();
         }
 
-        depositTokensForVesting(msg.sender, amountToVest);
+        depositTokensForVesting(msg.sender, tokenIds);
         unchecked {
             /// @dev There is around 1.386 billion km³ of water volume on earth.
             ++totalOwners;
@@ -107,47 +111,55 @@ contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
 
     /// @dev Increase the vesting amount of token.
     /// @notice It is mandatory to have initiated a vesting before calling this method.
-    /// @param amountToVest Amount to send for increasing an active vesting.
-    function increaseVesting(uint256 amountToVest) external {
-        if (amountToVest == 0) {
-            revert FairnessDAOFairVesting__CannotSetZeroAmount();
+    /// @param tokenIds Array of ERC-721 tokens Ids to send for increasing an active vesting.
+    function increaseVesting(uint256[] memory tokenIds) external {
+        if (tokenIds.length == 0) {
+            revert FairnessDAOFairERC721Vesting__CannotSetZeroAmount();
         }
-        if (addressToVestingInfo[msg.sender].amountVested == 0) {
-            revert FairnessDAOFairVesting__CannotIncreaseVestingForNonVestedUser(
+        if (addressToTokenIdsVested[msg.sender].length == 0) {
+            revert
+                FairnessDAOFairERC721Vesting__CannotIncreaseVestingForNonVestedUser(
             );
         }
 
         updateFairVesting(msg.sender);
 
-        depositTokensForVesting(msg.sender, amountToVest);
+        depositTokensForVesting(msg.sender, tokenIds);
     }
 
     /// @dev Allow user to withdraw his locked vested tokens by burning his vesting tokens.
     /// @notice The user cannot dictate the exact amount of locked vested tokens he wants to withdraw.
     /// The withdrawal is based instead on a ratio of burned vesting tokens compared to his total balance.
-    /// @param amountToWithdraw Amount of vesting tokens to burn.
-    function withdrawVesting(uint256 amountToWithdraw) external {
+    /// @param tokenIdsVestedIndex Array of tokenIds index picked from `tokenIdsVested` array
+    function withdrawVesting(uint256[] memory tokenIdsVestedIndex) external {
+        uint256 amountToWithdraw = tokenIdsVestedIndex.length;
         if (amountToWithdraw == 0) {
-            revert FairnessDAOFairVesting__CannotSetZeroAmount();
+            revert FairnessDAOFairERC721Vesting__CannotSetZeroAmount();
         }
 
-        Vesting storage userVestingInfo = addressToVestingInfo[msg.sender];
-        if (userVestingInfo.amountVested == 0) {
-            revert FairnessDAOFairVesting__UserIsNotVesting();
+        uint256[] storage userVestedTokenIds =
+            addressToTokenIdsVested[msg.sender];
+        uint256 amountVested = userVestedTokenIds.length;
+        if (amountVested == 0) {
+            revert FairnessDAOFairERC721Vesting__UserIsNotVesting();
         }
 
         /// @dev TODO Check if this can replace the `UserIsNotVesting` condition.
-        if (amountToWithdraw > balanceOf(msg.sender)) {
-            revert FairnessDAOFairVesting__CannotWithdrawMoreThanYouOwn();
+        if (amountToWithdraw > amountVested) {
+            revert FairnessDAOFairERC721Vesting__CannotWithdrawMoreThanYouOwn();
         }
 
-        uint256 unvestedAmountToTransfer;
+        uint256 userVestedAmountToBurn;
         uint256 userVestedBalance = balanceOf(msg.sender);
+        uint256[] memory tokenIdsTotransfer = new uint256[](amountToWithdraw);
         /// @dev If the user unstakes completely his vesting, we clear the storage.
-        if (amountToWithdraw == userVestedBalance) {
-            unvestedAmountToTransfer = userVestingInfo.amountVested;
-            // delete userVestingInfo;
+        if (amountToWithdraw == amountVested) {
+            userVestedAmountToBurn = userVestedBalance;
+            tokenIdsTotransfer = userVestedTokenIds;
+            /// @dev delete userVestedTokenIds and timestamps;
             delete addressToVestingInfo[msg.sender];
+            delete addressToTokenIdsVested[msg.sender];
+
             unchecked {
                 /// @dev Safu since a hodler has to be registered in the `totalOwners` variable in the first place before being able to reach this statement.
                 --totalOwners;
@@ -155,46 +167,51 @@ contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
         }
         /// @dev We return to the caller a share of his initial vesting.
         else {
-            uint256 userAmountVested = userVestingInfo.amountVested;
             assembly {
                 /// @dev This will return 0 instead of reverting if the result is zero.
-                unvestedAmountToTransfer :=
+                userVestedAmountToBurn :=
                     div(
                         mul(
-                            div(
-                                mul(amountToWithdraw, exp(10, 18)),
-                                userVestedBalance
-                            ),
-                            userAmountVested
+                            div(mul(amountToWithdraw, exp(10, 18)), amountVested),
+                            userVestedBalance
                         ),
                         exp(10, 18)
                     )
             }
 
-            if (unvestedAmountToTransfer == 0) {
-                revert FairnessDAOFairVesting__WithdrawalAmountIsTooLow();
+            if (userVestedAmountToBurn == 0) {
+                revert FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow();
             }
-            /// @dev We update the amount of vested token before the transfer.
-            unchecked {
-                /// @dev Should be safe since the `unvestedAmountToTransfer` value has been reduced above.
-                userVestingInfo.amountVested -= unvestedAmountToTransfer;
+
+            for (uint256 i = 1; i <= amountToWithdraw; i = unchecked_inc(i)) {
+                tokenIdsTotransfer[i - 1] = userVestedTokenIds[tokenIdsVestedIndex[amountToWithdraw
+                    - i]];
+                userVestedTokenIds[tokenIdsVestedIndex[amountToWithdraw - i]] =
+                    userVestedTokenIds[amountVested - 1];
+                userVestedTokenIds.pop();
+                unchecked {
+                    /// @dev Safu since `amountVested` < `amountToWithdraw`
+                    --amountVested;
+                }
             }
         }
 
         /// @dev We burn the caller vTokens.
-        burn(amountToWithdraw);
+        burn(userVestedAmountToBurn);
 
         /// @dev If the user unstakes completely his vesting, he shouldn't have a vesting available on storage.
-        if (amountToWithdraw != userVestedBalance) {
+        if (amountToWithdraw != amountVested) {
             /// @dev We update the user vested balance after the share computation to avoid issues on the integration part.
             updateFairVesting(msg.sender);
         }
 
         /// @dev We execute the vested token transfer back to its owner.
-        /// We do not use the `transferERC20()` internal method to avoid allowance management issues.
-        IERC20(fairTokenTarget).safeTransfer(
-            msg.sender, unvestedAmountToTransfer
-        );
+        /// We do not use the `transferERC721()` internal method to avoid allowance management issues.
+        for (uint256 i; i < amountToWithdraw; i = unchecked_inc(i)) {
+            IERC721(fairTokenTarget).safeTransferFrom(
+                address(this), msg.sender, tokenIdsTotransfer[i]
+            );
+        }
     }
 
     /// @dev Allow anyone to update and distribute the vesting rewards of a specific active vester.
@@ -228,8 +245,9 @@ contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
         returns (uint256 amountToMint)
     {
         Vesting memory userVestingTarget = addressToVestingInfo[vestedAddress];
-        if (userVestingTarget.amountVested == 0) {
-            revert FairnessDAOFairVesting__UserIsNotVesting();
+        uint256 amountVested = addressToTokenIdsVested[msg.sender].length;
+        if (amountVested == 0) {
+            revert FairnessDAOFairERC721Vesting__UserIsNotVesting();
         }
 
         /// @dev Vesting computation formula: X x Y x Z
@@ -237,45 +255,44 @@ contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
         ///      With Y:    Time between now and the last claim timestamp.
         ///      With Z:    Reward delta, updated each p period.
         uint256 yTime = block.timestamp - userVestingTarget.lastClaimedTimestamp;
-        amountToMint =
-            (userVestingTarget.amountVested * yTime).mulWadDown(zInflationDelta);
+        amountToMint = (amountVested * yTime).mulWadDown(zInflationDelta);
     }
 
     /// @dev Internal method to lock tokens for vesting and start earning vesting tokens.
     /// @param depositTarget Address of the target vester to update.
-    /// @param amountToVest Amount of tokens to lock for vesting.
+    /// @param tokenIds Array of ERC-721 tokens Ids to vest.
     function depositTokensForVesting(
         address depositTarget,
-        uint256 amountToVest
+        uint256[] memory tokenIds
     ) internal {
         Vesting storage userVestingTarget = addressToVestingInfo[depositTarget];
-        transferERC20(
-            fairTokenTarget, depositTarget, address(this), amountToVest
-        );
-        unchecked {
-            /// @dev amountVested added cannot be greater than the total supply of the targeted collection, should be safu.
-            userVestingTarget.amountVested += amountToVest;
+        transferERC721(fairTokenTarget, depositTarget, address(this), tokenIds);
 
-            /// @dev If this is the first vesting deposit, we initialize the base start timestamp.
-            if (userVestingTarget.startTimestamp == 0) {
-                userVestingTarget.startTimestamp = block.timestamp;
-                userVestingTarget.lastClaimedTimestamp = block.timestamp;
-            }
+        for (uint256 i; i < tokenIds.length; i = unchecked_inc(i)) {
+            addressToTokenIdsVested[msg.sender].push(tokenIds[i]);
+        }
+
+        /// @dev If this is the first vesting deposit, we initialize the base start timestamp.
+        if (userVestingTarget.startTimestamp == 0) {
+            userVestingTarget.startTimestamp = block.timestamp;
+            userVestingTarget.lastClaimedTimestamp = block.timestamp;
         }
     }
 
-    /// @dev Transfer ERC-20 tokens from two accounts in a safely manner.
-    /// @param tokenAddress ERC-20 token address to transfer.
-    /// @param from Address of the ERC-20 token spender.
-    /// @param to Recipient address of the ERC-20 token.
-    /// @param amount Amount of ERC-20 tokens to transfer.
-    function transferERC20(
+    /// @dev Transfer ERC-721 tokens from two accounts in a safely manner.
+    /// @param tokenAddress ERC-721 token address to transfer.
+    /// @param from Address of the ERC-721 token spender.
+    /// @param to Recipient address of the ERC-721 token.
+    /// @param tokenIds Array of ERC-721 tokens Ids to transfer.
+    function transferERC721(
         address tokenAddress,
         address from,
         address to,
-        uint256 amount
+        uint256[] memory tokenIds
     ) internal {
-        IERC20(tokenAddress).safeTransferFrom(from, to, amount);
+        for (uint256 i; i < tokenIds.length; i = unchecked_inc(i)) {
+            IERC721(tokenAddress).safeTransferFrom(from, to, tokenIds[i]);
+        }
     }
 
     /// @dev Token transfer override to make the vesting token non-transferable between users.
@@ -294,7 +311,13 @@ contract FairnessDAOFairVesting is Initializable, ERC20Upgradeable {
         ) {
             return;
         } else {
-            revert FairnessDAOFairVesting__VestingTokenIsNonTransferable();
+            revert FairnessDAOFairERC721Vesting__VestingTokenIsNonTransferable();
+        }
+    }
+
+    function unchecked_inc(uint256 i) internal pure virtual returns (uint256) {
+        unchecked {
+            return ++i;
         }
     }
 }
