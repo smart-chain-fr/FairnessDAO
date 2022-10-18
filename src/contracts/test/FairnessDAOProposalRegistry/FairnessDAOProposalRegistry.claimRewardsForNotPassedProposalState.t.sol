@@ -63,9 +63,7 @@ contract FairnessDAOProposalRegistryClaimRewardsForNotPassedProposalStateTest is
     /// @dev Should not allow the caller to claim rewards for a proposal if the latter does not exist.
     function testFuzz_claimRewards_func_withRevert_proposalDoesNotExist(
         uint256 proposalId
-    )
-        public
-    {
+    ) public {
         vm.assume(proposalId != 0);
 
         vm.expectRevert(
@@ -78,9 +76,7 @@ contract FairnessDAOProposalRegistryClaimRewardsForNotPassedProposalStateTest is
 
     /// @dev Should not allow the caller to claim rewards for a proposal that did not meet quorum after its voting phase.
     function test_claimRewards_func_withRevert_cannotClaimForProposalThatDidNotPass(
-    )
-        public
-    {
+    ) public {
         /// @dev We skip the voting period of the SP proposal to make it Not Passed.
         skip(defaultStartTime + 14 days);
 

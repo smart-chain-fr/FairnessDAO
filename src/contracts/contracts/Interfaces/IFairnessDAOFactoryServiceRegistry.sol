@@ -19,8 +19,7 @@ interface IFairnessDAOFactoryServiceRegistry {
         string memory _domain,
         address _owner,
         address _target
-    )
-        external;
+    ) external;
     function owner() external view returns (address);
     function publicResolverAddress() external view returns (address);
     function renounceOwnership() external;

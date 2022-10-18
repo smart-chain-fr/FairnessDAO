@@ -88,9 +88,7 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
     /// @dev Should not allow the caller to claim rewards for a proposal if the latter does not exist.
     function testFuzz_claimRewards_func_withRevert_proposalDoesNotExist(
         uint256 proposalId
-    )
-        public
-    {
+    ) public {
         vm.assume(proposalId != 0);
 
         vm.expectRevert(
@@ -103,31 +101,31 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
 
     /// @dev Should allow the caller to claim voting rewards for a proposal that met quorum after its voting phase.
     function test_claimRewards_func_claimRewardsForProposalThatDidPassAsRegularVoter(
-    )
-        public
-    {
+    ) public {
         /// @dev We claim rewards from vesting to avoid event reading issues.
         fairnessDAOFairVesting.updateFairVesting(voterAddress);
 
         (
-            uint256 totalAmountOfVotingTokensUsed, uint256 totalAmountOfUniqueVoters
-        ) =
-            fairnessDAOProposalRegistry.proposalIdToVotingStatus(initialProposalId);
+            uint256 totalAmountOfVotingTokensUsed,
+            uint256 totalAmountOfUniqueVoters
+        ) = fairnessDAOProposalRegistry.proposalIdToVotingStatus(
+            initialProposalId
+        );
         uint256 amountThatShouldBeReceivedByAllVoters =
             totalAmountOfVotingTokensUsed / totalAmountOfUniqueVoters;
 
         vm.expectEmit(true, true, false, true);
         emit EventsUtils.RewardsClaimed(
-            initialProposalId, voterAddress, amountThatShouldBeReceivedByAllVoters
+            initialProposalId,
+            voterAddress,
+            amountThatShouldBeReceivedByAllVoters
             );
         fairnessDAOProposalRegistry.claimRewards(initialProposalId);
     }
 
     /// @dev Should allow the caller to claim boosted voting rewards for a proposal that met quorum after its voting phase.
     function test_claimRewards_func_claimRewardsForProposalThatDidPassAsProposalSubmitter(
-    )
-        public
-    {
+    ) public {
         /// @dev We set this testing contract as the main caller, and originator of the proposal.
         vm.stopPrank();
 
@@ -140,9 +138,11 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
         fairnessDAOFairVesting.updateFairVesting(address(this));
 
         (
-            uint256 totalAmountOfVotingTokensUsed, uint256 totalAmountOfUniqueVoters
-        ) =
-            fairnessDAOProposalRegistry.proposalIdToVotingStatus(initialProposalId);
+            uint256 totalAmountOfVotingTokensUsed,
+            uint256 totalAmountOfUniqueVoters
+        ) = fairnessDAOProposalRegistry.proposalIdToVotingStatus(
+            initialProposalId
+        );
         uint256 amountThatShouldBeReceivedByAllVoters =
             totalAmountOfVotingTokensUsed / totalAmountOfUniqueVoters;
         uint256 boostedReward = amountOfVestingTokensBurntForProposalSubmission
@@ -162,10 +162,10 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
     /// @dev Should allow the caller to claim boosted voting rewards for a proposal that met quorum after its voting phase.
     function testFuzz_claimRewards_func_withRevert_cannotClaimVotingRewardsAsNonVoter(
         uint160 callerSeed
-    )
-        public
-    {
+    ) public {
         vm.assume(callerSeed > 11);
+        vm.assume(address(callerSeed) != address(this));
+        vm.assume(address(callerSeed) != address(voterAddress));
         vm.stopPrank();
 
         hoax(address(callerSeed));
@@ -179,10 +179,9 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
 
     /// @dev Should not allow the caller to claim voting rewards twice for the same proposal that met quorum after its voting phase.
     function test_claimRewards_func_withRevert_cannotClaimRewardsTwiceOnSameProposal(
-    )
-        public
-    {
-        test_claimRewards_func_claimRewardsForProposalThatDidPassAsRegularVoter();
+    ) public {
+        test_claimRewards_func_claimRewardsForProposalThatDidPassAsRegularVoter(
+        );
 
         vm.expectRevert(
             FairnessDAOProposalRegistry

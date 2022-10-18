@@ -51,9 +51,7 @@ contract FairnessDAOProposalRegistryViewProposalStateTest is
     /// @dev Should not allow the caller to view a proposal if the latter does not exist.
     function testFuzz_viewProposal_func_withRevert_proposalDoesNotExist(
         uint256 proposalId
-    )
-        public
-    {
+    ) public {
         vm.assume(proposalId != 0);
 
         vm.expectRevert(
@@ -66,9 +64,7 @@ contract FairnessDAOProposalRegistryViewProposalStateTest is
 
     /// @dev Should allow the caller to view a proposal that has not started yet with the proper NotStarted status.
     function test_viewProposal_func_shouldReturnNotStartedForNonStartedProposalVoting(
-    )
-        public
-    {
+    ) public {
         FairnessDAOProposalRegistry.Proposal memory proposal =
             fairnessDAOProposalRegistry.viewProposal(initialProposalId);
         assertEq(proposal.proposerAddress, address(this));
@@ -89,9 +85,7 @@ contract FairnessDAOProposalRegistryViewProposalStateTest is
 
     /// @dev Should allow the caller to view a proposal that has its voting period started but its status is not updated on the contract storage yet with `voteOnProposal()`.
     function test_viewProposal_func_shouldReturnInProgressForStartedProposalVoting(
-    )
-        public
-    {
+    ) public {
         skip(defaultStartTime);
 
         FairnessDAOProposalRegistry.Proposal memory proposal =
@@ -114,9 +108,7 @@ contract FairnessDAOProposalRegistryViewProposalStateTest is
 
     /// @dev Should allow the caller to view a proposal that has its voting period ended but its status is not updated on the contract storage yet with `finalizeProposal()`.
     function test_viewProposal_func_shouldReturnWaitingForFinalizedForEndeddProposalVoting(
-    )
-        public
-    {
+    ) public {
         skip(defaultStartTime + 14 days);
 
         FairnessDAOProposalRegistry.Proposal memory proposal =

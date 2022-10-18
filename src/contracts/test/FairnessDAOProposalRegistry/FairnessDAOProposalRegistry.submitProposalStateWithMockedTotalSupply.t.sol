@@ -26,9 +26,7 @@ contract FairnessDAOProposalRegistrySubmitProposalStateWithMockedTotalSupplyTest
     /// @dev Should not allow the caller to submit a proposal with a startTime lower than current time.
     function testFuzz_submitProposal_func_withRevert_cannotSetStartTimeBelowCurrentTime(
         uint128 randomCurrentTime
-    )
-        public
-    {
+    ) public {
         vm.assume(randomCurrentTime != 0);
         skip(randomCurrentTime);
 
@@ -47,9 +45,7 @@ contract FairnessDAOProposalRegistrySubmitProposalStateWithMockedTotalSupplyTest
 
     /// @dev Should not allow the caller to submit a proposal if the vesting supply is too low to compute a burning fee.
     function test_submitProposal_func_withRevert_notEnoughVestingTokensCirculating(
-    )
-        public
-    {
+    ) public {
         vm.mockCall(
             address(fairnessDAOFairVesting),
             abi.encodeWithSelector(MockERC20.totalSupply.selector),

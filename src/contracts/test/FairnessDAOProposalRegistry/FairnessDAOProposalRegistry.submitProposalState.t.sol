@@ -42,7 +42,10 @@ contract FairnessDAOProposalRegistrySubmitProposalStateTest is
                 .selector
         );
         fairnessDAOProposalRegistry.submitProposal(
-            defaultStartTime, "", 69, FairnessDAOProposalRegistry.ProposalLevel.SP
+            defaultStartTime,
+            "",
+            69,
+            FairnessDAOProposalRegistry.ProposalLevel.SP
         );
     }
 
@@ -50,9 +53,7 @@ contract FairnessDAOProposalRegistrySubmitProposalStateTest is
     /// @notice We should have at least two voting choices for any proposal.
     function testFuzz_submitProposal_func_withRevert_cannotSetProposalDepthToBelowTwo(
         uint8 randomProposalDepth
-    )
-        public
-    {
+    ) public {
         randomProposalDepth = randomProposalDepth % 2;
 
         vm.expectRevert(
@@ -73,9 +74,7 @@ contract FairnessDAOProposalRegistrySubmitProposalStateTest is
         uint256 startTime,
         string memory proposalURI,
         uint256 proposalTotalDepth
-    )
-        public
-    {
+    ) public {
         vm.assume(startTime > defaultStartTime);
         vm.assume(keccak256(bytes(proposalURI)) != keccak256(bytes("")));
         vm.assume(proposalTotalDepth > 1);
@@ -96,9 +95,7 @@ contract FairnessDAOProposalRegistrySubmitProposalStateTest is
         string memory proposalURI,
         uint256 proposalTotalDepth,
         uint8 proposalLevelSeed
-    )
-        public
-    {
+    ) public {
         vm.assume(startTime > defaultStartTime);
         vm.assume(keccak256(bytes(proposalURI)) != keccak256(bytes("")));
         vm.assume(proposalTotalDepth > 1);

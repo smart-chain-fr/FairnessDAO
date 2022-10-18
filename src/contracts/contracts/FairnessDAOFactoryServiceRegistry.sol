@@ -30,10 +30,12 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
     /// error FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
 
     /// @dev Error when the caller is not the deployer of the FairnessDAOProposalRegistry.
-    error FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer();
+    error FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer(
+    );
 
     /// @dev Error when the caller is registering a subdomain for a FairnessDAOProposalRegistry twice.
-    error FairnessDAOFactoryServiceRegistry__CannotClaimSubdomainTwiceForSameFairnessDAO();
+    error FairnessDAOFactoryServiceRegistry__CannotClaimSubdomainTwiceForSameFairnessDAO(
+    );
 
     address public ensRegistryWithFallbackAddress;
     address public publicResolverAddress;
@@ -56,7 +58,9 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
         publicResolverAddress = initialPublicResolverAddress;
         /// @dev We create a namehash for the topdomain.
         topdomainNamehash = keccak256(
-            abi.encodePacked(emptyNamehash, keccak256(abi.encodePacked(topdomain)))
+            abi.encodePacked(
+                emptyNamehash, keccak256(abi.encodePacked(topdomain))
+            )
         );
     }
 
@@ -78,9 +82,7 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
         string memory _domain,
         address _owner,
         address _target
-    )
-        external
-    {
+    ) external {
         /// @dev @TODO For later maybe.
         // if (msg.sender != fairnessDAOFactoryAddress) {
         //     revert FairnessDAOFactoryServiceRegistry__CallerIsNotAllowed();
@@ -92,18 +94,22 @@ contract FairnessDAOFactoryServiceRegistry is Ownable {
                 != msg.sender
         ) {
             revert
-                FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer();
+                FairnessDAOFactoryServiceRegistry__CannotAllocateSubdomainIfCallerIsNotDeployer(
+            );
         }
 
         if (fairnessDAOProposalRegistryAdressToSubdomainClaimStatus[_target]) {
             revert
-                FairnessDAOFactoryServiceRegistry__CannotClaimSubdomainTwiceForSameFairnessDAO();
+                FairnessDAOFactoryServiceRegistry__CannotClaimSubdomainTwiceForSameFairnessDAO(
+            );
         }
         fairnessDAOProposalRegistryAdressToSubdomainClaimStatus[_target] = true;
 
         /// @dev We create a namehash for the domain.
         bytes32 domainNamehash = keccak256(
-            abi.encodePacked(topdomainNamehash, keccak256(abi.encodePacked(_domain)))
+            abi.encodePacked(
+                topdomainNamehash, keccak256(abi.encodePacked(_domain))
+            )
         );
         /// @dev Verify this contract owns the original main domain.
         if (

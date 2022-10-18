@@ -50,9 +50,7 @@ contract DeployFairnessDAOProposalRegistry is Test {
         );
 
         IFairnessDAOFairVesting(initialFairnessDAOFairVesting)
-            .whitelistProposalRegistryAddress(
-            address(fairnessDAOProposalRegistry)
-        );
+            .whitelistProposalRegistryAddress(address(fairnessDAOProposalRegistry));
 
         console.log(msg.sender);
         console.log(address(fairnessDAOProposalRegistry));

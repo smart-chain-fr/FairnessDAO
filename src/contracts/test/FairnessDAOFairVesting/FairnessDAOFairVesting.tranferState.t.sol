@@ -30,9 +30,7 @@ contract FairnessDAOFairVestingTransferStateTest is
     function testFuzz_transferFrom_func_withRevert_cannotTransferToRandomRecipient(
         uint16 amountToTransfer,
         address recipient
-    )
-        public
-    {
+    ) public {
         vm.assume(amountToTransfer != 0);
         vm.assume(recipient != address(0));
 
@@ -47,9 +45,7 @@ contract FairnessDAOFairVestingTransferStateTest is
     /// @dev Should not allow the user to transfer the vested token to zero address.
     function testFuzz_transferFrom_func_withRevert_cannotTransferToZeroAddress(
         uint16 amountToTransfer
-    )
-        public
-    {
+    ) public {
         vm.assume(amountToTransfer != 0);
 
         vm.expectRevert(bytes("ERC20: transfer to the zero address"));

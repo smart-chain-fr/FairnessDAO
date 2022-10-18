@@ -64,9 +64,7 @@ contract FairnessDAOFairVesting is ERC20 {
         string memory tokenSymbol,
         address initFairTokenTarget,
         uint256 initZInflationDelta
-    )
-        ERC20(tokenName, tokenSymbol)
-    {
+    ) ERC20(tokenName, tokenSymbol) {
         fairTokenTarget = initFairTokenTarget;
         zInflationDelta = initZInflationDelta;
     }
@@ -77,9 +75,7 @@ contract FairnessDAOFairVesting is ERC20 {
     /// @param setWhitelistedProposalRegistry Address of the ProposalRegistry.
     function whitelistProposalRegistryAddress(
         address setWhitelistedProposalRegistry
-    )
-        external
-    {
+    ) external {
         /// @dev This function can only be called once, preferrably during initialization inside the Factory.
         require(!_initializing);
         _initializing = true;
@@ -125,7 +121,8 @@ contract FairnessDAOFairVesting is ERC20 {
             revert FairnessDAOFairVesting__CannotSetZeroAmount();
         }
         if (addressToVestingInfo[msg.sender].amountVested == 0) {
-            revert FairnessDAOFairVesting__CannotIncreaseVestingForNonVestedUser();
+            revert FairnessDAOFairVesting__CannotIncreaseVestingForNonVestedUser(
+            );
         }
 
         updateFairVesting(msg.sender);
@@ -172,7 +169,10 @@ contract FairnessDAOFairVesting is ERC20 {
                 unvestedAmountToTransfer :=
                     div(
                         mul(
-                            div(mul(amountToWithdraw, exp(10, 18)), userVestedBalance),
+                            div(
+                                mul(amountToWithdraw, exp(10, 18)),
+                                userVestedBalance
+                            ),
                             userAmountVested
                         ),
                         exp(10, 18)
@@ -255,9 +255,7 @@ contract FairnessDAOFairVesting is ERC20 {
     function depositTokensForVesting(
         address depositTarget,
         uint256 amountToVest
-    )
-        internal
-    {
+    ) internal {
         Vesting storage userVestingTarget = addressToVestingInfo[depositTarget];
         transferERC20(
             fairTokenTarget, depositTarget, address(this), amountToVest
@@ -284,9 +282,7 @@ contract FairnessDAOFairVesting is ERC20 {
         address from,
         address to,
         uint256 amount
-    )
-        internal
-    {
+    ) internal {
         IERC20(tokenAddress).safeTransferFrom(from, to, amount);
     }
 

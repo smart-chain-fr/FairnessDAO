@@ -63,9 +63,7 @@ contract FairnessDAOProposalRegistryFinalizeHPProposalStateTest is
     /// @dev Should not allow the caller to finalize a proposal if the latter does not exist.
     function testFuzz_finalizeProposal_func_withRevert_proposalDoesNotExist(
         uint256 proposalId
-    )
-        public
-    {
+    ) public {
         vm.assume(proposalId != 0);
 
         vm.expectRevert(
@@ -153,9 +151,7 @@ contract FairnessDAOProposalRegistryFinalizeHPProposalStateTest is
 
     /// @dev Should allow the caller to finalize a proposal that meets quorum and passes.
     function test_finalizeProposal_func_HardProposalMeetsCompleteQuorumAndPasses(
-    )
-        public
-    {
+    ) public {
         vm.stopPrank();
 
         skip(defaultStartTime);

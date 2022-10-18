@@ -17,7 +17,9 @@ contract FairnessDAOFairVestingInitiateVestingStateTest is
         public
     {
         vm.expectRevert(
-            FairnessDAOFairVesting.FairnessDAOFairVesting__CannotSetZeroAmount.selector
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__CannotSetZeroAmount
+                .selector
         );
         fairnessDAOFairVesting.initiateVesting(0);
     }
@@ -25,9 +27,7 @@ contract FairnessDAOFairVestingInitiateVestingStateTest is
     /// @dev Should not allow the caller to initiate vesting with random amount if he does not own the amount.
     function testFuzz_initiateVesting_func_withRevert_insufficientBalance(
         uint256 amountToVest
-    )
-        public
-    {
+    ) public {
         vm.assume(amountToVest != 0);
         vm.expectRevert(bytes("ERC20: insufficient allowance"));
         fairnessDAOFairVesting.initiateVesting(amountToVest);
@@ -36,9 +36,7 @@ contract FairnessDAOFairVestingInitiateVestingStateTest is
     /// @dev Should not allow the caller to initiate vesting with random amount if he does not approve the amount.
     function testFuzz_initiateVesting_func_withRevert_ERC20BalanceNotApproved(
         uint256 amountToVest
-    )
-        public
-    {
+    ) public {
         vm.assume(amountToVest != 0);
         mockERC20.faucet(amountToVest);
         vm.expectRevert(bytes("ERC20: insufficient allowance"));
@@ -82,9 +80,7 @@ contract FairnessDAOFairVestingInitiateVestingStateTest is
     /// @dev Should not allow the caller to initiate another vesting if the first one is active.
     function testFuzz_initiateVesting_func_withRevert_cannotInitiateVestingTwice(
         uint128 amountToVest
-    )
-        public
-    {
+    ) public {
         vm.assume(amountToVest != 0);
         testFuzz_initiateVesting_func(amountToVest);
         mockERC20.faucet(amountToVest);

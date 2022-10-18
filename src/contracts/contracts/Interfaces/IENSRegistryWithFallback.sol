@@ -26,8 +26,7 @@ interface IENSRegistryWithFallback {
         address _owner,
         address _resolver,
         uint64 _ttl
-    )
-        external;
+    ) external;
     function setResolver(bytes32 node, address _resolver) external;
     function setSubnodeOwner(bytes32 node, bytes32 label, address _owner)
         external
@@ -38,8 +37,7 @@ interface IENSRegistryWithFallback {
         address _owner,
         address _resolver,
         uint64 _ttl
-    )
-        external;
+    ) external;
     function setTTL(bytes32 node, uint64 _ttl) external;
     function ttl(bytes32 node) external view returns (uint64);
 }

@@ -16,9 +16,7 @@ interface IFairnessDAOFactory {
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
         uint256 initialMinimumVoterShareRequiredForHardProposal,
         uint256 initalBoostedRewardBonusValue
-    )
-        external
-        returns (address, address);
+    ) external returns (address, address);
     function fairnessDAOProposalRegistryAddressToOwnerAddress(address)
         external
         view

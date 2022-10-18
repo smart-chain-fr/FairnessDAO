@@ -64,7 +64,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     error FairnessDAOProposalRegistry__CannotClaimRewardsTwice();
 
     /// @dev Error when the caller is trying to claim rewards for a proposal he has not voted on.
-    error FairnessDAOProposalRegistry__CannotClaimRewardsForProposalWhereCallerHasNotVoted();
+    error FairnessDAOProposalRegistry__CannotClaimRewardsForProposalWhereCallerHasNotVoted(
+    );
 
     enum VotingStatus {
         NotStarted,
@@ -171,9 +172,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         string memory proposalURI,
         uint256 proposalTotalDepth,
         ProposalLevel proposalLevel
-    )
-        external
-    {
+    ) external {
         /// @dev We verify if the given voting start time is not below current time.
         if (startTime < block.timestamp) {
             revert
@@ -190,8 +189,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
 
         /// @dev We verify if the user holds the proper amount of vesting tokens to submit a vote.
         if (
-            IFairnessDAOFairVesting(fairnessDAOFairVesting).balanceOf(msg.sender)
-                < amountRequiredForSubmittingProposals
+            IFairnessDAOFairVesting(fairnessDAOFairVesting).balanceOf(
+                msg.sender
+            ) < amountRequiredForSubmittingProposals
         ) {
             revert
                 FairnessDAOProposalRegistry__CallerDoesNotHaveEnoughVestingTokens();
@@ -204,7 +204,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
 
         /// @dev We verify if the given proposal has at least two possible choices.
         if (proposalTotalDepth < 2) {
-            revert FairnessDAOProposalRegistry__CannotSetProposalDepthToBelowTwo();
+            revert FairnessDAOProposalRegistry__CannotSetProposalDepthToBelowTwo(
+            );
         }
 
         /// @dev We burn the user vesting tokens before proceding to the proposal storage.
@@ -263,7 +264,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         /// @dev If the given voter choice does not exist in the proposal depth, it means it does not exist.
         if (chosenProposalDepth >= proposal.proposalTotalDepth) {
             revert
-                FairnessDAOProposalRegistry__VotingDepthDoesNotExistInProposalDepth();
+                FairnessDAOProposalRegistry__VotingDepthDoesNotExistInProposalDepth(
+            );
         }
 
         /// @dev The user shall not be able to start voting before the official voting period.
@@ -284,7 +286,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
 
         /// @dev The user shall not have already voted for this proposal.
         if (userVote.votedAtTimestamp != 0) {
-            revert FairnessDAOProposalRegistry__CannotVoteTwiceOnTheSameProposal();
+            revert FairnessDAOProposalRegistry__CannotVoteTwiceOnTheSameProposal(
+            );
         }
 
         /// @dev Update of the Voting Status.
@@ -299,8 +302,9 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         );
 
         /// @dev We store in memory the vesting token balance of the voter.
-        uint256 voterVestingTokenBalance =
-            IFairnessDAOFairVesting(fairnessDAOFairVesting).balanceOf(msg.sender);
+        uint256 voterVestingTokenBalance = IFairnessDAOFairVesting(
+            fairnessDAOFairVesting
+        ).balanceOf(msg.sender);
 
         /// @dev The user shall not be able to vote with zero voting power.
         /// This condition seems to never happen since this check is already done in `updateFairVesting()` above.
@@ -383,8 +387,10 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         }
         /// @dev We verify the quorum for both QT and QA is met.
         else if (
-            proposalVoting.totalAmountOfUniqueVoters > minUniqueVoterAmountFromShare
-                && proposalVoting.totalAmountOfVotingTokensUsed > minSupplyAmountFromShare
+            proposalVoting.totalAmountOfUniqueVoters
+                > minUniqueVoterAmountFromShare
+                && proposalVoting.totalAmountOfVotingTokensUsed
+                    > minSupplyAmountFromShare
         ) {
             uint256 maxAmountOfVoteDepth;
             /// @dev We first retrieve the highest amount of vote amount.
@@ -443,7 +449,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         /// @dev The proposal voting should be passed to allow the reward distribution.
         if (proposal.votingStatus != VotingStatus.Passed) {
             revert
-                FairnessDAOProposalRegistry__CannotClaimRewardsForNotPassedProposal();
+                FairnessDAOProposalRegistry__CannotClaimRewardsForNotPassedProposal(
+            );
         }
 
         /// @dev We check if the caller has already claimed rewards for this finalized vote.
@@ -490,7 +497,8 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         /// @dev Else, the caller has not voted on this passed proposal.
         else {
             revert
-                FairnessDAOProposalRegistry__CannotClaimRewardsForProposalWhereCallerHasNotVoted();
+                FairnessDAOProposalRegistry__CannotClaimRewardsForProposalWhereCallerHasNotVoted(
+            );
         }
         proposalIdToVoterAddressToHasClaimedStatus[proposalId][msg.sender] =
             true;
@@ -549,11 +557,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     function getProposalIdToProposalDepthToTotalAmountOfVote(
         uint256 proposalId,
         uint256 proposalDepth
-    )
-        external
-        view
-        returns (uint256)
-    {
+    ) external view returns (uint256) {
         return proposalIdToVotingStatus[proposalId]
             .proposalDepthToTotalAmountOfVote[proposalDepth];
     }

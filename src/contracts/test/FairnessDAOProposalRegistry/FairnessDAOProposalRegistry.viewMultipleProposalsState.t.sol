@@ -52,9 +52,7 @@ contract FairnessDAOProposalRegistryViewMultipleProposalsStateTest is
     function testFuzz_viewMultipleProposals_func_withRevert_incorrectBoundIndex(
         uint256 fromIndex,
         uint256 endIndex
-    )
-        public
-    {
+    ) public {
         vm.assume(fromIndex > endIndex);
 
         vm.expectRevert(
@@ -69,9 +67,7 @@ contract FairnessDAOProposalRegistryViewMultipleProposalsStateTest is
     function testFuzz_viewMultipleProposals_func_withRevert_proposalDoesNotExist(
         uint256 fromIndex,
         uint256 endIndex
-    )
-        public
-    {
+    ) public {
         vm.assume(endIndex > fromIndex);
 
         vm.expectRevert(
@@ -84,9 +80,7 @@ contract FairnessDAOProposalRegistryViewMultipleProposalsStateTest is
 
     /// @dev Should allow the caller to view multiple proposals that have not started yet with the proper NotStarted status.
     function test_viewMultipleProposals_func_shouldReturnNotStartedForNonStartedProposalVoting(
-    )
-        public
-    {
+    ) public {
         FairnessDAOProposalRegistry.Proposal[] memory proposals =
         fairnessDAOProposalRegistry.viewMultipleProposals(
             initialProposalId, initialProposalId
@@ -109,9 +103,7 @@ contract FairnessDAOProposalRegistryViewMultipleProposalsStateTest is
 
     /// @dev Should allow the caller to view multiple proposals that have their voting period started but its status is not updated on the contract storage yet with `voteOnProposal()`.
     function test_viewMultipleProposals_func_shouldReturnInProgressForStartedProposalVoting(
-    )
-        public
-    {
+    ) public {
         skip(defaultStartTime);
 
         FairnessDAOProposalRegistry.Proposal[] memory proposals =
@@ -136,9 +128,7 @@ contract FairnessDAOProposalRegistryViewMultipleProposalsStateTest is
 
     /// @dev Should allow the caller to view multiple proposals that have their voting period ended but its status is not updated on the contract storage yet with `finalizeProposal()`.
     function test_viewMultipleProposals_func_shouldReturnWaitingForFinalizedForEndeddProposalVoting(
-    )
-        public
-    {
+    ) public {
         skip(defaultStartTime + 14 days);
 
         FairnessDAOProposalRegistry.Proposal[] memory proposals =

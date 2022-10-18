@@ -1,0 +1,137 @@
+version: 2.1
+
+parameters:
+  working-directory:
+    type: string
+    description: Path of the working directory
+    default: /tmp/gitcode
+  
+  min-coverage-hardhat:
+    type: integer
+    description: Minimun test coverage result expected in % for Hardhat
+    default: 0
+
+  min-coverage-forge:
+    type: integer
+    description: Minimun test coverage result expected in % for Foundry
+    default: 70
+
+jobs:
+  npm_build-test-coverage:
+    docker:
+      - image: cimg/node:16.13.2
+    working_directory: <<pipeline.parameters.working-directory>>
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node-v1-{{ .Branch }}-{{ checksum "<<pipeline.parameters.working-directory>>/src/contracts/package-lock.json" }}
+            - node-v1-{{ .Branch }}-
+            - node-v1-
+      - run:
+          name: npm install & build
+          command: |
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            npm install
+            npm run build
+      - run:
+          name: npm run test
+          command: |
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            npm run test
+      - run:
+          name: npm run coverage
+          command: |
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            npm run coverage
+      - run:
+          name: Install dart
+          command: |
+            sudo apt-get update
+            sudo apt-get install apt-transport-https -y
+            wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/dart.gpg
+            echo 'deb [signed-by=/usr/share/keyrings/dart.gpg arch=amd64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main' | sudo tee /etc/apt/sources.list.d/dart_stable.list
+            sudo apt-get update
+            sudo apt-get install dart -y
+      - run:
+          name: Calculate code coverage
+          command: |
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            dart run calculate_coverage.dart ./coverage/lcov.info <<pipeline.parameters.min-coverage-hardhat>>
+      
+      - save_cache:
+          paths:
+            - <<pipeline.parameters.working-directory>>/src/contracts/node_modules 
+          key: node-v1-{{ .Branch }}-{{ checksum "<<pipeline.parameters.working-directory>>/package-lock.json" }}
+      
+      - store_artifacts:
+          path: <<pipeline.parameters.working-directory>>/src/contracts/coverage
+      
+      - persist_to_workspace:
+          root: <<pipeline.parameters.working-directory>>/src/
+          paths:
+            - contracts
+
+  foundry_test:
+    docker:
+      - image : debian:latest
+    working_directory: <<pipeline.parameters.working-directory>>
+    steps:
+      - checkout
+
+      - run:
+          #install git
+          name: Setup environment
+          command: |
+            apt-get update
+            apt-get install git -y
+            apt-get install curl -y
+            curl -L https://foundry.paradigm.xyz | bash
+            export PATH=$PATH:~/.foundry/bin
+            ~/.foundry/bin/foundryup
+            apt-get install -y nodejs
+            apt-get install -y npm
+            apt-get install apt-transport-https -y
+            apt-get install wget -y
+            wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/dart.gpg
+            echo 'deb [signed-by=/usr/share/keyrings/dart.gpg arch=amd64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main' | tee /etc/apt/sources.list.d/dart_stable.list
+            apt-get update
+            apt-get install dart -y
+            apt-get install lcov -y
+
+      - run:
+      #npm install
+          name: npm install
+          command: |
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            npm install
+      - run:
+          name: Run Foundry tests
+          command: |
+            export PATH=$PATH:~/.foundry/bin
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            forge fmt --check && forge fmt ./contracts/ --check && forge clean && forge install && forge build && forge test -vvv --gas-report && forge snapshot --check
+      
+      - run:
+          name: Run Foundry test coverage
+          command: |  
+            export PATH=$PATH:~/.foundry/bin
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            forge coverage --report lcov && lcov --remove lcov.info 'node_modules/*' 'src/*' 'test/*' 'contracts/Mocks/*' 'contracts/Libraries/*' -o lcov_parsed.info
+
+
+      - run:
+          name: Calculate code coverage
+          command: |
+            export PATH=$PATH:/usr/lib/dart/bin
+            cd <<pipeline.parameters.working-directory>>/src/contracts
+            dart run calculate_coverage.dart lcov_parsed.info <<pipeline.parameters.min-coverage-forge>>    
+workflows:
+  version: 2
+
+  build-test:
+    jobs:
+      - npm_build-test-coverage
+      - foundry_test:
+          requires:
+            - npm_build-test-coverage

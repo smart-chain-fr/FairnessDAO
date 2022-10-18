@@ -24,13 +24,13 @@ contract FairnessDAOFairVestingPreviewVestingStateTest is
     /// @dev Should not allow the user to get a preview of his claimable vested rewards if the latter is not vesting.
     function testFuzz_getClaimableFairVesting_func_withRevert_userIsNotVesting(
         address vestedAddress
-    )
-        public
-    {
+    ) public {
         vm.assume(vestedAddress != address(this));
 
         vm.expectRevert(
-            FairnessDAOFairVesting.FairnessDAOFairVesting__UserIsNotVesting.selector
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__UserIsNotVesting
+                .selector
         );
         hoax(vestedAddress);
         fairnessDAOFairVesting.getClaimableFairVesting(vestedAddress);

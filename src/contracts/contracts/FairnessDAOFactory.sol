@@ -26,10 +26,7 @@ contract FairnessDAOFactory {
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
         uint256 initialMinimumVoterShareRequiredForHardProposal,
         uint256 initalBoostedRewardBonusValue
-    )
-        external
-        returns (address, address)
-    {
+    ) external returns (address, address) {
         FairnessDAOFairVesting fairnessDAOFairVesting =
         new FairnessDAOFairVesting(tokenName,tokenSymbol,initFairTokenTarget,initZInflationDelta);
         FairnessDAOProposalRegistry fairnessDAOProposalRegistry =
@@ -51,7 +48,8 @@ contract FairnessDAOFactory {
         )] = msg.sender;
 
         return (
-            address(fairnessDAOFairVesting), address(fairnessDAOProposalRegistry)
+            address(fairnessDAOFairVesting),
+            address(fairnessDAOProposalRegistry)
         );
     }
 }

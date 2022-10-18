@@ -26,7 +26,9 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
         public
     {
         vm.expectRevert(
-            FairnessDAOFairVesting.FairnessDAOFairVesting__CannotSetZeroAmount.selector
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__CannotSetZeroAmount
+                .selector
         );
         fairnessDAOFairVesting.withdrawVesting(0);
     }
@@ -35,13 +37,13 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
     function testFuzz_withdrawVesting_func_withRevert_callerIsNotVesting(
         address randomCaller,
         uint256 amountToWithdraw
-    )
-        public
-    {
+    ) public {
         vm.assume(randomCaller != address(this));
         vm.assume(amountToWithdraw != 0);
         vm.expectRevert(
-            FairnessDAOFairVesting.FairnessDAOFairVesting__UserIsNotVesting.selector
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__UserIsNotVesting
+                .selector
         );
         hoax(randomCaller);
         fairnessDAOFairVesting.withdrawVesting(amountToWithdraw);
@@ -50,9 +52,7 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
     /// @dev Should not allow the caller to withdraw more than he owns.
     function testFuzz_withdrawVesting_func_withRevert_cannotWithdrawMoreThanTheCallerOwns(
         uint256 amountToWithdraw
-    )
-        public
-    {
+    ) public {
         vm.assume(amountToWithdraw > initialAmountToVest);
         vm.expectRevert(
             FairnessDAOFairVesting
@@ -66,9 +66,7 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
     function testFuzz_withdrawVesting_func_partialWithdrawal(
         uint32 timeSkipping,
         uint8 shareToWithdraw
-    )
-        public
-    {
+    ) public {
         vm.assume(timeSkipping != 0);
         vm.assume(shareToWithdraw != 0);
         vm.assume(shareToWithdraw != 1);
@@ -81,7 +79,8 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
 
         uint256 withdrawnAmount = (
             (
-                (amountToWithdraw * 1e18) / fairnessDAOFairVesting.balanceOf(address(this))
+                (amountToWithdraw * 1e18)
+                    / fairnessDAOFairVesting.balanceOf(address(this))
             ) * initialAmountToVest
         ) / 1e18;
 
@@ -121,9 +120,7 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
     function testFuzz_withdrawVesting_func_withRevert_withdrawalAmountTooLow(
         uint32 timeSkipping,
         uint8 amountToWithdraw
-    )
-        public
-    {
+    ) public {
         vm.assume(timeSkipping != 0);
         if (timeSkipping < type(uint16).max) {
             timeSkipping = type(uint16).max;
@@ -135,7 +132,9 @@ contract FairnessDAOFairVestingWithdrawVestingStateTest is
         fairnessDAOFairVesting.updateFairVesting(address(this));
 
         vm.expectRevert(
-            FairnessDAOFairVesting.FairnessDAOFairVesting__WithdrawalAmountIsTooLow.selector
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__WithdrawalAmountIsTooLow
+                .selector
         );
         fairnessDAOFairVesting.withdrawVesting(amountToWithdraw);
     }

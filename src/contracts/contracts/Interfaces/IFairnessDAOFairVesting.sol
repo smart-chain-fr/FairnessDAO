@@ -50,8 +50,7 @@ interface IFairnessDAOFairVesting {
     function updateFairVesting(address vestedAddress) external;
     function whitelistProposalRegistryAddress(
         address setWhitelistedProposalRegistry
-    )
-        external;
+    ) external;
     function whitelistedProposalRegistry() external view returns (address);
     function withdrawVesting(uint256 amountToWithdraw) external;
     function zInflationDelta() external view returns (uint256);

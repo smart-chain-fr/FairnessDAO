@@ -64,9 +64,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     function testFuzz_voteOnProposal_func_withRevert_proposalDoesNotExist(
         uint256 proposalId,
         uint256 chosenProposalDepth
-    )
-        public
-    {
+    ) public {
         vm.assume(proposalId != 0);
 
         vm.expectRevert(
@@ -82,9 +80,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     /// @dev Should not allow the caller to vote on proposal if the selected choice depth does not exist on the targeted proposal.
     function testFuzz_voteOnProposal_func_withRevert_votingDepthChosenDoesNotExistOnProposal(
         uint256 chosenProposalDepth
-    )
-        public
-    {
+    ) public {
         vm.assume(chosenProposalDepth > proposalTotalDepth);
 
         vm.expectRevert(
@@ -100,9 +96,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     /// @dev Should not allow the caller to vote on proposal if the voting period for the latter has not started yet.
     function testFuzz_voteOnProposal_func_withRevert_votingPeriodHasNotStartedYet(
         uint8 chosenProposalDepth
-    )
-        public
-    {
+    ) public {
         if (chosenProposalDepth >= proposalTotalDepth) {
             chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
         }
@@ -120,9 +114,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     /// @dev Should not allow the caller to vote on proposal if the voting period for the latter has ended.
     function testFuzz_voteOnProposal_func_withRevert_votingPeriodHasEnded(
         uint8 chosenProposalDepth
-    )
-        public
-    {
+    ) public {
         if (chosenProposalDepth >= proposalTotalDepth) {
             chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
         }
@@ -142,9 +134,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     function testFuzz_voteOnProposal_func_withRevert_cannotVoteIfUserIsNotVesting(
         address randomVoterWithZeroVotingTokens,
         uint8 chosenProposalDepth
-    )
-        public
-    {
+    ) public {
         vm.assume(randomVoterWithZeroVotingTokens != address(this));
         vm.assume(randomVoterWithZeroVotingTokens != address(voterAddress));
 
@@ -153,7 +143,9 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
         }
 
         vm.expectRevert(
-            FairnessDAOFairVesting.FairnessDAOFairVesting__UserIsNotVesting.selector
+            FairnessDAOFairVesting
+                .FairnessDAOFairVesting__UserIsNotVesting
+                .selector
         );
         skip(defaultStartTime);
         vm.stopPrank();
@@ -190,9 +182,11 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
         assertEq(userVotedAtTimestamp, block.timestamp);
 
         (
-            uint256 totalAmountOfVotingTokensUsed, uint256 totalAmountOfUniqueVoters
-        ) =
-            fairnessDAOProposalRegistry.proposalIdToVotingStatus(initialProposalId);
+            uint256 totalAmountOfVotingTokensUsed,
+            uint256 totalAmountOfUniqueVoters
+        ) = fairnessDAOProposalRegistry.proposalIdToVotingStatus(
+            initialProposalId
+        );
         assertEq(
             totalAmountOfVotingTokensUsed,
             fairnessDAOFairVesting.balanceOf(address(voterAddress))
@@ -203,9 +197,7 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
     /// @dev Should not allow the caller to vote on proposal if the caller has already voted on the same proposal.
     function testFuzz_voteOnProposal_func_withRevert_cannotVoteTwiceOnSameProposal(
         uint8 chosenProposalDepth
-    )
-        public
-    {
+    ) public {
         if (chosenProposalDepth >= proposalTotalDepth) {
             chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
         }

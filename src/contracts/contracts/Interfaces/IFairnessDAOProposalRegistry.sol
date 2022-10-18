@@ -84,8 +84,7 @@ interface IFairnessDAOProposalRegistry {
         string memory proposalURI,
         uint256 proposalTotalDepth,
         uint8 proposalLevel
-    )
-        external;
+    ) external;
     function totalAmountOfVestingTokensBurned()
         external
         view
