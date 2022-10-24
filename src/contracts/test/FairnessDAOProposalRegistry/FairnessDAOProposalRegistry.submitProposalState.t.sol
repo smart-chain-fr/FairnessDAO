@@ -27,9 +27,6 @@ contract FairnessDAOProposalRegistrySubmitProposalStateTest is
         /// @dev We skip 1 second, which should reward the user of 1 ether equivalent of vesting tokens.
         skip(1);
         fairnessDAOFairVesting.updateFairVesting(address(this));
-        fairnessDAOFairVesting.whitelistProposalRegistryAddress(
-            address(fairnessDAOProposalRegistry)
-        );
     }
 
     /// @dev Should not allow the caller to submit a proposal with an empty proposal URI.
@@ -97,7 +94,7 @@ contract FairnessDAOProposalRegistrySubmitProposalStateTest is
         uint8 proposalLevelSeed
     ) public {
         vm.assume(startTime > defaultStartTime);
-        vm.assume(keccak256(bytes(proposalURI)) != keccak256(bytes("")));
+        vm.assume(bytes(proposalURI).length != 0);
         vm.assume(proposalTotalDepth > 1);
 
         fairnessDAOFairVesting.approve(

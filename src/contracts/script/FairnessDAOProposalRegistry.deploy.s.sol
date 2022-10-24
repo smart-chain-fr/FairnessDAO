@@ -37,7 +37,8 @@ contract DeployFairnessDAOProposalRegistry is Test {
     function run() public {
         vm.startBroadcast();
 
-        fairnessDAOProposalRegistry = new FairnessDAOProposalRegistry(
+        fairnessDAOProposalRegistry = new FairnessDAOProposalRegistry();
+        fairnessDAOProposalRegistry.initialize(
             initialFairnessDAOFairVesting,
             initMinimumSupplyShareRequiredForSubmittingProposals,
             initialVoteTimeLengthSoftProposal,
@@ -48,9 +49,6 @@ contract DeployFairnessDAOProposalRegistry is Test {
             initialMinimumVoterShareRequiredForHardProposal,
             initalBoostedRewardBonusValue
         );
-
-        IFairnessDAOFairVesting(initialFairnessDAOFairVesting)
-            .whitelistProposalRegistryAddress(address(fairnessDAOProposalRegistry));
 
         console.log(msg.sender);
         console.log(address(fairnessDAOProposalRegistry));

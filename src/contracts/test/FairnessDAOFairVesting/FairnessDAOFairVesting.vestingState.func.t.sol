@@ -116,12 +116,15 @@ contract FairnessDAOFairVestingVestingStateTest is
             (1e18 * zInflationDeltaBpPoC) / 1_000_000_000;
 
         FairnessDAOFairVesting fairnessDAOFairVestingPoC =
-        new FairnessDAOFairVesting(
-                tokenName,
-                tokenSymbol,
-                address(mockERC20),
-                zInflationDeltaPoC
-            );
+            new FairnessDAOFairVesting();
+
+        fairnessDAOFairVestingPoC.initialize(
+            tokenName,
+            tokenSymbol,
+            address(mockERC20),
+            zInflationDeltaPoC,
+            address(0)
+        );
 
         uint256 initialAmountToVest = 1 ether;
 

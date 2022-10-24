@@ -32,9 +32,6 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
         /// @dev We skip 1 second, which should reward the user of 1 ether equivalent of vesting tokens.
         skip(1);
         fairnessDAOFairVesting.updateFairVesting(address(this));
-        fairnessDAOFairVesting.whitelistProposalRegistryAddress(
-            address(fairnessDAOProposalRegistry)
-        );
 
         fairnessDAOFairVesting.approve(
             address(fairnessDAOProposalRegistry), type(uint256).max
@@ -153,6 +150,47 @@ contract FairnessDAOProposalRegistryVoteOnProposalStateTest is
         fairnessDAOProposalRegistry.voteOnProposal(
             initialProposalId, chosenProposalDepth
         );
+    }
+
+    /// @dev Should not allow the caller to vote on proposal if the caller has no voting tokens even if he had vested.
+    function testFuzz_voteOnProposal_func_withRevert_cannotVoteWithZeroWeight(
+        address randomVoterWithZeroVotingTokens,
+        uint8 chosenProposalDepth
+    ) public {
+        vm.assume(randomVoterWithZeroVotingTokens != address(this));
+        vm.assume(randomVoterWithZeroVotingTokens != address(0));
+        vm.assume(randomVoterWithZeroVotingTokens != address(voterAddress));
+
+        if (chosenProposalDepth >= proposalTotalDepth) {
+            chosenProposalDepth = chosenProposalDepth % proposalTotalDepth;
+        }
+
+        vm.mockCall(
+            address(fairnessDAOFairVesting),
+            abi.encodeWithSelector(MockERC20.totalSupply.selector),
+            abi.encode(type(uint128).max)
+        );
+
+        skip(defaultStartTime);
+        vm.stopPrank();
+        startHoax(randomVoterWithZeroVotingTokens);
+        mockERC20.faucet(1);
+        mockERC20.approve(address(fairnessDAOFairVesting), 1);
+        fairnessDAOFairVesting.initiateVesting(1);
+        skip(1);
+        fairnessDAOFairVesting.updateFairVesting(
+            randomVoterWithZeroVotingTokens
+        );
+        fairnessDAOFairVesting.burn(1);
+        vm.expectRevert(
+            FairnessDAOProposalRegistry
+                .FairnessDAOProposalRegistry__CannotVoteWithZeroWeight
+                .selector
+        );
+        fairnessDAOProposalRegistry.voteOnProposal(
+            initialProposalId, chosenProposalDepth
+        );
+        vm.stopPrank();
     }
 
     /// @dev Should allow the caller to vote on proposal.

@@ -2,8 +2,6 @@
 
 pragma solidity 0.8.4;
 
-// import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-
 /// @title FairnessDAOPolicyController
 /// @dev First draft of FairnessDAO protocol.
 /// @author Smart-Chain Team
@@ -34,29 +32,4 @@ abstract contract FairnessDAOPolicyController {
     /// @dev Bonus value for reward for the caller if his passed proposal met quorum.
     /// ex: 1000/1000 = 100% = ((1e18 * 1000) / 1000);
     uint256 public boostedRewardBonusValue;
-
-    constructor(
-        uint256 initMinimumSupplyShareRequiredForSubmittingProposals,
-        uint256 initialVoteTimeLengthSoftProposal,
-        uint256 initialVoteTimeLengthHardProposal,
-        uint256 initialMinimumTotalSupplyShareRequiredForSoftProposal,
-        uint256 initialMinimumTotalSupplyShareRequiredForHardProposal,
-        uint256 initialMinimumVoterShareRequiredForSoftProposal,
-        uint256 initialMinimumVoterShareRequiredForHardProposal,
-        uint256 initalBoostedRewardBonusValue
-    ) {
-        minimumSupplyShareRequiredForSubmittingProposals =
-            initMinimumSupplyShareRequiredForSubmittingProposals;
-        voteTimeLengthSoftProposal = initialVoteTimeLengthSoftProposal;
-        voteTimeLengthHardProposal = initialVoteTimeLengthHardProposal;
-        minimumTotalSupplyShareRequiredForSoftProposal =
-            initialMinimumTotalSupplyShareRequiredForSoftProposal;
-        minimumTotalSupplyShareRequiredForHardProposal =
-            initialMinimumTotalSupplyShareRequiredForHardProposal;
-        minimumVoterShareRequiredForSoftProposal =
-            initialMinimumVoterShareRequiredForSoftProposal;
-        minimumVoterShareRequiredForHardProposal =
-            initialMinimumVoterShareRequiredForHardProposal;
-        boostedRewardBonusValue = initalBoostedRewardBonusValue;
-    }
 }

@@ -31,9 +31,6 @@ contract FairnessDAOProposalRegistryViewMultipleProposalsStateTest is
         /// @dev We skip 1 second, which should reward the user of 1 ether equivalent of vesting tokens.
         skip(1);
         fairnessDAOFairVesting.updateFairVesting(address(this));
-        fairnessDAOFairVesting.whitelistProposalRegistryAddress(
-            address(fairnessDAOProposalRegistry)
-        );
 
         fairnessDAOFairVesting.approve(
             address(fairnessDAOProposalRegistry), type(uint256).max

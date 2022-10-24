@@ -98,7 +98,6 @@ jobs:
             apt-get update
             apt-get install dart -y
             apt-get install lcov -y
-
       - run:
       #npm install
           name: npm install

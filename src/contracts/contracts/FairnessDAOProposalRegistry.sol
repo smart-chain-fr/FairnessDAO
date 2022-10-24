@@ -9,11 +9,16 @@ import {FixedPointMathLib} from
 import {SafeERC20} from
     "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {FairnessDAOPolicyController} from "./FairnessDAOPolicyController.sol";
+import {Initializable} from
+    "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /// @title FairnessDAOProposalRegistry
 /// @dev First draft of FairnessDAO protocol.
 /// @author Smart-Chain Team
-contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
+contract FairnessDAOProposalRegistry is
+    Initializable,
+    FairnessDAOPolicyController
+{
     using SafeERC20 for IFairnessDAOFairVesting;
     using FixedPointMathLib for uint256;
 
@@ -136,7 +141,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         uint256 amountRedeemed
     );
 
-    constructor(
+    function initialize(
         address initialFairnessDAOFairVesting,
         uint256 initMinimumSupplyShareRequiredForSubmittingProposals,
         uint256 initialVoteTimeLengthSoftProposal,
@@ -146,19 +151,21 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
         uint256 initialMinimumVoterShareRequiredForHardProposal,
         uint256 initalBoostedRewardBonusValue
-    )
-        FairnessDAOPolicyController(
-            initMinimumSupplyShareRequiredForSubmittingProposals,
-            initialVoteTimeLengthSoftProposal,
-            initialVoteTimeLengthHardProposal,
-            initialMinimumTotalSupplyShareRequiredForSoftProposal,
-            initialMinimumTotalSupplyShareRequiredForHardProposal,
-            initialMinimumVoterShareRequiredForSoftProposal,
-            initialMinimumVoterShareRequiredForHardProposal,
-            initalBoostedRewardBonusValue
-        )
-    {
+    ) public initializer {
         fairnessDAOFairVesting = initialFairnessDAOFairVesting;
+        minimumSupplyShareRequiredForSubmittingProposals =
+            initMinimumSupplyShareRequiredForSubmittingProposals;
+        voteTimeLengthSoftProposal = initialVoteTimeLengthSoftProposal;
+        voteTimeLengthHardProposal = initialVoteTimeLengthHardProposal;
+        minimumTotalSupplyShareRequiredForSoftProposal =
+            initialMinimumTotalSupplyShareRequiredForSoftProposal;
+        minimumTotalSupplyShareRequiredForHardProposal =
+            initialMinimumTotalSupplyShareRequiredForHardProposal;
+        minimumVoterShareRequiredForSoftProposal =
+            initialMinimumVoterShareRequiredForSoftProposal;
+        minimumVoterShareRequiredForHardProposal =
+            initialMinimumVoterShareRequiredForHardProposal;
+        boostedRewardBonusValue = initalBoostedRewardBonusValue;
     }
 
     /// @dev Allow a vesting token holder to submit a proposal for vote.
@@ -255,9 +262,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     {
         Proposal storage proposal = proposalIdToProposalDetails[proposalId];
 
-        // @TODO Can use proposalCount instead.
-        /// @dev If the given proposal Id stores 0 as startTime, it means it does not exist.
-        if (proposal.startTime == 0) {
+        if (proposalId >= proposalCount) {
             revert FairnessDAOProposalRegistry__ProposalDoesNotExist();
         }
 
@@ -339,9 +344,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
     function finalizeProposal(uint256 proposalId) external {
         Proposal storage proposal = proposalIdToProposalDetails[proposalId];
 
-        // @TODO Can use proposalCount instead.
-        /// @dev If the given proposal Id stores 0 as startTime, it means it does not exist.
-        if (proposal.startTime == 0) {
+        if (proposalId >= proposalCount) {
             revert FairnessDAOProposalRegistry__ProposalDoesNotExist();
         }
 
@@ -440,9 +443,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         /// @dev We store the proposal in memory.
         Proposal memory proposal = proposalIdToProposalDetails[proposalId];
 
-        // @TODO Can use proposalCount instead.
-        /// @dev If the given proposal Id stores 0 as startTime, it means it does not exist.
-        if (proposal.startTime == 0) {
+        if (proposalId >= proposalCount) {
             revert FairnessDAOProposalRegistry__ProposalDoesNotExist();
         }
 
@@ -517,8 +518,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
         view
         returns (Proposal memory proposal)
     {
-        /// @TODO Can use proposalCount instead.
-        if (proposalIdToProposalDetails[proposalId].startTime == 0) {
+        if (proposalId >= proposalCount) {
             revert FairnessDAOProposalRegistry__ProposalDoesNotExist();
         }
 
@@ -539,8 +539,7 @@ contract FairnessDAOProposalRegistry is FairnessDAOPolicyController {
             revert FairnessDAOProposalRegistry__IncorrectBoundIndex();
         }
 
-        /// @TODO Can use proposalCount instead.
-        if (proposalIdToProposalDetails[endIndex].startTime == 0) {
+        if (endIndex >= proposalCount) {
             revert FairnessDAOProposalRegistry__ProposalDoesNotExist();
         }
 

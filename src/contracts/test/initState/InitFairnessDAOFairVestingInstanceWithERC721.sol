@@ -2,13 +2,14 @@
 pragma solidity 0.8.4;
 
 import "forge-std/Test.sol";
-import {InitMockERC20} from "../initState/InitMockERC20.sol";
-import {FairnessDAOFairVesting} from
-    "../../contracts/FairnessDAOFairVesting.sol";
+import {InitMockERC721} from "./InitMockERC721.sol";
+import {InitFairnessDAOFactoryERC721} from "./InitFairnessDAOFactoryERC721.sol";
 
-abstract contract InitFairnessDAOFairVestingWithERC20 is Test, InitMockERC20 {
-    FairnessDAOFairVesting fairnessDAOFairVesting;
-
+abstract contract InitFairnessDAOFairVestingInstanceWithERC721 is
+    Test,
+    InitFairnessDAOFactoryERC721,
+    InitMockERC721
+{
     string public tokenName = "tokenName";
     string public tokenSymbol = "tokenSymbol";
     /// @notice zInflationDeltaBp:
@@ -19,16 +20,16 @@ abstract contract InitFairnessDAOFairVestingWithERC20 is Test, InitMockERC20 {
     uint256 public zInflationDeltaBp = 1000; // 100%
     uint256 public zInflationDelta = (1e18 * zInflationDeltaBp) / 1000;
 
-    function setUp() public virtual {
-        setUpERC20();
+    function setUp() public virtual override {
+        super.setUp();
+        setUpERC721();
 
-        fairnessDAOFairVesting = new FairnessDAOFairVesting();
-        fairnessDAOFairVesting.initialize(
+        fairnessDAOFairERC721Vesting.initialize(
             tokenName,
             tokenSymbol,
-            address(mockERC20),
+            address(mockERC721),
             zInflationDelta,
-            address(0)
+            address(fairnessDAOProposalRegistry)
         );
     }
 }
