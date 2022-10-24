@@ -93,13 +93,7 @@ contract FairnessDAOFactory is Ownable {
         uint256 initialMinimumVoterShareRequiredForSoftProposal,
         uint256 initialMinimumVoterShareRequiredForHardProposal,
         uint256 initalBoostedRewardBonusValue
-<<<<<<< HEAD
-    ) external returns (address, address) {
-        FairnessDAOFairVesting fairnessDAOFairVesting =
-        new FairnessDAOFairVesting(tokenName,tokenSymbol,initFairTokenTarget,initZInflationDelta);
-=======
     ) external returns (address) {
->>>>>>> 540695a (refacto(contract): factory optimization)
         FairnessDAOProposalRegistry fairnessDAOProposalRegistry =
             FairnessDAOProposalRegistry(Clones.clone(proposalLibraryAddress));
 
