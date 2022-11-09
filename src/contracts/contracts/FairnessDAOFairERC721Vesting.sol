@@ -59,6 +59,8 @@ contract FairnessDAOFairERC721Vesting is
 
     mapping(address => Vesting) public addressToVestingInfo;
     mapping(address => uint256[]) public addressToTokenIdsVested;
+    mapping(uint256 => uint256) public tokenIdToIndexOfTokenIdsVested;
+    /// @dev All token Ids get 0 as default value.
     address public fairTokenTarget;
     uint256 public zInflationDelta;
     uint256 public totalOwners;
@@ -130,9 +132,9 @@ contract FairnessDAOFairERC721Vesting is
     /// @dev Allow user to withdraw his locked vested tokens by burning his vesting tokens.
     /// @notice The user cannot dictate the exact amount of locked vested tokens he wants to withdraw.
     /// The withdrawal is based instead on a ratio of burned vesting tokens compared to his total balance.
-    /// @param tokenIdsVestedIndex Array of tokenIds index picked from `tokenIdsVested` array
-    function withdrawVesting(uint256[] memory tokenIdsVestedIndex) external {
-        uint256 amountToWithdraw = tokenIdsVestedIndex.length;
+    /// @param tokenIdsToWithdraw Array of tokenIds index picked from `tokenIdsVested` array \\ `tokenIdsVestedIndex`
+    function withdrawVesting(uint256[] memory tokenIdsToWithdraw) external {
+        uint256 amountToWithdraw = tokenIdsToWithdraw.length;
         if (amountToWithdraw == 0) {
             revert FairnessDAOFairERC721Vesting__CannotSetZeroAmount();
         }
@@ -151,11 +153,9 @@ contract FairnessDAOFairERC721Vesting is
 
         uint256 userVestedAmountToBurn;
         uint256 userVestedBalance = balanceOf(msg.sender);
-        uint256[] memory tokenIdsTotransfer = new uint256[](amountToWithdraw);
         /// @dev If the user unstakes completely his vesting, we clear the storage.
         if (amountToWithdraw == amountVested) {
             userVestedAmountToBurn = userVestedBalance;
-            tokenIdsTotransfer = userVestedTokenIds;
             /// @dev delete userVestedTokenIds and timestamps;
             delete addressToVestingInfo[msg.sender];
             delete addressToTokenIdsVested[msg.sender];
@@ -179,16 +179,27 @@ contract FairnessDAOFairERC721Vesting is
                     )
             }
 
-            if (userVestedAmountToBurn == 0) {
-                revert FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow();
-            }
+            // if (userVestedAmountToBurn == 0) {
+            //     revert FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow();
+            // }
 
-            for (uint256 i = 1; i <= amountToWithdraw; i = unchecked_inc(i)) {
-                tokenIdsTotransfer[i - 1] = userVestedTokenIds[tokenIdsVestedIndex[amountToWithdraw
-                    - i]];
-                userVestedTokenIds[tokenIdsVestedIndex[amountToWithdraw - i]] =
+            for (uint256 i; i < amountToWithdraw; i = unchecked_inc(i)) {
+                uint256 indexOfTokenIdToWithdraw =
+                    tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
+                require(
+                    userVestedTokenIds[indexOfTokenIdToWithdraw]
+                        == tokenIdsToWithdraw[i],
+                    "You do not own the asset you want to withdraw."
+                );
+                userVestedTokenIds[indexOfTokenIdToWithdraw] =
                     userVestedTokenIds[amountVested - 1];
+                /// @dev amountVested == userVestedTokenIds.length
+                tokenIdToIndexOfTokenIdsVested[userVestedTokenIds[indexOfTokenIdToWithdraw]]
+                = indexOfTokenIdToWithdraw;
+
                 userVestedTokenIds.pop();
+                delete tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
+
                 unchecked {
                     /// @dev Safu since `amountVested` < `amountToWithdraw`
                     --amountVested;
@@ -209,9 +220,17 @@ contract FairnessDAOFairERC721Vesting is
         /// We do not use the `transferERC721()` internal method to avoid allowance management issues.
         for (uint256 i; i < amountToWithdraw; i = unchecked_inc(i)) {
             IERC721(fairTokenTarget).safeTransferFrom(
-                address(this), msg.sender, tokenIdsTotransfer[i]
+                address(this), msg.sender, tokenIdsToWithdraw[i]
             );
         }
+    }
+
+    function getTokenIdsVestedByUserAddress(address vesterAddress)
+        external
+        view
+        returns (uint256[] memory)
+    {
+        return addressToTokenIdsVested[vesterAddress];
     }
 
     /// @dev Allow anyone to update and distribute the vesting rewards of a specific active vester.
@@ -231,8 +250,6 @@ contract FairnessDAOFairERC721Vesting is
 
     /// @dev Allow anyone to burn vesting tokens.
     /// @param amount Amount of vesting tokens to burn.
-    /// @notice If a user burns all of its token by mistake, he won't be able to redeem his vested assets.
-    /// He will need to claim vesting tokens first before calling the withdrawal method.
     function burn(uint256 amount) public virtual {
         _burn(_msgSender(), amount);
     }
@@ -269,6 +286,8 @@ contract FairnessDAOFairERC721Vesting is
         transferERC721(fairTokenTarget, depositTarget, address(this), tokenIds);
 
         for (uint256 i; i < tokenIds.length; i = unchecked_inc(i)) {
+            tokenIdToIndexOfTokenIdsVested[tokenIds[i]] =
+                addressToTokenIdsVested[msg.sender].length;
             addressToTokenIdsVested[msg.sender].push(tokenIds[i]);
         }
 

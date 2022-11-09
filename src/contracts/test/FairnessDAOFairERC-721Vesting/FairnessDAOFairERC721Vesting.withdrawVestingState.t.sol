@@ -110,12 +110,10 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
             true, true, true, false, address(fairnessDAOFairERC721Vesting)
         );
         emit EventsUtilsERC20.Transfer(address(this), address(0), burnedAmount);
-        for (uint256 i = 1; i < amountToWithdraw;) {
+        for (uint256 i; i < amountToWithdraw;) {
             vm.expectEmit(true, true, true, false, address(mockERC721));
             emit EventsUtilsERC721.Transfer(
-                address(fairnessDAOFairERC721Vesting),
-                address(this),
-                amountToWithdraw - i
+                address(fairnessDAOFairERC721Vesting), address(this), i
                 );
             unchecked {
                 ++i;
@@ -168,31 +166,58 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
         assertEq(lastClaimedTimestamp, 0);
     }
 
-    /// @dev Should not allow the caller to withdraw partial vesting with amount too low.
-    function testFuzz_withdrawVesting_func_withRevert_withdrawalAmountTooLow(
-        uint32 timeSkipping
-    ) public {
-        vm.assume(timeSkipping != 0);
-        if (timeSkipping < type(uint16).max) {
-            timeSkipping = type(uint16).max;
-        }
+    // /// @dev Should not allow the caller to withdraw partial vesting with amount too low.
+    // function testFuzz_withdrawVesting_func_withRevert_withdrawalAmountTooLow(
+    //     uint32 timeSkipping
+    // ) public {
+    //     vm.assume(timeSkipping != 0);
+    //     if (timeSkipping < type(uint16).max) {
+    //         timeSkipping = type(uint16).max;
+    //     }
+
+    //     skip(timeSkipping);
+    //     fairnessDAOFairERC721Vesting.updateFairVesting(address(this));
+
+    //     uint256[] memory tokenIds = new uint256[](1);
+    //     /// @dev Store a value >> amountToWithdraw for tokenIds vested array length at `addressToTokenIdsVested` slot (#102) for address(this)
+    //     vm.store(
+    //         address(fairnessDAOFairERC721Vesting),
+    //         keccak256(abi.encode(address(this), uint256(102))),
+    //         bytes32(type(uint256).max)
+    //     );
+    //     /// @dev Try to withdraw 1 ERC-721 out of 1.1579209E77. the vToken burn amount can't be computed
+    //     vm.expectRevert(
+    //         FairnessDAOFairERC721Vesting
+    //             .FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow
+    //             .selector
+    //     );
+    //     fairnessDAOFairERC721Vesting.withdrawVesting(tokenIds);
+    // }
+
+    /// @dev Should allow the caller to withdraw partial vesting with random amount.
+    function test_withdrawVesting_func_partialWithdrawal() public {
+        address caller = makeAddr("CallerForThisTest");
+
+        startHoax(caller);
+
+        /// @dev The first 9 tokenIds are taked.
+        uint256[] memory tokenIds = mockERC721.faucet(3);
+        /// @dev It should mint 10/11/12.
+        mockERC721.setApprovalForAll(
+            address(fairnessDAOFairERC721Vesting), true
+        );
+        fairnessDAOFairERC721Vesting.initiateVesting(tokenIds);
+
+        uint32 timeSkipping = 10 days;
 
         skip(timeSkipping);
         fairnessDAOFairERC721Vesting.updateFairVesting(address(this));
 
-        uint256[] memory tokenIds = new uint256[](1);
-        /// @dev Store a value >> amountToWithdraw for tokenIds vested array length at `addressToTokenIdsVested` slot (#102) for address(this)
-        vm.store(
-            address(fairnessDAOFairERC721Vesting),
-            keccak256(abi.encode(address(this), uint256(102))),
-            bytes32(type(uint256).max)
-        );
-        /// @dev Try to withdraw 1 ERC-721 out of 1.1579209E77. the vToken burn amount can't be computed
-        vm.expectRevert(
-            FairnessDAOFairERC721Vesting
-                .FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow
-                .selector
-        );
-        fairnessDAOFairERC721Vesting.withdrawVesting(tokenIds);
+        uint256[] memory indexOfTokensIdsToWithdraw = new uint256[](1);
+        indexOfTokensIdsToWithdraw[0] = 11;
+
+        fairnessDAOFairERC721Vesting.withdrawVesting(indexOfTokensIdsToWithdraw);
+
+        fairnessDAOFairERC721Vesting.getTokenIdsVestedByUserAddress(caller);
     }
 }

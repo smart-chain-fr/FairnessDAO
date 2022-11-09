@@ -13,6 +13,8 @@ contract FairnessDAOFairER721VestingTransferStateTest is
     Test,
     InitFairnessDAOFairVestingWithERC721
 {
+    using stdStorage for StdStorage;
+
     uint8 public initialAmountToVest = 10;
 
     function setUp() public virtual override {
@@ -67,9 +69,14 @@ contract FairnessDAOFairER721VestingTransferStateTest is
             : amountToTransfer = amountToTransfer % initialAmountToVest;
 
         /// @dev update whitelistedProposalRegistry address, should not be possible outside the test framework
+        uint256 slotOfWhitelistedProposalRegistry = stdstore.target(
+            address(fairnessDAOFairERC721Vesting)
+        ).sig("whitelistedProposalRegistry()").find();
+        bytes32 slotLocOfWhitelistedProposalRegistry =
+            bytes32(slotOfWhitelistedProposalRegistry);
         vm.store(
             address(fairnessDAOFairERC721Vesting),
-            bytes32(uint256(106)),
+            slotLocOfWhitelistedProposalRegistry,
             bytes32(uint256(uint160(whitelistedProposalRegistry)))
         );
 

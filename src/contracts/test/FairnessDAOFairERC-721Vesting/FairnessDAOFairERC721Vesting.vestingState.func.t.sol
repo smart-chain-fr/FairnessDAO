@@ -15,7 +15,7 @@ contract FairnessDAOFairERC721VestingVestingStateTest is
     address public vesterAddress = makeAddr("vesterAddress");
 
     /// @dev Should allow user to vest funds and claim periodically.
-    function test_shouldAllowUserToVestFundsAndClaimPeriodically() public {
+    function test_shouldAllowUserToVestFundsAndClaimPeriodicallyTsuu() public {
         /// @dev We impersonate vesterAddress during the entire process to avoid dependencies with this contract.
         startHoax(vesterAddress);
 
@@ -94,7 +94,10 @@ contract FairnessDAOFairERC721VestingVestingStateTest is
 
         /// @dev We claim 1 ERC-721 token out of 5, so 20% of 800 vtokens will burn.
         tokenIdsIndexToWithdraw = new uint256[](1); // index [0] of addressToTokenIdsVested[0] = 5
+        tokenIdsIndexToWithdraw[0] = 5;
+
         fairnessDAOFairERC721Vesting.withdrawVesting(tokenIdsIndexToWithdraw);
+
         assertEq(fairnessDAOFairERC721Vesting.balanceOf(vesterAddress), 640);
         assertEq(
             mockERC721.balanceOf(vesterAddress), initialAmountToVest / 2 + 1
