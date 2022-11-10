@@ -52,6 +52,9 @@ contract FairnessDAOFairERC721Vesting is
     /// @dev Error when caller tries to mint rewards without being allowed to.
     error FairnessDAOFairERC721Vesting__CallerIsNotAllowedToMintRewards();
 
+    /// @dev Error when caller tries unstake an asset he does not own.
+    error FairnessDAOFairERC721Vesting__CallerIsNotTheOwnerOfTheStakedAsset();
+
     struct Vesting {
         uint256 startTimestamp;
         uint256 lastClaimedTimestamp;
@@ -59,11 +62,11 @@ contract FairnessDAOFairERC721Vesting is
 
     mapping(address => Vesting) public addressToVestingInfo;
     mapping(address => uint256[]) public addressToTokenIdsVested;
-    mapping(uint256 => uint256) public tokenIdToIndexOfTokenIdsVested;
     /// @dev All token Ids get 0 as default value.
+    mapping(uint256 => uint256) public tokenIdToIndexOfTokenIdsVested;
+
     address public fairTokenTarget;
     uint256 public zInflationDelta;
-    uint256 public totalOwners;
     address public whitelistedProposalRegistry;
 
     function initialize(
@@ -105,10 +108,6 @@ contract FairnessDAOFairERC721Vesting is
         }
 
         depositTokensForVesting(msg.sender, tokenIds);
-        unchecked {
-            /// @dev There is around 1.386 billion km³ of water volume on earth.
-            ++totalOwners;
-        }
     }
 
     /// @dev Increase the vesting amount of token.
@@ -129,10 +128,8 @@ contract FairnessDAOFairERC721Vesting is
         depositTokensForVesting(msg.sender, tokenIds);
     }
 
-    /// @dev Allow user to withdraw his locked vested tokens by burning his vesting tokens.
-    /// @notice The user cannot dictate the exact amount of locked vested tokens he wants to withdraw.
-    /// The withdrawal is based instead on a ratio of burned vesting tokens compared to his total balance.
-    /// @param tokenIdsToWithdraw Array of tokenIds index picked from `tokenIdsVested` array \\ `tokenIdsVestedIndex`
+    /// @dev Allow user to withdraw his locked vested tokens.
+    /// @param tokenIdsToWithdraw Array of tokenIds to unstake.
     function withdrawVesting(uint256[] memory tokenIdsToWithdraw) external {
         uint256 amountToWithdraw = tokenIdsToWithdraw.length;
         if (amountToWithdraw == 0) {
@@ -151,69 +148,78 @@ contract FairnessDAOFairERC721Vesting is
             revert FairnessDAOFairERC721Vesting__CannotWithdrawMoreThanYouOwn();
         }
 
-        uint256 userVestedAmountToBurn;
-        uint256 userVestedBalance = balanceOf(msg.sender);
-        /// @dev If the user unstakes completely his vesting, we clear the storage.
+        /// @dev We update the user vested balance before withdraw the collateral in order to get the most rewards out of.
+        updateFairVesting(msg.sender);
+
+        // /// @dev If the user unstakes completely his vesting, we clear the storage.
+        // if (amountToWithdraw == amountVested) {
+        //     /// @dev delete userVestedTokenIds and timestamps;
+        //     delete addressToVestingInfo[msg.sender];
+        //     delete addressToTokenIdsVested[msg.sender];
+        // }
+        // /// @dev We return to the caller a share of his initial vesting.
+        // else {
+        //     for (uint256 i; i < amountToWithdraw; i = unchecked_inc(i)) {
+        //         uint256 indexOfTokenIdToWithdraw =
+        //             tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
+        //         if (
+        //             userVestedTokenIds[indexOfTokenIdToWithdraw]
+        //                 != tokenIdsToWithdraw[i]
+        //         ) {
+        //             revert
+        //                 FairnessDAOFairERC721Vesting__CallerDoesNotOwnTheRequestedAsset(
+        //             );
+        //         }
+
+        //         userVestedTokenIds[indexOfTokenIdToWithdraw] =
+        //             userVestedTokenIds[amountVested - 1];
+        //         /// @dev amountVested == userVestedTokenIds.length
+        //         tokenIdToIndexOfTokenIdsVested[userVestedTokenIds[indexOfTokenIdToWithdraw]]
+        //         = indexOfTokenIdToWithdraw;
+
+        //         userVestedTokenIds.pop();
+        //         delete tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
+
+        //         unchecked {
+        //             /// @dev Safu since `amountVested` < `amountToWithdraw`
+        //             --amountVested;
+        //         }
+        //     }
+        // }
+
+         /// @dev If the user unstakes completely his vesting, we clear the storage.
         if (amountToWithdraw == amountVested) {
-            userVestedAmountToBurn = userVestedBalance;
             /// @dev delete userVestedTokenIds and timestamps;
             delete addressToVestingInfo[msg.sender];
-            delete addressToTokenIdsVested[msg.sender];
+            // delete addressToTokenIdsVested[msg.sender];
+        }
+
+        /// @dev We return to the caller a share of his initial vesting.
+        for (uint256 i; i < amountToWithdraw; i = unchecked_inc(i)) {
+            uint256 indexOfTokenIdToWithdraw =
+                tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
+            if (
+                userVestedTokenIds[indexOfTokenIdToWithdraw]
+                    != tokenIdsToWithdraw[i]
+            ) {
+                revert
+                    FairnessDAOFairERC721Vesting__CallerIsNotTheOwnerOfTheStakedAsset(
+                );
+            }
+
+            userVestedTokenIds[indexOfTokenIdToWithdraw] =
+                userVestedTokenIds[amountVested - 1];
+            /// @dev amountVested == userVestedTokenIds.length
+            tokenIdToIndexOfTokenIdsVested[userVestedTokenIds[indexOfTokenIdToWithdraw]]
+            = indexOfTokenIdToWithdraw;
+
+            userVestedTokenIds.pop();
+            delete tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
 
             unchecked {
-                /// @dev Safu since a hodler has to be registered in the `totalOwners` variable in the first place before being able to reach this statement.
-                --totalOwners;
+                /// @dev Safu since `amountVested` < `amountToWithdraw`
+                --amountVested;
             }
-        }
-        /// @dev We return to the caller a share of his initial vesting.
-        else {
-            assembly {
-                /// @dev This will return 0 instead of reverting if the result is zero.
-                userVestedAmountToBurn :=
-                    div(
-                        mul(
-                            div(mul(amountToWithdraw, exp(10, 18)), amountVested),
-                            userVestedBalance
-                        ),
-                        exp(10, 18)
-                    )
-            }
-
-            // if (userVestedAmountToBurn == 0) {
-            //     revert FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow();
-            // }
-
-            for (uint256 i; i < amountToWithdraw; i = unchecked_inc(i)) {
-                uint256 indexOfTokenIdToWithdraw =
-                    tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
-                require(
-                    userVestedTokenIds[indexOfTokenIdToWithdraw]
-                        == tokenIdsToWithdraw[i],
-                    "You do not own the asset you want to withdraw."
-                );
-                userVestedTokenIds[indexOfTokenIdToWithdraw] =
-                    userVestedTokenIds[amountVested - 1];
-                /// @dev amountVested == userVestedTokenIds.length
-                tokenIdToIndexOfTokenIdsVested[userVestedTokenIds[indexOfTokenIdToWithdraw]]
-                = indexOfTokenIdToWithdraw;
-
-                userVestedTokenIds.pop();
-                delete tokenIdToIndexOfTokenIdsVested[tokenIdsToWithdraw[i]];
-
-                unchecked {
-                    /// @dev Safu since `amountVested` < `amountToWithdraw`
-                    --amountVested;
-                }
-            }
-        }
-
-        /// @dev We burn the caller vTokens.
-        burn(userVestedAmountToBurn);
-
-        /// @dev If the user unstakes completely his vesting, he shouldn't have a vesting available on storage.
-        if (amountToWithdraw != amountVested) {
-            /// @dev We update the user vested balance after the share computation to avoid issues on the integration part.
-            updateFairVesting(msg.sender);
         }
 
         /// @dev We execute the vested token transfer back to its owner.

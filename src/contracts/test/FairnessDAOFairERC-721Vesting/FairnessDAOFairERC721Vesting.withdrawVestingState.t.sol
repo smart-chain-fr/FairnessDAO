@@ -64,7 +64,7 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
     }
 
     /// @dev Should not allow the caller to withdraw more than he owns.
-    function testFuzz_withdrawVesting_func_withRevert_cannotWithdrawMoreThanTheCallerOwns(
+    function test_withdrawVesting_func_withRevert_cannotWithdrawMoreThanTheCallerOwns(
     ) public {
         uint256[] memory tokenIds = new uint256[](initialAmountToVest + 1);
         for (uint256 i; i < initialAmountToVest + 1;) {
@@ -81,6 +81,46 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
         fairnessDAOFairERC721Vesting.withdrawVesting(tokenIds);
     }
 
+    /// @dev Should not allow the caller to withdraw an asset he did not stake.
+    function testFuzz_withdrawVesting_func_withRevert_cannotWithdrawWithATokenIdTheCallerDoesNotOwn(
+        address caller
+    ) public {
+        vm.assume(caller != address(0));
+        vm.assume(caller != address(this));
+        vm.assume(caller != address(fairnessDAOFairERC721Vesting));
+
+        startHoax(caller);
+
+        fairnessDAOFairERC721Vesting.getTokenIdsVestedByUserAddress(
+            address(this)
+        );
+        fairnessDAOFairERC721Vesting.getTokenIdsVestedByUserAddress(caller);
+
+        uint256[] memory tokenIdsToVest = mockERC721.faucet(1);
+        mockERC721.setApprovalForAll(
+            address(fairnessDAOFairERC721Vesting), true
+        );
+        fairnessDAOFairERC721Vesting.initiateVesting(tokenIdsToVest);
+
+        fairnessDAOFairERC721Vesting.getTokenIdsVestedByUserAddress(caller);
+
+        uint256[] memory tokenIds = new uint256[](1);
+        /// @dev The tokenId `0` was staked by the test contract.
+        tokenIds[0] = 11;
+
+        vm.expectRevert(
+            FairnessDAOFairERC721Vesting
+                .FairnessDAOFairERC721Vesting__CallerIsNotTheOwnerOfTheStakedAsset
+                .selector
+        );
+        fairnessDAOFairERC721Vesting.withdrawVesting(tokenIds);
+
+        fairnessDAOFairERC721Vesting.getTokenIdsVestedByUserAddress(
+            address(this)
+        );
+        fairnessDAOFairERC721Vesting.getTokenIdsVestedByUserAddress(caller);
+    }
+
     /// @dev Should allow the caller to withdraw partial vesting with random amount.
     function testFuzz_withdrawVesting_func_partialWithdrawal(
         uint32 timeSkipping,
@@ -94,10 +134,6 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
         skip(timeSkipping);
         fairnessDAOFairERC721Vesting.updateFairVesting(address(this));
 
-        uint256 burnedAmount = (
-            ((amountToWithdraw * 1e18) / initialAmountToVest)
-        ) * fairnessDAOFairERC721Vesting.balanceOf(address(this)) / 1e18;
-
         uint256[] memory indexOfTokensIdsToWithdraw =
             new uint256[](amountToWithdraw);
         for (uint256 i; i < amountToWithdraw;) {
@@ -106,10 +142,7 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
                 ++i;
             }
         }
-        vm.expectEmit(
-            true, true, true, false, address(fairnessDAOFairERC721Vesting)
-        );
-        emit EventsUtilsERC20.Transfer(address(this), address(0), burnedAmount);
+
         for (uint256 i; i < amountToWithdraw;) {
             vm.expectEmit(true, true, true, false, address(mockERC721));
             emit EventsUtilsERC721.Transfer(
@@ -139,15 +172,6 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
         skip(timeSkipping);
         fairnessDAOFairERC721Vesting.updateFairVesting(address(this));
 
-        uint256 vestTokenBalance =
-            fairnessDAOFairERC721Vesting.balanceOf(address(this));
-
-        vm.expectEmit(
-            true, true, true, false, address(fairnessDAOFairERC721Vesting)
-        );
-        emit EventsUtilsERC20.Transfer(
-            address(this), address(0), vestTokenBalance
-            );
         for (uint256 i; i < initialAmountToVest;) {
             vm.expectEmit(true, true, true, false, address(mockERC721));
             emit EventsUtilsERC721.Transfer(
@@ -165,34 +189,6 @@ contract FairnessDAOFairERC721VestingWithdrawVestingStateTest is
         assertEq(startTimestamp, 0);
         assertEq(lastClaimedTimestamp, 0);
     }
-
-    // /// @dev Should not allow the caller to withdraw partial vesting with amount too low.
-    // function testFuzz_withdrawVesting_func_withRevert_withdrawalAmountTooLow(
-    //     uint32 timeSkipping
-    // ) public {
-    //     vm.assume(timeSkipping != 0);
-    //     if (timeSkipping < type(uint16).max) {
-    //         timeSkipping = type(uint16).max;
-    //     }
-
-    //     skip(timeSkipping);
-    //     fairnessDAOFairERC721Vesting.updateFairVesting(address(this));
-
-    //     uint256[] memory tokenIds = new uint256[](1);
-    //     /// @dev Store a value >> amountToWithdraw for tokenIds vested array length at `addressToTokenIdsVested` slot (#102) for address(this)
-    //     vm.store(
-    //         address(fairnessDAOFairERC721Vesting),
-    //         keccak256(abi.encode(address(this), uint256(102))),
-    //         bytes32(type(uint256).max)
-    //     );
-    //     /// @dev Try to withdraw 1 ERC-721 out of 1.1579209E77. the vToken burn amount can't be computed
-    //     vm.expectRevert(
-    //         FairnessDAOFairERC721Vesting
-    //             .FairnessDAOFairERC721Vesting__WithdrawalAmountIsTooLow
-    //             .selector
-    //     );
-    //     fairnessDAOFairERC721Vesting.withdrawVesting(tokenIds);
-    // }
 
     /// @dev Should allow the caller to withdraw partial vesting with random amount.
     function test_withdrawVesting_func_partialWithdrawal() public {
