@@ -17,12 +17,15 @@ contract MockTrevi is TreviStaking {
         _mint(msg.sender, amount);
     }
 
-    function startStaking(address addr, uint128 multiplier) external virtual {
-        _startStaking(addr, multiplier);
+    function startStaking(address addr, uint128 amountToLock)
+        external
+        virtual
+    {
+        _startStaking(addr, amountToLock);
     }
 
-    function stopStaking(address addr, uint128 multiplier) external virtual {
-        _stopStaking(addr, multiplier);
+    function stopStaking(address addr, uint128 amountToLock) external virtual {
+        _stopStaking(addr, amountToLock);
     }
 
     function burn(address from, uint256 value) external virtual {

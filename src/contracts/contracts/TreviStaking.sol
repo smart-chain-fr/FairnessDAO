@@ -23,7 +23,7 @@ contract TreviStaking {
     struct Accruer {
         uint256 balance;
         uint128 accrualStartTimestamp;
-        uint128 multiplier;
+        uint128 amountLocked;
     }
 
     uint256 public emissionRatePerSecond;
@@ -32,7 +32,7 @@ contract TreviStaking {
 
     uint256 private _currAccrued;
     uint128 private _currEmissionTimestamp;
-    uint128 private _currEmissionMultiple;
+    uint128 private _currTotalLocked;
 
     address public mockToken;
 
@@ -95,13 +95,13 @@ contract TreviStaking {
         return (
             (block.timestamp - accruer.accrualStartTimestamp)
                 * emissionRatePerSecond
-        ) * accruer.multiplier + accruer.balance;
+        ) * accruer.amountLocked + accruer.balance;
     }
 
     function totalSupply() public view returns (uint256) {
         return _currAccrued
             + (block.timestamp - _currEmissionTimestamp) * emissionRatePerSecond
-                * _currEmissionMultiple;
+                * _currTotalLocked;
     }
 
     function _transfer(address from, address to, uint256 amount)
@@ -126,7 +126,10 @@ contract TreviStaking {
         emit Transfer(from, to, amount);
     }
 
-    function _startStaking(address addr, uint128 multiplier) internal virtual {
+    function _startStaking(address addr, uint128 amountToLock)
+        internal
+        virtual
+    {
         Accruer storage accruer = _accruers[addr];
 
         if (accruer.accrualStartTimestamp != 0) {
@@ -135,33 +138,36 @@ contract TreviStaking {
             emit Transfer(address(0), addr, 0);
         }
 
-        IERC20(mockToken).transferFrom(msg.sender, address(this), multiplier);
+        IERC20(mockToken).transferFrom(msg.sender, address(this), amountToLock);
 
         _currAccrued = totalSupply();
         _currEmissionTimestamp = uint128(block.timestamp);
         accruer.accrualStartTimestamp = uint128(block.timestamp);
 
         unchecked {
-            _currEmissionMultiple += multiplier;
-            accruer.multiplier += multiplier;
+            _currTotalLocked += amountToLock;
+            accruer.amountLocked += amountToLock;
         }
     }
 
-    function _stopStaking(address addr, uint128 multiplier) internal virtual {
+    function _stopStaking(address addr, uint128 amountToUnlock)
+        internal
+        virtual
+    {
         Accruer storage accruer = _accruers[addr];
 
         if (accruer.accrualStartTimestamp == 0) revert UserNotAccruing();
 
-        IERC20(mockToken).transfer(msg.sender, multiplier);
+        IERC20(mockToken).transfer(msg.sender, amountToUnlock);
 
         accruer.balance = balanceOf(addr);
         _currAccrued = totalSupply();
         _currEmissionTimestamp = uint128(block.timestamp);
 
-        _currEmissionMultiple -= multiplier;
-        accruer.multiplier -= multiplier;
+        _currTotalLocked -= amountToUnlock;
+        accruer.amountLocked -= amountToUnlock;
 
-        if (accruer.multiplier == 0) {
+        if (accruer.amountLocked == 0) {
             accruer.accrualStartTimestamp = 0;
         } else {
             accruer.accrualStartTimestamp = uint128(block.timestamp);
