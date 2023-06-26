@@ -33,14 +33,14 @@ contract TreviStakingFunctionalTest is Test {
         startHoax(callerUserA);
         mockToken.approve(address(token), amountUserA);
 
-        token.startDripping(callerUserA, amountUserA);
+        token.startStaking(callerUserA, amountUserA);
 
         assertEq(token.totalSupply(), 0);
         assertEq(token.balanceOf(callerUserA), 0);
 
         vm.warp(1_687_762_588);
 
-        token.stopDripping(callerUserA, amountUserA);
+        token.stopStaking(callerUserA, amountUserA);
     }
 
     function testFuzz_streamSingleUserOneMonth_func(uint128 amountUserA)
@@ -55,14 +55,14 @@ contract TreviStakingFunctionalTest is Test {
         startHoax(callerUserA);
         mockToken.approve(address(token), amountUserA);
 
-        token.startDripping(callerUserA, amountUserA);
+        token.startStaking(callerUserA, amountUserA);
 
         assertEq(token.totalSupply(), 0);
         assertEq(token.balanceOf(callerUserA), 0);
 
         vm.warp(1_687_762_587);
 
-        token.stopDripping(callerUserA, amountUserA);
+        token.stopStaking(callerUserA, amountUserA);
     }
 
     function testFuzz_streamSingleUserMultipleTimes_func(uint128 amountUserA)
@@ -77,24 +77,24 @@ contract TreviStakingFunctionalTest is Test {
         startHoax(callerUserA);
         mockToken.approve(address(token), amountUserA);
 
-        token.startDripping(callerUserA, amountUserA);
+        token.startStaking(callerUserA, amountUserA);
 
         assertEq(token.totalSupply(), 0);
         assertEq(token.balanceOf(callerUserA), 0);
 
         vm.warp(1_687_848_987); // One day later
 
-        token.stopDripping(callerUserA, amountUserA);
+        token.stopStaking(callerUserA, amountUserA);
 
         vm.warp(1_687_935_387); // One day later
         startHoax(callerUserA);
         mockToken.approve(address(token), amountUserA);
 
-        token.startDripping(callerUserA, amountUserA);
+        token.startStaking(callerUserA, amountUserA);
 
         vm.warp(1_688_021_787); // One day later
 
-        token.stopDripping(callerUserA, amountUserA);
+        token.stopStaking(callerUserA, amountUserA);
     }
 
     function testFuzz_streamTwoUsers_func_withRevert_arithmeticOverflow(
@@ -111,10 +111,10 @@ contract TreviStakingFunctionalTest is Test {
 
         startHoax(callerUserA);
         mockToken.approve(address(token), amountUserA);
-        token.startDripping(callerUserA, amountUserA);
+        token.startStaking(callerUserA, amountUserA);
         startHoax(callerUserB);
         mockToken.approve(address(token), amountUserB);
-        token.startDripping(callerUserB, amountUserB);
+        token.startStaking(callerUserB, amountUserB);
 
         assertEq(token.totalSupply(), 0);
         assertEq(token.balanceOf(callerUserA), 0);
@@ -124,8 +124,8 @@ contract TreviStakingFunctionalTest is Test {
 
         // Overflows
 
-        // token.stopDripping(callerUserA, amountUserA);
-        // token.stopDripping(callerUserB, amountUserB);
+        // token.stopStaking(callerUserA, amountUserA);
+        // token.stopStaking(callerUserB, amountUserB);
     }
 
     function testFuzz_streamMultipleUsers_func_withRevert_arithmeticOverflow(
@@ -145,13 +145,13 @@ contract TreviStakingFunctionalTest is Test {
 
         startHoax(callerUserA);
         mockToken.approve(address(token), amountUserA);
-        token.startDripping(callerUserA, amountUserA);
+        token.startStaking(callerUserA, amountUserA);
         startHoax(callerUserB);
         mockToken.approve(address(token), amountUserB);
-        token.startDripping(callerUserB, amountUserB);
+        token.startStaking(callerUserB, amountUserB);
         startHoax(callerUserC);
         mockToken.approve(address(token), amountUserC);
-        token.startDripping(callerUserC, amountUserC);
+        token.startStaking(callerUserC, amountUserC);
 
         assertEq(token.totalSupply(), 0);
         assertEq(token.balanceOf(callerUserA), 0);
@@ -163,12 +163,12 @@ contract TreviStakingFunctionalTest is Test {
         // Overflows
 
         // startHoax(callerUserA);
-        // token.stopDripping(callerUserA, amountUserA);
+        // token.stopStaking(callerUserA, amountUserA);
 
         // startHoax(callerUserB);
-        // token.stopDripping(callerUserB, amountUserB);
+        // token.stopStaking(callerUserB, amountUserB);
 
         // startHoax(callerUserC);
-        // token.stopDripping(callerUserC, amountUserC);
+        // token.stopStaking(callerUserC, amountUserC);
     }
 }

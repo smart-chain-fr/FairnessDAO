@@ -126,10 +126,7 @@ contract TreviStaking {
         emit Transfer(from, to, amount);
     }
 
-    function _startDripping(address addr, uint128 multiplier)
-        internal
-        virtual
-    {
+    function _startStaking(address addr, uint128 multiplier) internal virtual {
         Accruer storage accruer = _accruers[addr];
 
         if (accruer.accrualStartTimestamp != 0) {
@@ -150,7 +147,7 @@ contract TreviStaking {
         }
     }
 
-    function _stopDripping(address addr, uint128 multiplier) internal virtual {
+    function _stopStaking(address addr, uint128 multiplier) internal virtual {
         Accruer storage accruer = _accruers[addr];
 
         if (accruer.accrualStartTimestamp == 0) revert UserNotAccruing();

@@ -293,7 +293,7 @@ contract FairnessDAOFairVesting is ERC20 {
     function _beforeTokenTransfer(address from, address to, uint256 amount)
         internal
         virtual
-        override (ERC20)
+        override(ERC20)
     {
         super._beforeTokenTransfer(from, to, amount);
         /// @TODO TEST THIS!!!!

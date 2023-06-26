@@ -119,7 +119,7 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
             initialProposalId,
             voterAddress,
             amountThatShouldBeReceivedByAllVoters
-            );
+        );
         fairnessDAOProposalRegistry.claimRewards(initialProposalId);
     }
 
@@ -155,7 +155,7 @@ contract FairnessDAOProposalRegistryClaimRewardsForPassedProposalStateTest is
             initialProposalId,
             address(this),
             amountThatShouldBeReceivedByProposalSubmitter
-            );
+        );
         fairnessDAOProposalRegistry.claimRewards(initialProposalId);
     }
 
