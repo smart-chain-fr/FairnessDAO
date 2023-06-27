@@ -9,6 +9,7 @@ import {MockERC20} from "../../contracts/Mocks/MockERC20.sol";
 contract TreviStakingFunctionalTest is Test {
     MockTrevi token;
     MockERC20 mockToken;
+    MockTrevi customDecimalsToken;
 
     address callerUserA = makeAddr("callerUserA");
     address callerUserB = makeAddr("callerUserB");
@@ -18,7 +19,7 @@ contract TreviStakingFunctionalTest is Test {
 
     function setUp() public {
         token = new MockTrevi("TREVI", "TREVI", 18, 1);
-        mockToken = new MockERC20("MOCK", "MOCK", 10**18);
+        mockToken = new MockERC20("MOCK", "MOCK", 10 ** 18);
 
         token.setToken(address(mockToken));
     }
@@ -43,9 +44,9 @@ contract TreviStakingFunctionalTest is Test {
         token.stopStaking(callerUserA, amountUserA);
     }
 
-    function testFuzz_streamSingleUserOneMonth_func(uint128 amountUserA)
-        public
-    {
+    function testFuzz_streamSingleUserOneMonth_func(
+        uint128 amountUserA
+    ) public {
         vm.warp(1_685_084_187);
 
         deal(address(mockToken), callerUserA, amountUserA);
@@ -65,9 +66,9 @@ contract TreviStakingFunctionalTest is Test {
         token.stopStaking(callerUserA, amountUserA);
     }
 
-    function testFuzz_streamSingleUserMultipleTimes_func(uint128 amountUserA)
-        public
-    {
+    function testFuzz_streamSingleUserMultipleTimes_func(
+        uint128 amountUserA
+    ) public {
         vm.warp(1_687_762_587);
 
         deal(address(mockToken), callerUserA, amountUserA);
@@ -170,5 +171,99 @@ contract TreviStakingFunctionalTest is Test {
 
         // startHoax(callerUserC);
         // token.stopStaking(callerUserC, amountUserC);
+    }
+
+    function testFuzz_streamMultipleUsers_func_sixDecimals(
+        uint128 amountUserA,
+        uint128 amountUserB,
+        uint128 amountUserC
+    ) public {
+        customDecimalsToken = new MockTrevi("TREVI", "TREVI", 6, 1);
+        customDecimalsToken.setToken(address(mockToken));
+
+        vm.warp(1_687_762_587);
+
+        deal(address(mockToken), callerUserA, amountUserA);
+        deal(address(mockToken), callerUserB, amountUserB);
+        deal(address(mockToken), callerUserC, amountUserC);
+
+        assertEq(mockToken.balanceOf(callerUserA), amountUserA);
+        assertEq(mockToken.balanceOf(callerUserB), amountUserB);
+        assertEq(mockToken.balanceOf(callerUserC), amountUserC);
+
+        startHoax(callerUserA);
+        mockToken.approve(address(customDecimalsToken), amountUserA);
+        customDecimalsToken.startStaking(callerUserA, amountUserA);
+        startHoax(callerUserB);
+        mockToken.approve(address(customDecimalsToken), amountUserB);
+        customDecimalsToken.startStaking(callerUserB, amountUserB);
+        startHoax(callerUserC);
+        mockToken.approve(address(customDecimalsToken), amountUserC);
+        customDecimalsToken.startStaking(callerUserC, amountUserC);
+
+        assertEq(customDecimalsToken.totalSupply(), 0);
+        assertEq(customDecimalsToken.balanceOf(callerUserA), 0);
+        assertEq(customDecimalsToken.balanceOf(callerUserB), 0);
+        assertEq(customDecimalsToken.balanceOf(callerUserC), 0);
+
+        vm.warp(1_687_762_588);
+
+        // Overflows
+
+        // startHoax(callerUserA);
+        // customDecimalsToken.stopStaking(callerUserA, amountUserA);
+
+        // startHoax(callerUserB);
+        // customDecimalsToken.stopStaking(callerUserB, amountUserB);
+
+        // startHoax(callerUserC);
+        // customDecimalsToken.stopStaking(callerUserC, amountUserC);
+    }
+
+    function testFuzz_streamMultipleUsers_func_fourDecimals(
+        uint128 amountUserA,
+        uint128 amountUserB,
+        uint128 amountUserC
+    ) public {
+        customDecimalsToken = new MockTrevi("TREVI", "TREVI", 4, 1);
+        customDecimalsToken.setToken(address(mockToken));
+
+        vm.warp(1_687_762_587);
+
+        deal(address(mockToken), callerUserA, amountUserA);
+        deal(address(mockToken), callerUserB, amountUserB);
+        deal(address(mockToken), callerUserC, amountUserC);
+
+        assertEq(mockToken.balanceOf(callerUserA), amountUserA);
+        assertEq(mockToken.balanceOf(callerUserB), amountUserB);
+        assertEq(mockToken.balanceOf(callerUserC), amountUserC);
+
+        startHoax(callerUserA);
+        mockToken.approve(address(customDecimalsToken), amountUserA);
+        customDecimalsToken.startStaking(callerUserA, amountUserA);
+        startHoax(callerUserB);
+        mockToken.approve(address(customDecimalsToken), amountUserB);
+        customDecimalsToken.startStaking(callerUserB, amountUserB);
+        startHoax(callerUserC);
+        mockToken.approve(address(customDecimalsToken), amountUserC);
+        customDecimalsToken.startStaking(callerUserC, amountUserC);
+
+        assertEq(customDecimalsToken.totalSupply(), 0);
+        assertEq(customDecimalsToken.balanceOf(callerUserA), 0);
+        assertEq(customDecimalsToken.balanceOf(callerUserB), 0);
+        assertEq(customDecimalsToken.balanceOf(callerUserC), 0);
+
+        vm.warp(1_687_762_588);
+
+        // Overflows
+
+        // startHoax(callerUserA);
+        // customDecimalsToken.stopStaking(callerUserA, amountUserA);
+
+        // startHoax(callerUserB);
+        // customDecimalsToken.stopStaking(callerUserB, amountUserB);
+
+        // startHoax(callerUserC);
+        // customDecimalsToken.stopStaking(callerUserC, amountUserC);
     }
 }
